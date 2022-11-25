@@ -1,0 +1,12 @@
+<launch>
+  <node name="rosserial_base_controller" pkg="rosserial_python" type="serial_node.py" respawn="false"
+      output="screen" ns="carpincho" args="/dev/ttyUSB0"/>
+
+
+  <!-- Including the following launch file from carpincho_base package will -->
+  <!-- Load the robot description onto the parameter server -->
+  <!-- Run the controller manager with carpincho's hardware interface -->
+  <!-- Load the controller config onto the parameter server -->
+  <include file="$(find carpincho_base)/launch/carpincho.launch"/>
+
+</launch>
