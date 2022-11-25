@@ -1,0 +1,6 @@
+<launch>
+    <!-- Parsing xacro and setting robot_description parameter -->
+    <param name="robot_description" command="$(find xacro)/xacro $(find carpincho_description)/urdf/carpincho.urdf.xacro" />
+    <!-- Starting robot state publish which will publish tf -->
+    <node name="robot_state_publisher" pkg="robot_state_publisher" type="robot_state_publisher" />
+</launch>

@@ -1,0 +1,6 @@
+<launch>
+    <arg name="rvizconfig" default="$(find carpincho_control)/rviz/carpincho.rviz" />
+
+    <!-- Launch visualization in rviz -->
+    <node name="rviz" pkg="rviz" type="rviz" args="-d $(find carpincho_description)/urdf.rviz" required="true" />
+</launch>

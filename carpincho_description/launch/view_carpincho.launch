@@ -1,5 +1,4 @@
 <launch>
-    <arg name="model" />
     <!-- Parsing xacro and setting robot_description parameter -->
     <param name="robot_description" command="$(find xacro)/xacro $(find carpincho_description)/urdf/carpincho.urdf.xacro" />
     <!-- Setting gui parameter to true for display joint slider -->
