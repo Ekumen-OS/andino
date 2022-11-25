@@ -1,0 +1,8 @@
+<launch>
+    <arg name="rvizconfig" default="$(find carpincho_control)/rviz/carpincho.rviz" />
+
+    <include file="$(find carpincho_control)/launch/carpincho_control.launch"/>
+
+    <!-- Launch visualization in rviz -->
+    <node name="rviz" pkg="rviz" type="rviz" args="-d $(arg rvizconfig)" required="true" />
+</launch>

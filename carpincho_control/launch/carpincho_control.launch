@@ -1,0 +1,22 @@
+<launch>
+    <!-- Load controller configurations from YAML file to parameter server -->
+    <rosparam command="load"
+        file="$(find carpincho_control)/config/carpincho_control.yaml"/>
+
+    <!-- load the controllers -->
+    <node name="controller_spawner" pkg="controller_manager" type="spawner" respawn="false"
+        output="screen" ns="carpincho" args="joint_state_controller
+                                            mobile_base_controller"/>
+
+
+    <group ns='carpincho'>
+
+    <include file="$(find carpincho_description)/launch/carpincho_description.launch"/>
+
+    </group>
+
+    <node name="rqt_robot_steering" pkg="rqt_robot_steering" type="rqt_robot_steering">
+        <param name="default_topic" value="/carpincho/mobile_base_controller/cmd_vel"/>
+    </node>
+
+</launch>
