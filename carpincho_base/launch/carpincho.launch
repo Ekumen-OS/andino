@@ -4,7 +4,7 @@
     <include file="$(find carpincho_control)/launch/carpincho.launch"/>
 
     <!-- Run the carpincho_base -->
-    <!-- This will create the DiffBot hardware interface and instantiate a new controller manager with it -->
+    <!-- This will create the Carpincho hardware interface and instantiate a new controller manager with it -->
     <node name="carpincho_base" pkg="carpincho_base" type="carpincho_base" ns="carpincho" output="screen"/>
 
 </launch>
