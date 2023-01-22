@@ -2,7 +2,7 @@
 
 ## Description
 
-This packages is in charge of spawning controllers to be integrated with the hardware interface provided by [`carpincho_base`](../carpincho_base/) `
+This packages is in charge of spawning controllers to be integrated with the hardware interface provided by [`carpincho_base`](../carpincho_base/) package.
 
 The controller being used are:
  - [`mobile_base_controller`](http://wiki.ros.org/diff_drive_controller)(diff_drive_controller): Controller for differential drive wheel systems.
