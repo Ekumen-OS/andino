@@ -1,0 +1,8 @@
+#ifndef CARPINCHOBOT_INCLUDE_HW_H_
+#define CARPINCHOBOT_INCLUDE_HW_H_
+
+#include <Arduino.h>
+
+#define LED_PIN LED_BUILTIN
+
+#endif  // CARPINCHOBOT_INCLUDE_HW_H_
