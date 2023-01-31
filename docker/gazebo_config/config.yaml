@@ -1,0 +1,5 @@
+---
+servers:
+  -
+    name: osrf
+    url: https://api.ignitionrobotics.org
