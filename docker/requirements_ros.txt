@@ -1,0 +1,8 @@
+gazebo11
+libgazebo11-dev
+python3-rosdep
+python3-rosinstall
+python3-rosinstall-generator
+python3-wstool
+ros-noetic-desktop
+ros-noetic-gazebo-ros-pkgs
