@@ -1,0 +1,64 @@
+@startuml
+
+class CarpinchoBot {
+    -ROSController rosComunication
+    -MotorController rightWheel
+    -MotorController leftWheel
+    --
+    +runLoop()
+}
+
+CarpinchoBot *-- ROSController
+CarpinchoBot *-- MotorController
+
+class ROSController {
+    -ros::Subscriber sub_right_motor_value_
+    -ros::Subscriber sub_left_motor_value_
+    -ros::Publisher pub_measured_joint_states_
+    -float rightMotorValue_
+    -float lefttMotorValue_
+    --
+    +float getRightMotorValue() const
+    +float getLeftMotorValue() const
+    +void publishMeasuredJointStates(
+        const &joint_positions[],const &joint_velocities[])
+    -void rightMotorValueCallback()
+    -void leftMotorValueCallback()
+}
+
+class MotorController {
+    -PDController pdController
+    -Tacometer tacometer
+    -float targetVelocity_rpm_
+    -float currentVelocity_rpm_
+    --
+    +void setTargetVelocity(float targetVelocity_rpm)
+    +tuple<float, float> getJointStates()
+    -void setMotor(float actionVelocity)
+}
+
+MotorController *-- PDController
+MotorController *-- Tacometer
+
+class PDController {
+    -float proportional
+    -float derivative
+    -float lastComputedPD
+    ' +float integrative
+    --
+    +float computePD(float targetVelocity_rpm, float currentVelocity_rpm)
+}
+
+class Tacometer {
+    -size_t tickCount_
+    -time timeLastReset_
+    -float lastAngle_
+    -float lastVelocity_
+    --
+    +void updateTacometer()
+    +float getAngle() const
+    +float getVelocity() const
+    -void tickCountCallback()
+}
+
+@enduml
