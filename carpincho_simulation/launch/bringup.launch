@@ -1,0 +1,33 @@
+<launch>
+
+  <!-- Gazebo Options -->
+  <arg name="paused" default="false" doc="True to start the simulation on a PAUSED state" />
+  <arg name="gui" default="true"  doc="True to launch the Gazebo GUI" />
+  <arg name="debug" default="false" doc="True to: execute Gazebo with gdb." />
+
+  <arg name="initial_pose_x" default="0.0" doc="Initial pose of the carpincho on the x axis" />
+  <arg name="initial_pose_y" default="0.0" doc="Initial pose of the carpincho on the y axis" />
+  <arg name="initial_pose_z" default="0.0" doc="Initial pose of the carpincho on the x axis" />
+  <arg name="initial_pose_yaw" default="0.0" doc="Initial yaw orientation of the mover" />
+
+  <arg name="model_name" default="carpincho" doc="Name for the Gazebo model instance" />
+
+  <param name="robot_description"
+      command="$(find xacro)/xacro '$(find carpincho_simulation)/urdf/carpincho.gazebo.xacro' " />
+
+  <include file="$(find gazebo_ros)/launch/empty_world.launch" >
+    <arg name="paused" value="$(arg paused)" />
+    <arg name="gui" value="$(arg gui)" />
+    <arg name="debug" value="$(arg debug)" />
+  </include>  
+
+    <node name="carpincho_spawn" pkg="gazebo_ros" type="spawn_model" output="screen"
+        args="-urdf -param /robot_description -model $(arg model_name)
+              -x $(arg initial_pose_x) -y $(arg initial_pose_y) -z $(arg initial_pose_z) -R 0 -P 0 -Y $(arg initial_pose_yaw)" /> 
+
+    <node name="robot_state_publisher" pkg="robot_state_publisher" type="robot_state_publisher" >
+      <param name="use_tf_static" value="true"/>
+      <param name="robot_description" value="robot_description"/>    
+    </node>
+
+</launch>
