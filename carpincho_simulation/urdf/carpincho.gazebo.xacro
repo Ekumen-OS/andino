@@ -1,0 +1,31 @@
+<?xml version="1.0"?>
+<robot xmlns:xacro="http://www.ros.org/wiki/xacro" name="carpincho">
+
+  <xacro:include filename="$(find carpincho_description)/urdf/carpincho.urdf.xacro"/>
+
+  <xacro:macro name="friction" params="reference mu">
+    <gazebo reference="${reference}">
+      <mu1>${mu}</mu1>
+      <mu2>${mu}</mu2>
+      <kp>1000000.0</kp>
+      <kd>1.0</kd>
+      <minDepth>0.0001</minDepth>
+      <maxVel>1.0</maxVel>
+    </gazebo>
+  </xacro:macro>
+
+  <xacro:friction reference="front_right_wheel" mu="100"/>
+  <xacro:friction reference="front_left_wheel" mu="100"/>
+  <xacro:friction reference="rear_caster_base_link" mu="0.05"/>
+
+<!-- ROS Control not supported(yet)  -->
+
+  <!--
+  <gazebo>
+    <plugin name="gazebo_ros_control" filename="libgazebo_ros_control.so">
+    </plugin>
+  </gazebo>
+  -->
+
+
+</robot>
