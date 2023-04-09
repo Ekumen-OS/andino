@@ -1,0 +1,9 @@
+<launch>
+
+  <node name="teleop" pkg="teleop_twist_keyboard" type="teleop_twist_keyboard.py" ns="carpincho" output="screen">
+    <param name="speed" value="0.3"/>
+    <param name="turn" value="1.4"/>
+    <remap from="cmd_vel" to="mobile_base_controller/cmd_vel" />
+  </node>
+
+</launch>

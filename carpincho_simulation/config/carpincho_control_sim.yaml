@@ -1,0 +1,10 @@
+# PID Gains for Gazebo ROS control
+carpincho:
+  gazebo_ros_control:
+    pid_gains:
+      front_right_wheel_joint:
+        p: 2.0
+        i: 4.0
+      front_left_wheel_joint:
+        p: 2.0
+        i: 4.0
