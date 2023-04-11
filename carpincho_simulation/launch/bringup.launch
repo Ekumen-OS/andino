@@ -5,6 +5,7 @@
   <arg name="gui" default="true"  doc="True to launch the Gazebo GUI" />
   <arg name="debug" default="false" doc="True to: execute Gazebo with gdb." />
   <arg name="model_name" default="carpincho" doc="Name for the Gazebo model instance" />
+  <arg name="use_gazebo_ros_control" default="false" doc="True to use the gazebo_ros_control plugin" />
 
  <!-- Starting Pose Options  -->
   <arg name="initial_pose_x" default="0.0" doc="Initial pose of the carpincho on the x axis" />
@@ -13,7 +14,8 @@
   <arg name="initial_pose_yaw" default="0.0" doc="Initial yaw orientation of the mover" />
 
   <param name="robot_description"
-      command="$(find xacro)/xacro '$(find carpincho_simulation)/urdf/carpincho.gazebo.xacro' " />
+      command="$(find xacro)/xacro '$(find carpincho_simulation)/urdf/carpincho.gazebo.xacro' 
+              use_gazebo_ros_control:=$(arg use_gazebo_ros_control)" />
 
   <include file="$(find gazebo_ros)/launch/empty_world.launch" >
     <arg name="paused" value="$(arg paused)" />
@@ -31,11 +33,12 @@
       <param name="robot_description" value="robot_description"/>    
     </node>
 
-  <rosparam file="$(find carpincho_control)/config/carpincho_control.yaml" command="load" />
-
-  <rosparam file="$(find carpincho_simulation)/config/carpincho_control_sim.yaml" command="load" />
-
-  <node name="control_spawner" pkg="controller_manager" type="spawner"
-        ns="carpincho" args="mobile_base_controller joint_state_controller" output="screen"/>
+  <group if="$(arg use_gazebo_ros_control)"> 
+      <rosparam file="$(find carpincho_control)/config/carpincho_control.yaml" command="load" />
+      <rosparam file="$(find carpincho_simulation)/config/carpincho_control_sim.yaml" command="load" />
+  
+      <node name="control_spawner" pkg="controller_manager" type="spawner"
+            ns="carpincho" args="mobile_base_controller joint_state_controller" output="screen"/>
+  </group>
 
 </launch>

@@ -17,15 +17,38 @@
   <xacro:friction reference="front_right_wheel" mu="100"/>
   <xacro:friction reference="front_left_wheel" mu="100"/>
   <xacro:friction reference="rear_caster_wheel_link" mu="0.05"/>
-  
-  <gazebo>
-    <plugin name="gazebo_ros_control" filename="libgazebo_ros_control.so">
-        <!-- <robotNamespace>: The ROS namespace to be used for this instance of the plugin, defaults to robot name in URDF/SDF -->
-        <!-- <controlPeriod>: The period of the controller update (in seconds), defaults to Gazebo's period -->
-        <!-- <robotParam>: The location of the robot_description (URDF) on the parameter server, defaults to /robot_description' -->
-        <!-- <robotSimType>: The pluginlib name of a custom robot sim interface to be used, defaults to 'DefaultRobotHWSim' -->
-    </plugin>
-  </gazebo>
+
+   <xacro:if value="$(arg use_gazebo_ros_control)">
+    <gazebo>
+      <plugin name="gazebo_ros_control" filename="libgazebo_ros_control.so">
+          <!-- <robotNamespace>: The ROS namespace to be used for this instance of the plugin, defaults to robot name in URDF/SDF -->
+          <!-- <controlPeriod>: The period of the controller update (in seconds), defaults to Gazebo's period -->
+          <!-- <robotParam>: The location of the robot_description (URDF) on the parameter server, defaults to /robot_description' -->
+          <!-- <robotSimType>: The pluginlib name of a custom robot sim interface to be used, defaults to 'DefaultRobotHWSim' -->
+      </plugin>
+    </gazebo>
+  </xacro:if>
+
+  <xacro:unless value="$(arg use_gazebo_ros_control)">
+	  <gazebo>
+	  	<plugin name="differential_drive_controller" filename="libgazebo_ros_diff_drive.so">
+	  		<legacyMode>false</legacyMode>
+	  		<alwaysOn>true</alwaysOn>
+	  		<updateRate>20</updateRate>
+	  		<leftJoint>front_left_wheel_joint</leftJoint>
+	  		<rightJoint>front_right_wheel_joint</rightJoint>
+	  		<wheelSeparation>0.0675</wheelSeparation>
+	  		<wheelDiameter>0.0662</wheelDiameter>
+	  		<torque>20</torque>
+	  		<publishWheelTF>False</publishWheelTF>
+	  		<publishWheelJointState>True</publishWheelJointState>
+	  		<commandTopic>mobile_base_controller/cmd_vel</commandTopic>
+	  		<odometryTopic>odom</odometryTopic>
+	  		<odometryFrame>odom</odometryFrame>
+	  		<robotBaseFrame>base_link</robotBaseFrame>
+	  	</plugin>
+	  </gazebo>
+  </xacro:unless>
 
 
 </robot>

@@ -22,6 +22,8 @@
   <xacro:property name="sensor_yaml" value="$(find ${package_name})/config/${robot_name}/sensors.yaml" />
   <xacro:property name="sensor_prop" value="${xacro.load_yaml(sensor_yaml)}"/>
 
+  <!-- Optional argument to use gazebo_ros_control in simulation -->
+  <xacro:arg name="use_gazebo_ros_control" default="false"/>
 
   <!-- Footprint link -->
   <xacro:footprint wheel_props="${front_wheel_props}" />
