@@ -8,10 +8,16 @@ This packages is in charge launching a Gazebo simulation using the [`URDF`](http
 It uses the same controllers as the real robot by running with [`gazebo_ros_control`](http://wiki.ros.org/gazebo_ros_control).
 
 ## Usage
-To launch the Carpincho simulation environment run the [`bringup.launch`](launch/bringup.launch) file:
+To launch the Carpincho simulation environment using Gazebo Diff Drive, run the [`bringup.launch`](launch/bringup.launch) file:
 
 ```sh
 roslaunch carpincho_simulation bringup.launch
+```
+
+To launch the Carpincho simulation environment using Gazebo ROS Control, run the [`bringup.launch`](launch/bringup.launch) file with the `use_gazebo_ros_control` argument:
+
+```sh
+roslaunch carpincho_simulation bringup.launch use_gazebo_ros_control:=true
 ```
 
 To have a better idea on the arguments that you can pass to the [`bringup.launch`](launch/bringup.launch) file, you can use:
