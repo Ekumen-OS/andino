@@ -1,0 +1,27 @@
+name: colcon build & test
+
+on:
+  push:
+  pull_request:
+    branches:
+      - humble
+  workflow_dispatch:
+
+env:
+  ROS_DISTRO: humble
+
+jobs:
+  compile_and_test:
+    name: Compile and test
+    runs-on: ubuntu-latest
+    container:
+      image: ubuntu:22.04
+    steps:
+    - uses: actions/checkout@v3
+    - uses: ros-tooling/setup-ros@v0.6
+    - uses: ros-tooling/action-ros-ci@v0.3
+      id: action_ros_ci_step
+      with:
+        package-name: carpincho_base carpincho_control carpincho_description
+        target-ros2-distro: ${{ env.ROS_DISTRO }}
+        import-token: ${{ secrets.GITHUB_TOKEN }}
