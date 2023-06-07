@@ -1,0 +1,9 @@
+<library path="diffdrive_carpincho">
+
+  <class name="carpincho_base/DiffDriveCarpincho" type="carpincho_base::DiffDriveCarpincho" base_class_type="hardware_interface::SystemInterface">
+    <description>
+      Hardware interface implementation for the Carpincho robot.
+    </description>
+  </class>
+
+</library>
