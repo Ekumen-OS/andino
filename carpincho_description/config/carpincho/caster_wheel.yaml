@@ -1,0 +1,31 @@
+base:
+  mass: 0.02
+  size:
+    x: 0.04
+    y: 0.04
+    z: 0.04
+  dx: -0.076
+  dy: 0.0
+  dz: 0.0045
+  mesh: 'caster_base.stl'
+
+hub:
+  mass: 0.02
+  size:
+    x: 0.04
+    y: 0.04
+    z: 0.04
+  dx: -0.077
+  dy: 0.0
+  dz: 0.0045
+  mesh: 'caster_wheel_support.stl'
+
+wheel:
+  mass: 0.5        # Wheel mass in Kg
+  radius: 0.015     # Wheel radius in m
+  length: 0.01      # Wheel length in m, considering is as a cylinder
+  mesh: 'caster_wheel.stl'          # Name of the mesh files. Leave it empty ('') to have a red wheel
+  x_offset: 0.035
+  dx: -0.016  # ${-caster_base_size/2.0*0.8}
+  dy: -1
+  dz: -0.04
