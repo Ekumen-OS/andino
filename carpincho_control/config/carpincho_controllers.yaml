@@ -1,0 +1,47 @@
+controller_manager:
+  ros__parameters:
+    update_rate: 50  # Hz
+
+    diff_controller:
+      type: diff_drive_controller/DiffDriveController
+
+    joint_state_broadcaster:
+      type: joint_state_broadcaster/JointStateBroadcaster
+
+diff_controller:
+  ros__parameters:
+    publish_rate: 50.0
+    left_wheel_names: ['left_wheel_joint']
+    right_wheel_names: ['right_wheel_joint']
+    wheels_per_side: 1
+    wheel_separation: 0.137
+    wheel_radius: 0.035
+    odom_frame_id: odom
+    base_frame_id: base_link
+    enable_odom_tf: true
+    use_stamped_vel: false
+
+    linear.x.has_velocity_limits: false
+    linear.x.has_acceleration_limits: false
+    linear.x.has_jerk_limits: false
+    linear.x.max_velocity: 0.0
+    linear.x.min_velocity: 0.0
+    linear.x.max_acceleration: 0.0
+    linear.x.min_acceleration: 0.0
+    linear.x.max_jerk: 0.0
+    linear.x.min_jerk: 0.0
+
+    angular.z.has_velocity_limits: false
+    angular.z.has_acceleration_limits: false
+    angular.z.has_jerk_limits: false
+    angular.z.max_velocity: 0.0
+    angular.z.min_velocity: 0.0
+    angular.z.max_acceleration: 0.0
+    angular.z.min_acceleration: 0.0
+    angular.z.max_jerk: 0.0
+    angular.z.min_jerk: 0.0
+
+# Commented out as no parameters are passed to this controller:
+#
+# joint_state_broadcaster:
+#   ros__parameters:
