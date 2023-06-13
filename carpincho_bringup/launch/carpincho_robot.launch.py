@@ -32,9 +32,11 @@ import os
 
 from ament_index_python.packages import get_package_share_directory
 from launch import LaunchDescription
-from launch.actions import IncludeLaunchDescription, TimerAction
+from launch.actions import DeclareLaunchArgument, IncludeLaunchDescription, TimerAction
+from launch.conditions import IfCondition
 from launch.launch_description_sources import PythonLaunchDescriptionSource
 from launch_ros.actions import Node
+from launch.substitutions import LaunchConfiguration
 
 # Obtains share directory paths.
 pkg_carpincho_bringup = get_package_share_directory('carpincho_bringup')
@@ -42,6 +44,13 @@ pkg_carpincho_control = get_package_share_directory('carpincho_control')
 pkg_carpincho_description = get_package_share_directory('carpincho_description')
 
 def generate_launch_description():
+    # Declares launch arguments
+    rplidar_arg = DeclareLaunchArgument(
+            'include_rplidar',
+            default_value='True',
+            description='Indicates whether to include rplidar launch.')
+    rplidar =  LaunchConfiguration('include_rplidar')
+
     # Includes carpincho_description launch file
     include_carpincho_description = IncludeLaunchDescription(
         PythonLaunchDescriptionSource(
@@ -61,9 +70,21 @@ def generate_launch_description():
         }.items()
     )
 
-    # Waits for carpincho_description to set up robot_state_publisher
-    carpincho_control_timer = TimerAction(period=3.0,
-                actions=[include_carpincho_control])
+    # Include rplidar launch file
+    include_rplidar = IncludeLaunchDescription(
+        PythonLaunchDescriptionSource(
+            os.path.join(pkg_carpincho_bringup, 'launch', 'rplidar.launch.py'),
+        ),
+        launch_arguments={
+        }.items(),
+                condition=IfCondition(rplidar)
+    )
+    # TODO(francocipollone): Improve concatenation of launch files.
+    #
+    # Waits for carpincho_description to set up robot_state_publisher.
+    carpincho_control_timer = TimerAction(period=5.0, actions=[include_carpincho_control])
+    # Defer rplidar launch to avoid overhead while robot_state_publisher is setting up.
+    rplidar_timer = TimerAction(period=3.0, actions=[include_rplidar])
 
     twist_mux_params = os.path.join(pkg_carpincho_bringup,'config','twist_mux.yaml')
     twist_mux = Node(
@@ -76,5 +97,7 @@ def generate_launch_description():
     return LaunchDescription([
         include_carpincho_description,
         carpincho_control_timer,
+        rplidar_arg,
+        rplidar_timer,
         twist_mux,
     ])
