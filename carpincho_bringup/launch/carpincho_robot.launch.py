@@ -95,9 +95,9 @@ def generate_launch_description():
         )
 
     return LaunchDescription([
-        rplidar_arg,
-        rplidar_timer,
         include_carpincho_description,
         carpincho_control_timer,
+        rplidar_arg,
+        rplidar_timer,
         twist_mux,
     ])
