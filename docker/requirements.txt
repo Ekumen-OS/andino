@@ -22,3 +22,4 @@ python3-setuptools
 software-properties-common
 sudo
 tmux
+xterm
