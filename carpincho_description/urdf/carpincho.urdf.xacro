@@ -75,6 +75,9 @@
                    sensor_prop="${sensor_prop}">
   </xacro:laser>
 
+  <xacro:camera_sensor parent_link="base_link" sensor_prop="${sensor_prop}">
+  </xacro:camera_sensor>
+
   <!-- ros2_control -->
   <xacro:include filename="$(find ${package_name})/urdf/include/carpincho_control.urdf.xacro" />
 

@@ -6,3 +6,11 @@ laser:
   dx: 0.05
   dy: 0.0
   dz: 0.06
+
+camera:
+  mass: 0.1          # mass in Kg
+  box_size: 0.02
+  mesh: ''  # If empty, it will be have a box as visual
+  dx: 0.085
+  dy: 0.0
+  dz: 0.01
