@@ -45,6 +45,11 @@ pkg_carpincho_description = get_package_share_directory('carpincho_description')
 
 def generate_launch_description():
     # Declares launch arguments
+    camera_arg = DeclareLaunchArgument(
+            'include_camera',
+            default_value='True',
+            description='Indicates whether to include camera launch.')
+    camera =  LaunchConfiguration('include_camera')
     rplidar_arg = DeclareLaunchArgument(
             'include_rplidar',
             default_value='True',
@@ -79,12 +84,23 @@ def generate_launch_description():
         }.items(),
                 condition=IfCondition(rplidar)
     )
+    # Include camera launch file
+    include_camera = IncludeLaunchDescription(
+        PythonLaunchDescriptionSource(
+            os.path.join(pkg_carpincho_bringup, 'launch', 'camera.launch.py'),
+        ),
+        launch_arguments={
+        }.items(),
+                condition=IfCondition(camera)
+    )
+
     # TODO(francocipollone): Improve concatenation of launch files.
     #
     # Waits for carpincho_description to set up robot_state_publisher.
     carpincho_control_timer = TimerAction(period=5.0, actions=[include_carpincho_control])
-    # Defer rplidar launch to avoid overhead while robot_state_publisher is setting up.
+    # Defer sensors launch to avoid overhead while robot_state_publisher is setting up.
     rplidar_timer = TimerAction(period=3.0, actions=[include_rplidar])
+    camera_timer = TimerAction(period=3.0, actions=[include_camera])
 
     twist_mux_params = os.path.join(pkg_carpincho_bringup,'config','twist_mux.yaml')
     twist_mux = Node(
@@ -97,6 +113,8 @@ def generate_launch_description():
     return LaunchDescription([
         include_carpincho_description,
         carpincho_control_timer,
+        camera_arg,
+        camera_timer,
         rplidar_arg,
         rplidar_timer,
         twist_mux,
