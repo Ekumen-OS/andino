@@ -4,6 +4,9 @@ Carpincho is a fully open-source diff drive robot designed for educational purpo
 It is fully integrated with ROS2 and it is a great base platform to improve skills over the robotics field.
 With its open-source design, anyone can modify and customize the robot to suit their specific needs.
 
+<img src="docs/real_robot.jpeg" width=500>
+
+
 ## :package: Package Overview
 
 - :robot: [`carpincho_hardware`](./carpincho_hardware): Contains information about the Carpincho assembly and hardware parts.
@@ -109,6 +112,14 @@ ros2 launch carpincho_bringup rviz.launch.py
 ```
 
 For starting `rviz2` visualization with a provided configuration.
+
+## Media
+
+### Slam
+
+Using the robot for mapping.
+
+https://github.com/ekumenlabs/carpinchobot/assets/53065142/b189b9f3-1fd9-479b-a187-650d264f4629
 
 ## Code development
 
