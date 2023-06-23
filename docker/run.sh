@@ -6,8 +6,8 @@ set +e
 function show_help() {
   echo $'\nUsage:\t run.sh [OPTIONS] \n
   Options:\n
-  \t-i --image_name\t\t Name of the image to be run (default ros2_humble_carpincho).\n
-  \t-c --container_name\t Name of the container(default ros2_humble_carpincho_container).\n
+  \t-i --image_name\t\t Name of the image to be run (default ros2_humble_andino).\n
+  \t-c --container_name\t Name of the container(default ros2_humble_andino_container).\n
   \t--use_nvidia\t\t Use nvidia runtime.\n
   Examples:\n
   \trun.sh\n
@@ -49,8 +49,8 @@ done
 
 # Update the arguments to default values if needed.
 
-IMAGE_NAME=${IMAGE_NAME:-ros2_humble_carpincho}
-CONTAINER_NAME=${CONTAINER_NAME:-ros2_humble_carpincho_container}
+IMAGE_NAME=${IMAGE_NAME:-ros2_humble_andino}
+CONTAINER_NAME=${CONTAINER_NAME:-ros2_humble_andino_container}
 
 SSH_PATH=/home/$USER/.ssh
 WORKSPACE_SRC_CONTAINER=/home/$(whoami)/ws/src/$REPOSITORY_FOLDER_NAME
