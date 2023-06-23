@@ -1,4 +1,4 @@
-# carpincho_control
+# andino_control
 
 ## Description
 
@@ -35,13 +35,13 @@ flowchart TD
 ```
 ### Hardware Interface
 
-The hardware interface component for this robot is implemented by [`carpincho_base`](../carpincho_base/) package. It is in charge of providing the necessary state and command interfaces to be claimed by the controllers.
+The hardware interface component for this robot is implemented by [`andino_base`](../andino_base/) package. It is in charge of providing the necessary state and command interfaces to be claimed by the controllers.
 
 ### Controller Manager
 
 The [Controller Manager](https://control.ros.org/humble/doc/ros2_control/controller_manager/doc/userdoc.html#controller-manager) is in charge of managing the lifecycle of the controllers, access to the hardware interfaces and offers services to the ROS-world.
 
-The hardware interface to be activated when `controller_manager` node is activated is indicated via robot description passed via ROS 2 Parameter. A tag `<ros2_control>` is expected to be present in the robot description with the information of the hardware components to be activated as well as the state and command interfaces. See [`carpincho_control.urdf.xacro`](../carpincho_description/urdf/include/carpincho_control.urdf.xacro).
+The hardware interface to be activated when `controller_manager` node is activated is indicated via robot description passed via ROS 2 Parameter. A tag `<ros2_control>` is expected to be present in the robot description with the information of the hardware components to be activated as well as the state and command interfaces. See [`andino_control.urdf.xacro`](../andino_description/urdf/include/andino_control.urdf.xacro).
 
 ### ROS 2 Controllers
 Two controllers are being used from the available [ros2_controllers](https://control.ros.org/humble/doc/ros2_controllers/doc/controllers_index.html):
@@ -59,4 +59,4 @@ Two controllers are being used from the available [ros2_controllers](https://con
       - left wheel position
       - right wheel position
 
-Each controller accepts ROS 2 parameters which they are provided via [`carpincho_controllers.yaml`](config/carpincho_controllers.yaml). 
+Each controller accepts ROS 2 parameters which they are provided via [`andino_controllers.yaml`](config/andino_controllers.yaml). 

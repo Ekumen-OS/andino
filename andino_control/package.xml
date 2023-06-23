@@ -1,9 +1,9 @@
 <?xml version="1.0"?>
 <?xml-model href="http://download.ros.org/schema/package_format3.xsd" schematypens="http://www.w3.org/2001/XMLSchema"?>
 <package format="3">
-  <name>carpincho_control</name>
+  <name>andino_control</name>
   <version>0.0.1</version>
-  <description>The carpincho_control package</description>
+  <description>The andino_control package</description>
 
   <author email="franco.c@ekumenlabs.com">Franco Cipollone</author>
   <maintainer email="franco.c@ekumenlabs.com">Franco Cipollone</maintainer>
@@ -11,8 +11,8 @@
 
   <buildtool_depend>ament_cmake</buildtool_depend>
 
-  <exec_depend>carpincho_base</exec_depend>
-  <exec_depend>carpincho_description</exec_depend>
+  <exec_depend>andino_base</exec_depend>
+  <exec_depend>andino_description</exec_depend>
 
   <exec_depend>controller_manager</exec_depend>
   <exec_depend>diff_drive_controller</exec_depend>

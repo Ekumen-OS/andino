@@ -43,7 +43,7 @@ from launch_ros.parameter_descriptions import ParameterValue
 
 def generate_launch_description():
 
-    controller_params_file = os.path.join(get_package_share_directory("carpincho_control"),'config','carpincho_controllers.yaml')
+    controller_params_file = os.path.join(get_package_share_directory("andino_control"),'config','andino_controllers.yaml')
 
     # We need the robot description to be passed to the controller_manager
     # So it can check the ros2_control parameters.
