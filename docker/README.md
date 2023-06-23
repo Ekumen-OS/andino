@@ -17,7 +17,7 @@ For NVIDIA GPU support, `nvidia-container-toolkit` should be installed. *Skip th
 
 #### Building image and running container
 
-- Build the docker image whose default name is `ros2_humble_carpincho`:
+- Build the docker image whose default name is `ros2_humble_andino`:
 
 ```sh
 ./docker/build.sh
@@ -29,7 +29,7 @@ You can also try to set a specific image name:
 ./docker/build.sh -i my_fancy_image_name
 ```
 
-- Run a docker container from `ros2_humble_carpincho` called `ros2_humble_carpincho_container`:
+- Run a docker container from `ros2_humble_andino` called `ros2_humble_andino_container`:
 
 ```sh
 ./docker/run.sh

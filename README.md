@@ -1,6 +1,6 @@
-# Carpincho Bot
+# Andino
 
-Carpincho is a fully open-source diff drive robot designed for educational purposes and low-cost applications.
+Andino is a fully open-source diff drive robot designed for educational purposes and low-cost applications.
 It is fully integrated with ROS2 and it is a great base platform to improve skills over the robotics field.
 With its open-source design, anyone can modify and customize the robot to suit their specific needs.
 
@@ -9,17 +9,17 @@ With its open-source design, anyone can modify and customize the robot to suit t
 
 ## :package: Package Overview
 
-- :robot: [`carpincho_hardware`](./carpincho_hardware): Contains information about the Carpincho assembly and hardware parts.
-- :ledger: [`carpincho_description`](./carpincho_description): Contains the URDF description of the robot.
-- :oncoming_automobile: [`carpincho_firmware`](./carpincho_firmware): Contains the code be run in the microcontroller for interfacing low level hardware with the SBC.
-- :computer: [`carpincho_base`](./carpincho_base): [ROS Control hardware interface](https://control.ros.org/master/doc/ros2_control/hardware_interface/doc/writing_new_hardware_interface.html) is implemented.
-- :control_knobs: [`carpincho_control`](./carpincho_control/): It launches the [`controller_manager`](https://control.ros.org/humble/doc/ros2_control/controller_manager/doc/userdoc.html) along with the [ros2 controllers](https://control.ros.org/master/doc/ros2_controllers/doc/controllers_index.html):  [diff_drive_controller](https://control.ros.org/master/doc/ros2_controllers/diff_drive_controller/doc/userdoc.html) and the [joint_state_broadcaster](https://control.ros.org/master/doc/ros2_controllers/joint_state_broadcaster/doc/userdoc.html).
-- :rocket: [`carpincho_bringup`](./carpincho_bringup): Contains mainly launch files in order to launch all related driver and nodes to be used in the real robot.
+- :robot: [`andino_hardware`](./andino_hardware): Contains information about the Andino assembly and hardware parts.
+- :ledger: [`andino_description`](./andino_description): Contains the URDF description of the robot.
+- :oncoming_automobile: [`andino_firmware`](./andino_firmware): Contains the code be run in the microcontroller for interfacing low level hardware with the SBC.
+- :computer: [`andino_base`](./andino_base): [ROS Control hardware interface](https://control.ros.org/master/doc/ros2_control/hardware_interface/doc/writing_new_hardware_interface.html) is implemented.
+- :control_knobs: [`andino_control`](./andino_control/): It launches the [`controller_manager`](https://control.ros.org/humble/doc/ros2_control/controller_manager/doc/userdoc.html) along with the [ros2 controllers](https://control.ros.org/master/doc/ros2_controllers/doc/controllers_index.html):  [diff_drive_controller](https://control.ros.org/master/doc/ros2_controllers/diff_drive_controller/doc/userdoc.html) and the [joint_state_broadcaster](https://control.ros.org/master/doc/ros2_controllers/joint_state_broadcaster/doc/userdoc.html).
+- :rocket: [`andino_bringup`](./andino_bringup): Contains mainly launch files in order to launch all related driver and nodes to be used in the real robot.
 
 
 ## Robot Assembly
 
-Visit [`carpincho_hardware`](./carpincho_hardware/) for assembly instructions.
+Visit [`andino_hardware`](./andino_hardware/) for assembly instructions.
 
 ## Installation
 
@@ -79,16 +79,16 @@ source install/setup.bash
 
 ### Robot bringup
 
-`carpincho_bringup` contains launch files that concentrates the process that brings up the robot.
+`andino_bringup` contains launch files that concentrates the process that brings up the robot.
 
-After installing and sourcing the carpincho's packages simply run.
+After installing and sourcing the andino's packages simply run.
 
 ```
-ros2 launch carpincho_bringup carpincho_robot.launch.py
+ros2 launch andino_bringup andino_robot.launch.py
 ```
 
 This launch files initializes the differential drive controller and brings ups the system to interface with ROS.
-By default sensors like the camera and the lidar are initialized. This can be disabled via arguments and manage each initialization separately. See `ros2 launch carpincho_bringup carpincho_robot.launch.py -s ` for checking out the arguments.
+By default sensors like the camera and the lidar are initialized. This can be disabled via arguments and manage each initialization separately. See `ros2 launch andino_bringup andino_robot.launch.py -s ` for checking out the arguments.
  - include_rplidar: `true` as default.
  - include_camera: `true` as default.
 
@@ -99,7 +99,7 @@ After the robot is launched, use `ROS 2 CLI` for inspecting environment. E.g: By
 
 Launch files for using the keyboard or a joystick for teleoperating the robot are provided.
 
-[`twist_mux`](http://wiki.ros.org/twist_mux) is used to at the same time accept command velocities from different topics using certain priority for each one of them (See [twist_mux config](carpincho_bringup/config/twist_mux.yaml)). Available topics are (ordering by priority):
+[`twist_mux`](http://wiki.ros.org/twist_mux) is used to at the same time accept command velocities from different topics using certain priority for each one of them (See [twist_mux config](andino_bringup/config/twist_mux.yaml)). Available topics are (ordering by priority):
   - cmd_vel
   - cmd_vel_keyboard
   - cmd_vel_joy
@@ -108,7 +108,7 @@ Launch files for using the keyboard or a joystick for teleoperating the robot ar
 
 Use:
 ```
-ros2 launch carpincho_bringup rviz.launch.py
+ros2 launch andino_bringup rviz.launch.py
 ```
 
 For starting `rviz2` visualization with a provided configuration.
@@ -119,7 +119,7 @@ For starting `rviz2` visualization with a provided configuration.
 
 Using the robot for mapping.
 
-https://github.com/ekumenlabs/carpinchobot/assets/53065142/b189b9f3-1fd9-479b-a187-650d264f4629
+https://github.com/ekumenlabs/andinobot/assets/53065142/b189b9f3-1fd9-479b-a187-650d264f4629
 
 ## Code development
 
