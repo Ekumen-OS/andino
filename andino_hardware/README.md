@@ -1,4 +1,4 @@
-# carpincho_hardware
+# andino_hardware
 
 This package aims to provide the necessary information to the correct assembly of the robot.
 
@@ -31,7 +31,7 @@ Some frequent errors:
 
 ## Microcontroller Configuration
 
-For uploading the microcontroller firmware please refer to [`carpincho_firmware`](../carpincho_firmware/README.md) package.
+For uploading the microcontroller firmware please refer to [`andino_firmware`](../andino_firmware/README.md) package.
 
 ## Single Board Computer (SBC)
 
