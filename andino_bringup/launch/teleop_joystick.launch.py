@@ -36,7 +36,7 @@ from launch_ros.actions import Node
 
 
 def generate_launch_description():
-    joystick_config = os.path.join(get_package_share_directory('carpincho_bringup'),'config','joystick.yaml')
+    joystick_config = os.path.join(get_package_share_directory('andino_bringup'),'config','joystick.yaml')
 
     joy_linux_node = Node(
             package='joy_linux',

@@ -41,6 +41,6 @@ def generate_launch_description():
             package='rviz2',
             executable='rviz2',
             arguments=[
-                '-d', os.path.join(get_package_share_directory('carpincho_bringup'), 'rviz', 'carpincho.rviz')],
+                '-d', os.path.join(get_package_share_directory('andino_bringup'), 'rviz', 'andino.rviz')],
         )
     ])
