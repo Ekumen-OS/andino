@@ -123,24 +123,21 @@ std::vector<hardware_interface::CommandInterface> DiffDriveAndino::export_comman
   return command_interfaces;
 }
 
-hardware_interface::CallbackReturn DiffDriveAndino::on_activate(
-    const rclcpp_lifecycle::State& /* previous_state */) {
+hardware_interface::CallbackReturn DiffDriveAndino::on_activate(const rclcpp_lifecycle::State& /* previous_state */) {
   RCLCPP_INFO(logger_, "On activate...");
   RCLCPP_INFO(logger_, "Finished Activation");
 
   return hardware_interface::CallbackReturn::SUCCESS;
 }
 
-hardware_interface::CallbackReturn DiffDriveAndino::on_deactivate(
-    const rclcpp_lifecycle::State& /* previous_state */) {
+hardware_interface::CallbackReturn DiffDriveAndino::on_deactivate(const rclcpp_lifecycle::State& /* previous_state */) {
   RCLCPP_INFO(logger_, "On deactivate...");
   RCLCPP_INFO(logger_, "Finished Deactivation");
 
   return hardware_interface::CallbackReturn::SUCCESS;
 }
 
-hardware_interface::return_type DiffDriveAndino::read(const rclcpp::Time& /* time */,
-                                                         const rclcpp::Duration& period) {
+hardware_interface::return_type DiffDriveAndino::read(const rclcpp::Time& /* time */, const rclcpp::Duration& period) {
   const double delta_secs = period.seconds();
 
   if (!motor_driver_.is_connected()) {
@@ -165,7 +162,7 @@ hardware_interface::return_type DiffDriveAndino::read(const rclcpp::Time& /* tim
 }
 
 hardware_interface::return_type DiffDriveAndino::write(const rclcpp::Time& /* time */,
-                                                          const rclcpp::Duration& /* period */) {
+                                                       const rclcpp::Duration& /* period */) {
   if (!motor_driver_.is_connected()) {
     RCLCPP_ERROR(logger_, "Motor driver is not connected.");
     return hardware_interface::return_type::ERROR;
