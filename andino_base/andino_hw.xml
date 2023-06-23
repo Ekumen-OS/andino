@@ -1,0 +1,9 @@
+<library path="diffdrive_andino">
+
+  <class name="andino_base/DiffDriveAndino" type="andino_base::DiffDriveAndino" base_class_type="hardware_interface::SystemInterface">
+    <description>
+      Hardware interface implementation for the Andino robot.
+    </description>
+  </class>
+
+</library>

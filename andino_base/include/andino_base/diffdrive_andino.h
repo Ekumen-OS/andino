@@ -40,18 +40,18 @@
 #include <rclcpp_lifecycle/node_interfaces/lifecycle_node_interface.hpp>
 #include <rclcpp_lifecycle/state.hpp>
 
-#include "carpincho_base/motor_driver.h"
-#include "carpincho_base/wheel.h"
+#include "andino_base/motor_driver.h"
+#include "andino_base/wheel.h"
 
-namespace carpincho_base {
+namespace andino_base {
 
-/// @brief Hardware interface for carpincho robot.
-/// This class is a hardware interface implementation for the carpincho robot. It is responsible for
+/// @brief Hardware interface for andino robot.
+/// This class is a hardware interface implementation for the andino robot. It is responsible for
 /// abstracting away the specifics of the hardware and exposing interfaces that are easy to work with.
-class DiffDriveCarpincho : public hardware_interface::SystemInterface {
+class DiffDriveAndino : public hardware_interface::SystemInterface {
  public:
-  /// @brief Default constructor for the DiffDriveCarpincho class.
-  DiffDriveCarpincho() = default;
+  /// @brief Default constructor for the DiffDriveAndino class.
+  DiffDriveAndino() = default;
 
   hardware_interface::CallbackReturn on_init(const hardware_interface::HardwareInfo& info) override;
 
@@ -77,7 +77,7 @@ class DiffDriveCarpincho : public hardware_interface::SystemInterface {
   const std::string kTimeoutParam{"timeout"};
   const std::string kEncTicksPerRevParam{"enc_ticks_per_rev"};
 
-  // Configuration parameters for the DiffDriveCarpincho class.
+  // Configuration parameters for the DiffDriveAndino class.
   struct Config {
     // Name of the left and right wheels.
     std::string left_wheel_name = "left_wheel";
@@ -99,7 +99,7 @@ class DiffDriveCarpincho : public hardware_interface::SystemInterface {
   // Right wheel of the robot.
   Wheel right_wheel_;
   // Logger.
-  rclcpp::Logger logger_{rclcpp::get_logger("DiffDriveCarpincho")};
+  rclcpp::Logger logger_{rclcpp::get_logger("DiffDriveAndino")};
 };
 
-}  // namespace carpincho_base
+}  // namespace andino_base

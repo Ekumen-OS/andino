@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.8)
-project(carpincho_base)
+project(andino_base)
 
 if(CMAKE_COMPILER_IS_GNUCXX OR CMAKE_CXX_COMPILER_ID MATCHES "Clang")
   add_compile_options(-Wall -Wextra -Wpedantic)
@@ -28,6 +28,6 @@ if(BUILD_TESTING)
 endif()
 
 # Export library so pluginlib can find it.
-pluginlib_export_plugin_description_file(hardware_interface carpincho_hw.xml)
+pluginlib_export_plugin_description_file(hardware_interface andino_hw.xml)
 
 ament_package()

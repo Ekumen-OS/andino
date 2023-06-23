@@ -1,13 +1,13 @@
-# carpincho_base
+# andino_base
 
 ## Description
 
-The hardware-software-ros interaction in the `carpincho` project is developed using [ROS2 Control](https://control.ros.org/master/index.html).
+The hardware-software-ros interaction in the `andino` project is developed using [ROS2 Control](https://control.ros.org/master/index.html).
 
 This package:
- - Implements `carpincho`'s [hardware interface](https://control.ros.org/master/doc/ros2_control/hardware_interface/doc/writing_new_hardware_interface.html).
+ - Implements `andino`'s [hardware interface](https://control.ros.org/master/doc/ros2_control/hardware_interface/doc/writing_new_hardware_interface.html).
  - Provides a communication with microcontroller:
-   - `carpincho_base::MotorDriver` class is in charge of the Serial communication for commanding the motors.
+   - `andino_base::MotorDriver` class is in charge of the Serial communication for commanding the motors.
      - An application is provided for evaluating the communication: Check `applications/motor_driver_demo.cpp`. To use this application simply execute `motor_driver_demo --help` to see the options.
    - This communication module is used by the hardware interface implementation.
 
@@ -17,7 +17,7 @@ In `ros2_control` hardware system components are libraries, dynamically loaded b
 
 For extra information about the hardware components see [Hardware Components](https://control.ros.org/master/doc/getting_started/getting_started.html#overview-hardware-components).
 
-The hardware interface accepts some parameters that are passed via the urdf description within the `ros2_control` tag (Check [`carpincho_description`](../carpincho_description/urdf/include/carpincho_control.urdf.xacro))
+The hardware interface accepts some parameters that are passed via the urdf description within the `ros2_control` tag (Check [`andino_description`](../andino_description/urdf/include/andino_control.urdf.xacro))
 
 | Params               | Description |
 | :---                 |    :----:   |

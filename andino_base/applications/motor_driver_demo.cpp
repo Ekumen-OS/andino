@@ -34,7 +34,7 @@
 
 #include <gflags/gflags.h>
 
-#include "carpincho_base/motor_driver.h"
+#include "andino_base/motor_driver.h"
 
 DEFINE_string(serial_port, "/dev/ttyUSB0", "Serial port");
 DEFINE_int32(baud_rate, 57600, "Baud rate");
@@ -42,7 +42,7 @@ DEFINE_int32(timeout_ms, 1000, "Timeout in milliseconds for receiving a response
 
 DEFINE_string(msg, "e", "Motor driver message(default read encoders)");
 
-namespace carpincho_base {
+namespace andino_base {
 namespace applications {
 
 // Returns a string with the usage message.
@@ -74,6 +74,6 @@ int Main(int argc, char* argv[]) {
 }
 
 }  // namespace applications
-}  // namespace carpincho_base
+}  // namespace andino_base
 
-int main(int argc, char* argv[]) { return carpincho_base::applications::Main(argc, argv); }
+int main(int argc, char* argv[]) { return andino_base::applications::Main(argc, argv); }
