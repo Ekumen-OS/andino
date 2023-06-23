@@ -1,4 +1,4 @@
-# carpincho_firmware
+# andino_firmware
 
 Firmware code to be run in the arduino microcontroller for proper control of the motors of the robot.
 
@@ -8,11 +8,11 @@ Check `encoder_driver.h` and `motor_driver.h` files to check the expected pins f
 
 ## Installation
 
-Verify and Upload `carpincho_firmware.ino` to your arduino board.
+Verify and Upload `andino_firmware.ino` to your arduino board.
 
 ## Description
 
-Via `serial` connection (57600 baud) it is possible to interact with the microcontroller. The interface is described in the [carpincho_firmware/commands.h](carpincho_firmware/commands.h) file. Here are the most used commands:
+Via `serial` connection (57600 baud) it is possible to interact with the microcontroller. The interface is described in the [andino_firmware/commands.h](andino_firmware/commands.h) file. Here are the most used commands:
 
 
  - Get encoder values: `'e'`
