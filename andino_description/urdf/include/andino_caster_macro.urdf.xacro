@@ -31,10 +31,10 @@
           <origin xyz="0 0 ${-wheel_props['base']['size']['z']/2.0}" rpy="0 0 0" />
           <geometry>
             <xacro:if value="${scale != '' }" >
-              <mesh filename="package://carpincho_description/meshes/${robot_name}/${wheel_props['base']['mesh']}" scale="${scale}"/>
+              <mesh filename="package://andino_description/meshes/${robot_name}/${wheel_props['base']['mesh']}" scale="${scale}"/>
             </xacro:if>
             <xacro:if value="${scale == '' }" >
-              <mesh filename="package://carpincho_description/meshes/${robot_name}/${wheel_props['base']['mesh']}" />
+              <mesh filename="package://andino_description/meshes/${robot_name}/${wheel_props['base']['mesh']}" />
             </xacro:if>
           </geometry>
           <!-- xacro:insert_block name="material_silver" / TODO use this block? -->
@@ -83,10 +83,10 @@
           <origin xyz="0 0 ${-wheel_props['hub']['size']['z']/2.0}" rpy="0 0 0" />
           <geometry>
             <xacro:if value="${scale != '' }" >
-              <mesh filename="package://carpincho_description/meshes/${robot_name}/${wheel_props['hub']['mesh']}" scale="${scale}"/>
+              <mesh filename="package://andino_description/meshes/${robot_name}/${wheel_props['hub']['mesh']}" scale="${scale}"/>
             </xacro:if>
             <xacro:if value="${scale == '' }" >
-              <mesh filename="package://carpincho_description/meshes/${robot_name}/${wheel_props['hub']['mesh']}" />
+              <mesh filename="package://andino_description/meshes/${robot_name}/${wheel_props['hub']['mesh']}" />
             </xacro:if>
           </geometry>
           <!-- xacro:insert_block name="material_silver" / TODO use this block? -->
@@ -134,10 +134,10 @@
           <origin xyz="0 0 0" rpy="0 0 0" />
           <geometry>
             <xacro:if value="${scale != '' }" >
-              <mesh filename="package://carpincho_description/meshes/${robot_name}/${wheel_props['wheel']['mesh']}" scale="${scale}"/>
+              <mesh filename="package://andino_description/meshes/${robot_name}/${wheel_props['wheel']['mesh']}" scale="${scale}"/>
             </xacro:if>
             <xacro:if value="${scale == '' }" >
-              <mesh filename="package://carpincho_description/meshes/${robot_name}/${wheel_props['wheel']['mesh']}" />
+              <mesh filename="package://andino_description/meshes/${robot_name}/${wheel_props['wheel']['mesh']}" />
             </xacro:if>
           </geometry>
           <!-- TODO use this?: xacro:insert_block name="material_dark_grey" /-->

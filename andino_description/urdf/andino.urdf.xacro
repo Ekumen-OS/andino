@@ -1,12 +1,12 @@
 <?xml version="1.0"?>
-<robot xmlns:xacro="http://www.ros.org/wiki/xacro" name="carpincho">
+<robot xmlns:xacro="http://www.ros.org/wiki/xacro" name="andino">
 
-  <xacro:property name="package_name" value="carpincho_description"/>
-  <xacro:property name="robot_name" value="carpincho"/>
+  <xacro:property name="package_name" value="andino_description"/>
+  <xacro:property name="robot_name" value="andino"/>
 
   <xacro:include filename="$(find ${package_name})/urdf/include/common_macros.urdf.xacro" />
   <xacro:include filename="$(find ${package_name})/urdf/include/common_sensors.urdf.xacro" />
-  <xacro:include filename="$(find ${package_name})/urdf/include/carpincho_caster_macro.urdf.xacro" />
+  <xacro:include filename="$(find ${package_name})/urdf/include/andino_caster_macro.urdf.xacro" />
 
   <xacro:property name="caster_wheel_yaml" value="$(find ${package_name})/config/${robot_name}/caster_wheel.yaml" />
   <xacro:property name="caster_wheel_props" value="${xacro.load_yaml(caster_wheel_yaml)}"/>
@@ -79,7 +79,7 @@
   </xacro:camera_sensor>
 
   <!-- ros2_control -->
-  <xacro:include filename="$(find ${package_name})/urdf/include/carpincho_control.urdf.xacro" />
+  <xacro:include filename="$(find ${package_name})/urdf/include/andino_control.urdf.xacro" />
 
 
 </robot>

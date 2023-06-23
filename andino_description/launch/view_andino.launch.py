@@ -49,11 +49,11 @@ def generate_launch_description():
     jsp_argument = DeclareLaunchArgument('jsp', default_value='true',
                           description='Run joint state publisher node.')
 
-    # Obtains carpincho_description's share directory path.
-    pkg_carpincho_description = get_package_share_directory('carpincho_description')
+    # Obtains andino_description's share directory path.
+    pkg_andino_description = get_package_share_directory('andino_description')
 
     # Obtain urdf from xacro files.
-    doc = xacro.process_file(os.path.join(pkg_carpincho_description, 'urdf', 'carpincho.urdf.xacro'))
+    doc = xacro.process_file(os.path.join(pkg_andino_description, 'urdf', 'andino.urdf.xacro'))
     robot_desc = doc.toprettyxml(indent='  ')
     params = {'robot_description': robot_desc,
               'publish_frequency': 30.0}
@@ -80,7 +80,7 @@ def generate_launch_description():
     rviz = Node(
         package='rviz2',
         executable='rviz2',
-        arguments=['-d', os.path.join(pkg_carpincho_description, 'rviz', 'carpincho_description.rviz')],
+        arguments=['-d', os.path.join(pkg_andino_description, 'rviz', 'andino_description.rviz')],
         condition=IfCondition(LaunchConfiguration('rviz'))
     )
 

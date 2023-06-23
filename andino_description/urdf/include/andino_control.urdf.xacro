@@ -1,10 +1,10 @@
 <?xml version="1.0"?>
 <robot xmlns:xacro="http://www.ros.org/wiki/xacro">
 
-  <!-- TODO(francocipollone): This xacro should be part of carpincho_control package instead.-->
+  <!-- TODO(francocipollone): This xacro should be part of andino_control package instead.-->
   <ros2_control name="RealRobot" type="system">
     <hardware>
-      <plugin>carpincho_base/DiffDriveCarpincho</plugin>
+      <plugin>andino_base/DiffDriveAndino</plugin>
       <!-- TODO(francocipollone): Parameters like loop_rate, device, baud_rate, etc should be loaded from a file or passed via the launch file as xacro args -->
       <param name="left_wheel_name">left_wheel_joint</param>
       <param name="right_wheel_name">right_wheel_joint</param>

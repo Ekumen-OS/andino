@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.8)
-project(carpincho_description)
+project(andino_description)
 
 find_package(ament_cmake REQUIRED)
 
