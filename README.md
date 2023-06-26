@@ -6,16 +6,14 @@ With its open-source design, anyone can modify and customize the robot to suit t
 
 <img src="docs/real_robot.jpeg" width=500>
 
-
 ## :package: Package Overview
 
 - :robot: [`andino_hardware`](./andino_hardware): Contains information about the Andino assembly and hardware parts.
 - :ledger: [`andino_description`](./andino_description): Contains the URDF description of the robot.
 - :oncoming_automobile: [`andino_firmware`](./andino_firmware): Contains the code be run in the microcontroller for interfacing low level hardware with the SBC.
 - :computer: [`andino_base`](./andino_base): [ROS Control hardware interface](https://control.ros.org/master/doc/ros2_control/hardware_interface/doc/writing_new_hardware_interface.html) is implemented.
-- :control_knobs: [`andino_control`](./andino_control/): It launches the [`controller_manager`](https://control.ros.org/humble/doc/ros2_control/controller_manager/doc/userdoc.html) along with the [ros2 controllers](https://control.ros.org/master/doc/ros2_controllers/doc/controllers_index.html):  [diff_drive_controller](https://control.ros.org/master/doc/ros2_controllers/diff_drive_controller/doc/userdoc.html) and the [joint_state_broadcaster](https://control.ros.org/master/doc/ros2_controllers/joint_state_broadcaster/doc/userdoc.html).
+- :control_knobs: [`andino_control`](./andino_control/): It launches the [`controller_manager`](https://control.ros.org/humble/doc/ros2_control/controller_manager/doc/userdoc.html) along with the [ros2 controllers](https://control.ros.org/master/doc/ros2_controllers/doc/controllers_index.html): [diff_drive_controller](https://control.ros.org/master/doc/ros2_controllers/diff_drive_controller/doc/userdoc.html) and the [joint_state_broadcaster](https://control.ros.org/master/doc/ros2_controllers/joint_state_broadcaster/doc/userdoc.html).
 - :rocket: [`andino_bringup`](./andino_bringup): Contains mainly launch files in order to launch all related driver and nodes to be used in the real robot.
-
 
 ## Robot Assembly
 
@@ -25,10 +23,10 @@ Visit [`andino_hardware`](./andino_hardware/) for assembly instructions.
 
 ### Platforms
 
- - ROS2: Humble Hawksbill
- - OS:
-    - Ubuntu 22.04 Jammy Jellyfish
-    - Ubuntu Mate 22.04 (On real robot (e.g: Raspberry Pi 4B))
+- ROS2: Humble Hawksbill
+- OS:
+  - Ubuntu 22.04 Jammy Jellyfish
+  - Ubuntu Mate 22.04 (On real robot (e.g: Raspberry Pi 4B))
 
 ### Build from Source
 
@@ -42,33 +40,40 @@ Visit [`andino_hardware`](./andino_hardware/) for assembly instructions.
 Packages here provided are colcon packages. As such a colcon workspace is expected:
 
 1. Create colcon workspace
+
 ```
 mkdir -p ~/ws/src
 ```
 
 2. Clone this repository in the `src` folder
+
 ```
 cd ~/ws/src
 ```
+
 ```
 git clone <Insert Correct Path> --> TODO
 ```
 
 3. Install dependencies via `rosdep`
+
 ```
 cd ~/ws
 ```
+
 ```
 rosdep install --from-paths src --ignore-src -i -y
 ```
 
 4. Build the packages
+
 ```
 colcon build
 ```
 
 5. Finally, source the built packages
-If using `bash`:
+   If using `bash`:
+
 ```
 source install/setup.bash
 ```
@@ -89,9 +94,9 @@ ros2 launch andino_bringup andino_robot.launch.py
 
 This launch files initializes the differential drive controller and brings ups the system to interface with ROS.
 By default sensors like the camera and the lidar are initialized. This can be disabled via arguments and manage each initialization separately. See `ros2 launch andino_bringup andino_robot.launch.py -s ` for checking out the arguments.
- - include_rplidar: `true` as default.
- - include_camera: `true` as default.
 
+- include_rplidar: `true` as default.
+- include_camera: `true` as default.
 
 After the robot is launched, use `ROS 2 CLI` for inspecting environment. E.g: By doing `ros2 topic list` the available topics can be displayed.
 
@@ -100,13 +105,15 @@ After the robot is launched, use `ROS 2 CLI` for inspecting environment. E.g: By
 Launch files for using the keyboard or a joystick for teleoperating the robot are provided.
 
 [`twist_mux`](http://wiki.ros.org/twist_mux) is used to at the same time accept command velocities from different topics using certain priority for each one of them (See [twist_mux config](andino_bringup/config/twist_mux.yaml)). Available topics are (ordering by priority):
-  - cmd_vel
-  - cmd_vel_keyboard
-  - cmd_vel_joy
+
+- cmd_vel
+- cmd_vel_keyboard
+- cmd_vel_joy
 
 ### RViz
 
 Use:
+
 ```
 ros2 launch andino_bringup rviz.launch.py
 ```
@@ -124,3 +131,7 @@ https://github.com/ekumenlabs/andinobot/assets/53065142/b189b9f3-1fd9-479b-a187-
 ## Code development
 
 Note that a [`Docker`](./docker) folder is provided for easy setting up the workspace.
+
+## Contributing
+
+Please refer to [CONTRIBUTING](CONTRIBUTING.md) doc
