@@ -3,7 +3,7 @@ Please remove the appropriate section.
 For example, if this is a new feature, remove all sections except for the "New feature" section
 
 If this is your first time opening a PR, be sure to check the contribution guide:
-https://maliput.readthedocs.io/en/latest/contributing.html
+https://github.com/Ekumen-OS/andino/blob/humble/CONTRIBUTING.md
 -->
 
 # 🦟 Bug fix
