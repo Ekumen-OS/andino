@@ -126,7 +126,7 @@ For starting `rviz2` visualization with a provided configuration.
 
 Using the robot for mapping.
 
-https://github.com/ekumenlabs/andinobot/assets/53065142/b189b9f3-1fd9-479b-a187-650d264f4629
+https://github.com/Ekumen-OS/andino/assets/53065142/133a4587-f384-4420-a843-15062ddb3e35
 
 ## Code development
 
