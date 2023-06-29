@@ -4,7 +4,9 @@ Andino is a fully open-source diff drive robot designed for educational purposes
 It is fully integrated with ROS2 and it is a great base platform to improve skills over the robotics field.
 With its open-source design, anyone can modify and customize the robot to suit their specific needs.
 
-<img src="docs/real_robot.jpeg" width=500>
+<p align="center">
+  <img src="docs/real_robot.png" width=500 />
+</p>
 
 ## :package: Package Overview
 
