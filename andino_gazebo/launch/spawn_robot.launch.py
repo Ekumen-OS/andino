@@ -41,8 +41,18 @@ from launch.actions import IncludeLaunchDescription, TimerAction
 from launch.conditions import IfCondition
 from launch.launch_description_sources import PythonLaunchDescriptionSource
 from launch.substitutions import LaunchConfiguration
+from launch.substitutions import PythonExpression
 from launch_ros.actions import Node
 from xacro import process_file
+
+
+def get_robot_description(use_ros_control:str)->str:
+    doc = process_file(os.path.join(get_package_share_directory('andino_gazebo'), 'urdf', 'andino.gazebo.xacro'),
+                             mappings={'use_gazebo_ros_control': use_ros_control})
+    robot_desc = doc.toprettyxml(indent='  ')
+    folder=get_package_share_directory('andino_description')
+    robot_desc =robot_desc.replace('package://andino_description/','file://'+str(folder)+'/')
+    return robot_desc
 
 def generate_launch_description():
     # Arguments
@@ -67,26 +77,17 @@ def generate_launch_description():
                                                     description='True to use the gazebo_ros_control plugin')
     entity_argument = DeclareLaunchArgument('entity', default_value='andino',
                                                     description='Name of the robot')
-    robot_desc_argument = DeclareLaunchArgument('robot_description_topic', default_value='/andino/robot_description',
-                                                    description='robot description topic (has to be /entity/robot_description)')
+    robot_desc_argument = DeclareLaunchArgument('robot_description_topic', default_value='/robot_description',
+                                                    description='robot description topic ') # (has to be /entity/robot_description)
     
     use_sim_time_argument = DeclareLaunchArgument('use_sim_time',
             default_value='true',
             description='Use simulation (Gazebo) clock if true')
-
-    pkg_andino_gazebo = get_package_share_directory('andino_gazebo')
-
-    # Obtain urdf from xacro files.
-    # TODO(olmerg). how to pass the parameters of the launch
-    doc = process_file(os.path.join(pkg_andino_gazebo, 'urdf', 'andino.gazebo.xacro'),
-                             mappings={'use_gazebo_ros_control': 'false'})
-    robot_desc = doc.toprettyxml(indent='  ')
     
     #TODO (olmerg) How to change the name of topic with entity parameter 
-    # TODO(olmerg) How to publish the plugin tf in the namespace
-    # remappings = [('/tf', 'tf'),
-    #               ('/tf_static', 'tf_static')]
-    remappings = []
+    remappings = [('/tf', 'tf'),
+                  ('/tf_static', 'tf_static')]
+
     rsp = Node(
             package='robot_state_publisher',
             executable='robot_state_publisher',
@@ -94,13 +95,28 @@ def generate_launch_description():
             output='screen',
             parameters=[{'use_sim_time': use_sim_time, 
                          'publish_frequency': 30.0,
-                         'robot_description': robot_desc
+                         'robot_description': get_robot_description('false'),
+                        # 'frame_prefix' : entity,
                          }],
-            namespace=entity,
-            remappings = remappings,
+            # namespace=entity,
+            # remappings = remappings,
+            condition=IfCondition(PythonExpression(["'", use_ros_control, "' == 'false'"]))
             )
 
-
+    rsp_control = Node(
+            package='robot_state_publisher',
+            executable='robot_state_publisher',
+            name='robot_state_publisher',
+            output='screen',
+            parameters=[{'use_sim_time': use_sim_time, 
+                         'publish_frequency': 30.0,
+                         'robot_description': get_robot_description('true'),
+                         'frame_prefix' : entity,
+                         }],
+            # namespace = entity,
+            # remappings = remappings,
+            condition=IfCondition(use_ros_control),
+            )
     robot_spawn = Node(
         package='gazebo_ros',
         executable='spawn_entity.py',
@@ -112,10 +128,10 @@ def generate_launch_description():
               '-R', '0.0',
               '-P', '0.0',
               '-Y', initial_pose_yaw,
-              '-robot_namespace',entity],
+              # '-package_to_model',
+              # '-robot_namespace',entity,
+            ],
     )
-
-    
 
     return LaunchDescription([
         use_sim_time_argument,
@@ -127,5 +143,6 @@ def generate_launch_description():
         gazebo_ros_control_argument,
         entity_argument,
         rsp,
+        rsp_control,
         robot_spawn,
     ])

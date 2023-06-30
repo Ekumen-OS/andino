@@ -12,7 +12,7 @@
     <visual>
       <origin xyz="0 0 0" rpy="0 0 ${pi}"/>
       <geometry>
-        <mesh filename="file://$(find andino_description)/meshes/sensors/${mesh}" />
+        <mesh filename="package://andino_description/meshes/sensors/${mesh}" />
       </geometry>
       <material name="dark_grey"/>
     </visual>
@@ -57,7 +57,7 @@
       <visual>
         <origin xyz="0 0 0" rpy="0 0 0"/>
         <geometry>
-          <mesh filename="file://${package_name}/meshes/sensors/${mesh}" />
+          <mesh filename="package://andino_description/meshes/sensors/${mesh}" />
         </geometry>
         <material name="blue"/>
       </visual>

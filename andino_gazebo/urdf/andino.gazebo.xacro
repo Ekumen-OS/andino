@@ -20,7 +20,8 @@
 
    <xacro:if value="$(arg use_gazebo_ros_control)">
     <gazebo>
-      <plugin name="gazebo_ros_control" filename="libgazebo_ros_control.so">
+      <plugin filename="libgazebo_ros2_control.so" name="gazebo_ros2_control">
+      <parameters>$(find andino_control)/config/andino_controllers.yaml</parameters>
           <!-- <robotNamespace>: The ROS namespace to be used for this instance of the plugin, defaults to robot name in URDF/SDF -->
           <!-- <controlPeriod>: The period of the controller update (in seconds), defaults to Gazebo's period -->
           <!-- <robotParam>: The location of the robot_description (URDF) on the parameter server, defaults to /robot_description' -->
@@ -35,6 +36,7 @@
       <ros>
         <!-- <namespace>/andino</namespace> -->
         <remapping>~/out:=joint_states</remapping>
+        <remapping>/tf:=tf</remapping>
       </ros>
       <update_rate>10</update_rate>
       <joint_name>right_wheel_joint</joint_name> 
@@ -46,6 +48,7 @@
       <ros>
         <!-- <namespace>/andino</namespace> -->
         <remapping>odom:=odom</remapping>
+        <remapping>/tf:=tf</remapping>
       </ros>
 
       <!-- wheels -->
@@ -110,5 +113,38 @@
 
 
   <!-- TODO: add the camera -->
-
+    <gazebo reference="base_link">
+        <sensor name='camera' type='camera'>
+          <pose>0.085 0 0.01 0 -0 0</pose>
+          <camera>
+            <horizontal_fov>1.047</horizontal_fov>
+            <image>
+              <width>640</width>
+              <height>480</height>
+            </image>
+            <clip>
+              <near>0.1</near>
+              <far>100</far>
+            </clip>
+          </camera>
+          <always_on>1</always_on>
+          <update_rate>30</update_rate>
+          <plugin name='camera_controller' filename='libgazebo_ros_camera.so'>
+            <alwaysOn>1</alwaysOn>
+            <cameraName>camera</cameraName>
+            <imageTopicName>image_raw</imageTopicName>
+            <cameraInfoTopicName>camera_info</cameraInfoTopicName>
+            <frameName>camera_link</frameName>
+            <hackBaseline>0.07</hackBaseline>
+            <distortionK1>0.0</distortionK1>
+            <distortionK2>0.0</distortionK2>
+            <distortionK3>0.0</distortionK3>
+            <distortionT1>0.0</distortionT1>
+            <distortionT2>0.0</distortionT2>
+            <!-- <ros>
+              <namespace>andino</namespace>
+            </ros> -->
+          </plugin>
+        </sensor>
+  </gazebo>
 </robot>
