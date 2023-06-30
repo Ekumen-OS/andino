@@ -33,7 +33,7 @@
 
   <!-- Second story link -->
   <xacro:base link_name="second_base_link" base_prop="${base_props}" mesh="${base_props['base']['mesh']}" >
-    <origin xyz="0 0 0.03" rpy="0 0 0" />
+    <origin xyz="0 0 0.05" rpy="0 0 0" />
   </xacro:base>
   <!-- Joint to connect second_story with base_link -->
   <joint name="second_base_joint" type="fixed">
