@@ -109,7 +109,7 @@
         </geometry>
       </collision>
     </link>
-    <joint name="caster_rotation_joint" type="fixed">
+    <joint name="caster_rotation_joint" type="continuous">
       <origin xyz="${wheel_props['hub']['dx']} ${-wheel_props['hub']['dy'] * locationright} ${wheel_props['hub']['dz']}"
               rpy="0 0 0" />
       <parent link="base_link" />
@@ -160,7 +160,7 @@
         </geometry>
       </collision>
     </link>
-    <joint name="caster_wheel_joint" type="fixed">
+    <joint name="caster_wheel_joint" type="continuous">
       <origin xyz="${wheel_props['wheel']['dx']} ${-wheel_props['wheel']['dy'] * locationright} ${wheel_props['wheel']['dz']}" 
               rpy="0 0 0" />
       <parent link="caster_rotation_link" />
