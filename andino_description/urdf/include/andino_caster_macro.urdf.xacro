@@ -30,10 +30,10 @@
           <origin xyz="0 0 ${-wheel_props['base']['size']['z']/2.0}" rpy="0 0 0" />
           <geometry>
             <xacro:if value="${scale != '' }" >
-              <mesh filename="file://$(find andino_description)/meshes/${robot_name}/${wheel_props['base']['mesh']}" scale="${scale}"/>
+              <mesh filename="package://andino_description/meshes/${robot_name}/${wheel_props['base']['mesh']}" scale="${scale}"/>
             </xacro:if>
             <xacro:if value="${scale == '' }" >
-              <mesh filename="file://$(find andino_description)/meshes/${robot_name}/${wheel_props['base']['mesh']}" />
+              <mesh filename="package://andino_description/meshes/${robot_name}/${wheel_props['base']['mesh']}" />
             </xacro:if>
           </geometry>
           <material name="silver"/>
@@ -78,10 +78,10 @@
           <origin xyz="0 0 ${-wheel_props['hub']['size']['z']/2.0}" rpy="0 0 0" />
           <geometry>
             <xacro:if value="${scale != '' }" >
-              <mesh filename="file://$(find andino_description)/meshes/${robot_name}/${wheel_props['hub']['mesh']}" scale="${scale}"/>
+              <mesh filename="package://andino_description/meshes/${robot_name}/${wheel_props['hub']['mesh']}" scale="${scale}"/>
             </xacro:if>
             <xacro:if value="${scale == '' }" >
-              <mesh filename="file://$(find andino_description)/meshes/${robot_name}/${wheel_props['hub']['mesh']}" />
+              <mesh filename="package://andino_description/meshes/${robot_name}/${wheel_props['hub']['mesh']}" />
             </xacro:if>
           </geometry>
           <material name="silver"/>
@@ -124,10 +124,10 @@
           <origin xyz="0 0 0" rpy="0 0 0" />
           <geometry>
             <xacro:if value="${scale != '' }" >
-              <mesh filename="file://$(find andino_description)/meshes/${robot_name}/${wheel_props['wheel']['mesh']}" scale="${scale}"/>
+              <mesh filename="package://andino_description/meshes/${robot_name}/${wheel_props['wheel']['mesh']}" scale="${scale}"/>
             </xacro:if>
             <xacro:if value="${scale == '' }" >
-              <mesh filename="file://$(find andino_description)/meshes/${robot_name}/${wheel_props['wheel']['mesh']}" />
+              <mesh filename="package://andino_description/meshes/${robot_name}/${wheel_props['wheel']['mesh']}" />
             </xacro:if>
           </geometry>
           <material name="black"/>
