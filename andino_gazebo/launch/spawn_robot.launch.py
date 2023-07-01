@@ -1,5 +1,3 @@
-# Copyright 2023 olmerg
-#
 # BSD 3-Clause License
 #
 # Copyright (c) 2023, Ekumen Inc.
@@ -30,7 +28,7 @@
 # OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 # OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-"""Launch Gazebo with a world that has Andino, as well as the follow node."""
+"""Spawn an Andino robot in Gazebo, also launch the robot_state_publisher."""
 
 import os
 
@@ -73,7 +71,7 @@ def generate_launch_description():
                           description='Initial z pose of andino in the simulation')
     yaw_argument = DeclareLaunchArgument('initial_pose_yaw', default_value='0.0',
                           description='Initial yaw pose of andino in the simulation')
-    gazebo_ros_control_argument = DeclareLaunchArgument('use_gazebo_ros_control', default_value='false',
+    gazebo_ros_control_argument = DeclareLaunchArgument('use_gazebo_ros_control', default_value='true',
                                                     description='True to use the gazebo_ros_control plugin')
     entity_argument = DeclareLaunchArgument('entity', default_value='andino',
                                                     description='Name of the robot')
@@ -111,7 +109,7 @@ def generate_launch_description():
             parameters=[{'use_sim_time': use_sim_time, 
                          'publish_frequency': 30.0,
                          'robot_description': get_robot_description('true'),
-                         'frame_prefix' : entity,
+                         # 'frame_prefix' : entity,
                          }],
             # namespace = entity,
             # remappings = remappings,

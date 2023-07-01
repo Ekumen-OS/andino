@@ -79,7 +79,7 @@
   </xacro:camera_sensor>
 
   <!-- ros2_control -->
-  <xacro:include filename="$(find ${package_name})/urdf/include/andino_control.urdf.xacro" />
+  <!-- <xacro:include filename="$(find ${package_name})/urdf/include/andino_control.urdf.xacro" /> -->
 
 
 </robot>
