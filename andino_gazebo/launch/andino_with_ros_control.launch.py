@@ -35,30 +35,69 @@ import os
 from ament_index_python.packages import get_package_share_directory
 from launch import LaunchDescription
 from launch.actions import DeclareLaunchArgument
-from launch.actions import IncludeLaunchDescription, TimerAction
+from launch.actions import IncludeLaunchDescription, TimerAction, RegisterEventHandler
 from launch.conditions import IfCondition
 from launch.launch_description_sources import PythonLaunchDescriptionSource
 from launch.substitutions import LaunchConfiguration
 from launch_ros.actions import Node
+from launch.actions import ExecuteProcess
+from launch.event_handlers import OnProcessExit
+from launch.substitutions import Command
+from launch_ros.parameter_descriptions import ParameterValue
 from xacro import process_file
+
+def get_robot_description(use_ros_control:str)->str:
+    doc = process_file(os.path.join(get_package_share_directory('andino_gazebo'), 'urdf', 'andino.gazebo.xacro'),
+                             mappings={'use_gazebo_ros_control': use_ros_control})
+    robot_desc = doc.toprettyxml(indent='  ')
+    folder=get_package_share_directory('andino_description')
+    robot_desc =robot_desc.replace('package://andino_description/','file://'+str(folder)+'/')
+    return robot_desc
 
 def generate_launch_description():
     # Arguments
     use_sim_time = LaunchConfiguration('use_sim_time')
-
     use_sim_time_argument = DeclareLaunchArgument('use_sim_time',
             default_value='true',
             description='Use simulation (Gazebo) clock if true')
     pkg_gazebo_ros = get_package_share_directory('gazebo_ros')
     pkg_andino_gazebo = get_package_share_directory('andino_gazebo')
+    pkg_andino_control = get_package_share_directory('andino_control')
     
     # Include andino
     include_andino = IncludeLaunchDescription(
         PythonLaunchDescriptionSource(
             os.path.join(pkg_andino_gazebo, 'launch', 'spawn_robot.launch.py'),
         ),
-        launch_arguments={'use_gazebo_ros_control':'false'}.items()
+        launch_arguments={'use_gazebo_ros_control':'true'}.items()
     )
+
+    robot_description = get_robot_description('true')
+    controller_params_file = os.path.join(pkg_andino_control,'config','andino_controllers.yaml')
+
+    control_node = Node(
+        package="controller_manager",
+        executable="ros2_control_node",
+        parameters=[{'robot_description':robot_description},
+                    controller_params_file],
+
+        output="both",
+    )
+
+    # Include ros control
+
+    load_joint_state_controller = ExecuteProcess(
+        cmd=['ros2', 'control', 'load_controller', '--set-state', 'active',
+             'joint_state_broadcaster'],
+        output='screen'
+    )
+
+    load_diff_drive_base_controller = ExecuteProcess(
+        cmd=['ros2', 'control', 'load_controller', '--set-state', 'active',
+             'diff_controller'],
+        output='screen'
+    )
+
     # Gazebo launch
     gazebo = IncludeLaunchDescription(
         PythonLaunchDescriptionSource(
@@ -75,8 +114,14 @@ def generate_launch_description():
         condition=IfCondition(LaunchConfiguration('rviz'))
     )
 
-    andino_visualization_timer = TimerAction(period=5.0, actions=[rviz])
+    andino_visualization_timer = TimerAction(period=5.0, actions=[control_node,load_joint_state_controller])
     return LaunchDescription([
+        RegisterEventHandler(
+            event_handler=OnProcessExit(
+                target_action=load_joint_state_controller,
+                on_exit=[load_diff_drive_base_controller],
+            )
+        ),
         use_sim_time_argument,
         DeclareLaunchArgument(
           'world',

@@ -30,12 +30,6 @@ RUN echo "source /opt/ros/humble/setup.bash" >> /home/$USER/.bashrc
 # Adds colcon autocomplete
 RUN echo "source /usr/share/colcon_argcomplete/hook/colcon-argcomplete.bash" >> /home/$USER/.bashrc
 
-# install gazebo11 classic
-RUN apt-get update \
-  && apt-get install -y ros-humble-gazebo-ros-pkgs\
-  ros-humble-gazebo-ros2-control \
-  && rm -rf /var/lib/apt/lists/*
-
 # Updates
 RUN sudo apt upgrade -y && sudo apt update && rosdep update
 
