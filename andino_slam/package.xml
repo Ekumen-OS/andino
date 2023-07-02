@@ -1,0 +1,19 @@
+<?xml version="1.0"?>
+<?xml-model href="http://download.ros.org/schema/package_format3.xsd" schematypens="http://www.w3.org/2001/XMLSchema"?>
+<package format="3">
+  <name>andino_slam</name>
+  <version>0.0.1</version>
+  <description>The andino_slam package</description>
+
+  <author email="franco.c@ekumenlabs.com">Franco Cipollone</author>
+  <maintainer email="franco.c@ekumenlabs.com">Franco Cipollone</maintainer>
+  <license file="LICENSE">BSD Clause 3</license>
+
+  <buildtool_depend>ament_cmake</buildtool_depend>
+
+  <exec_depend>slam_toolbox</exec_depend>
+
+  <export>
+    <build_type>ament_cmake</build_type>
+  </export>
+</package>
