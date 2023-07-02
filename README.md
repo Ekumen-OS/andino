@@ -8,7 +8,9 @@ With its open-source design, anyone can modify and customize the robot to suit t
   <img src="docs/real_robot.png" width=500 />
 </p>
 
-## :package: Package Overview
+_Note: For videos go to [Media](#media) section._
+
+## :books: Package Summary
 
 - :robot: [`andino_hardware`](./andino_hardware): Contains information about the Andino assembly and hardware parts.
 - :ledger: [`andino_description`](./andino_description): Contains the URDF description of the robot.
@@ -83,7 +85,7 @@ source install/setup.bash
 
 `Note`: Whether your are installing the packages in your dev machine or in your robot the procedure is the same.
 
-## Usage
+## :rocket: Usage
 
 ### Robot bringup
 
@@ -125,16 +127,37 @@ For starting `rviz2` visualization with a provided configuration.
 
 ## Media
 
+### RVIZ Visualization
+
+https://github.com/Ekumen-OS/andino/assets/53065142/c9878894-1785-4b81-b1ce-80e07a27effd
+
 ### Slam
 
 Using the robot for mapping.
 
+https://github.com/Ekumen-OS/andino/assets/53065142/d73f6053-b422-4334-8f62-029a38799e66
+
 https://github.com/Ekumen-OS/andino/assets/53065142/133a4587-f384-4420-a843-15062ddb3e35
+
+
+## :robot: Share your Andino!
+
+Have you built your `Andino` already? Please go to [`Show & Tell`](https://github.com/Ekumen-OS/andino/discussions/categories/show-and-tell) Discussion and share with us your own version of it.
+
+
+## :star2: Inspirational sources
+
+This section is dedicated to recognizing and expressing gratitude to the open-source repositories that have served as a source of inspiration for this project. We highly recommend exploring these repositories for further inspiration and learning.
+
+ * [articubot_one](https://github.com/joshnewans/articubot_one)
+ * [diffbot](https://github.com/ros-mobile-robots/diffbot)
+ * [noah_hardware](https://github.com/GonzaCerv/noah-hardware)
+ * [linorobot](https://github.com/linorobot/linorobot2)
+
+## :raised_hands: Contributing
+
+Issues or PRs are always welcome! Please refer to [CONTRIBUTING](CONTRIBUTING.md) doc. 
 
 ## Code development
 
 Note that a [`Docker`](./docker) folder is provided for easy setting up the workspace.
-
-## Contributing
-
-Please refer to [CONTRIBUTING](CONTRIBUTING.md) doc
