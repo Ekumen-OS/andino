@@ -58,9 +58,6 @@
                               o_rpy="${pi/2.0} 0.0 0.0" >
       </xacro:cylinder_inertia>
     </link>
-    <gazebo reference="${prefix}_wheel">
-      <material>Gazebo/Grey</material>
-    </gazebo>
 
 
     <joint name="${prefix}_wheel_joint" type="continuous">

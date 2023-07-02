@@ -1,10 +1,13 @@
+<!--
+  Xacro macros were inspired on https://github.com/ros-mobile-robots/mobile_robot_description/wiki/ 
+-->
+
 <?xml version="1.0"?>
 <robot xmlns:xacro="http://www.ros.org/wiki/xacro">
 
 <!-- ===================== Caster xacro =========================================
 
-  Xacro to create caster links and the respective joints. For more detail information and usage, see:
-    https://github.com/pxalcantara/mobile_robot_description/wiki/Motor-xacro
+  Xacro to create caster links and the respective joints.
 
   params:
   - reflect [1/-1]: value to set the side of the caster;
@@ -15,10 +18,8 @@
 -->
 
 <!-- Caster wheel link & joint macro -->
-  <!-- locationprefix locationright wheel_base_dx TODO remove -->
   <xacro:macro name="caster_wheel"
                 params="reflect wheel_props locationright:=${0} scale:=''">
-    <!-- caster base (fixed) -->
     <link name="caster_base_link">
       <xacro:box_inertia  m="${wheel_props['base']['mass']}"
                           x="${wheel_props['base']['size']['x']}"
@@ -37,7 +38,6 @@
               <mesh filename="package://andino_description/meshes/${robot_name}/${wheel_props['base']['mesh']}" />
             </xacro:if>
           </geometry>
-          <!-- xacro:insert_block name="material_silver" / TODO use this block? -->
           <material name="silver"/>
         </visual>
       </xacro:if>
@@ -65,9 +65,6 @@
       <axis xyz="0 0 1" />
       <dynamics damping="0.01" friction="0.0"/>
     </joint>
-    <gazebo reference="caster_base_link">
-      <material>Gazebo/Grey</material>
-    </gazebo>
 
 
     <!-- caster hub -->
@@ -89,7 +86,6 @@
               <mesh filename="package://andino_description/meshes/${robot_name}/${wheel_props['hub']['mesh']}" />
             </xacro:if>
           </geometry>
-          <!-- xacro:insert_block name="material_silver" / TODO use this block? -->
           <material name="silver"/>
         </visual>
       </xacro:if>
@@ -117,9 +113,6 @@
       <axis xyz="0 0 1" />
       <dynamics damping="0.01" friction="0.0"/>
     </joint>
-    <gazebo reference="caster_rotation_link">
-      <material>Gazebo/Grey</material>
-    </gazebo>
 
 
     <!-- caster wheel -->
@@ -127,7 +120,6 @@
       <xacro:cylinder_inertia m="${wheel_props['wheel']['mass']}"
                               r="${wheel_props['wheel']['radius']}"
                               l="${wheel_props['wheel']['length']}">
-        <!-- TODO unused block error?: origin xyz="0 0 0" rpy="${pi/2} 0 0" /-->
       </xacro:cylinder_inertia>
       <xacro:if value="${wheel_props['wheel']['mesh'] != '' }" >
         <visual>
@@ -140,7 +132,6 @@
               <mesh filename="package://andino_description/meshes/${robot_name}/${wheel_props['wheel']['mesh']}" />
             </xacro:if>
           </geometry>
-          <!-- TODO use this?: xacro:insert_block name="material_dark_grey" /-->
           <material name="black"/>
         </visual>
       </xacro:if>
@@ -167,9 +158,6 @@
       <child link="caster_wheel_link" />
       <axis xyz="0 1 0" />
     </joint>
-    <gazebo reference="caster_wheel_link">
-      <material>Gazebo/DarkGrey</material>
-    </gazebo>
   </xacro:macro>
 
 </robot>
