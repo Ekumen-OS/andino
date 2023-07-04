@@ -71,7 +71,7 @@ def generate_launch_description():
                           description='Initial z pose of andino in the simulation')
     yaw_argument = DeclareLaunchArgument('initial_pose_yaw', default_value='0.0',
                           description='Initial yaw pose of andino in the simulation')
-    gazebo_ros_control_argument = DeclareLaunchArgument('use_gazebo_ros_control', default_value='true',
+    gazebo_ros_control_argument = DeclareLaunchArgument('use_gazebo_ros_control', default_value='false',
                                                     description='True to use the gazebo_ros_control plugin')
     entity_argument = DeclareLaunchArgument('entity', default_value='andino',
                                                     description='Name of the robot')
