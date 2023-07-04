@@ -1,7 +1,7 @@
 
+# Gazebo Classic simulation for the Andino robot 
 
-
-Gazebo Classic simulation of Andino robot.  to build this package
+## Build
 
 ```
 rosdep install --from-paths src --ignore-src -i -y
@@ -13,6 +13,7 @@ colcon build --symlink-install
 This package has the next option to be executed
 
 ## Andino simulation with Gazebo diff drive plugin
+
 
 ```
 ros2 launch andino_gazebo andino_one_robot.launch.py initial_pose_x:=3.0
@@ -59,6 +60,3 @@ It is in the xacro file but has not been tested, it is necessary to made another
 ros2 launch andino_gazebo andino_with_ros_control.launch.py
 ```
 
-
-**ERROR**
-This launch has an issue because the controller manager do not found the gazebo interface.
