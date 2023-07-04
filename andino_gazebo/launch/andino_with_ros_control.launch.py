@@ -46,13 +46,7 @@ from launch.substitutions import Command
 from launch_ros.parameter_descriptions import ParameterValue
 from xacro import process_file
 
-def get_robot_description(use_ros_control:str)->str:
-    doc = process_file(os.path.join(get_package_share_directory('andino_gazebo'), 'urdf', 'andino.gazebo.xacro'),
-                             mappings={'use_gazebo_ros_control': use_ros_control})
-    robot_desc = doc.toprettyxml(indent='  ')
-    folder=get_package_share_directory('andino_description')
-    robot_desc =robot_desc.replace('package://andino_description/','file://'+str(folder)+'/')
-    return robot_desc
+
 
 def generate_launch_description():
     # Arguments
@@ -62,7 +56,6 @@ def generate_launch_description():
             description='Use simulation (Gazebo) clock if true')
     pkg_gazebo_ros = get_package_share_directory('gazebo_ros')
     pkg_andino_gazebo = get_package_share_directory('andino_gazebo')
-    pkg_andino_control = get_package_share_directory('andino_control')
     
     # Include andino
     include_andino = IncludeLaunchDescription(
@@ -70,18 +63,6 @@ def generate_launch_description():
             os.path.join(pkg_andino_gazebo, 'launch', 'spawn_robot.launch.py'),
         ),
         launch_arguments={'use_gazebo_ros_control':'true'}.items()
-    )
-
-    robot_description = get_robot_description('true')
-    controller_params_file = os.path.join(pkg_andino_control,'config','andino_controllers.yaml')
-
-    control_node = Node(
-        package="controller_manager",
-        executable="ros2_control_node",
-        parameters=[{'robot_description':robot_description},
-                    controller_params_file],
-
-        output="both",
     )
 
     # Include ros control
@@ -114,7 +95,7 @@ def generate_launch_description():
         condition=IfCondition(LaunchConfiguration('rviz'))
     )
 
-    andino_visualization_timer = TimerAction(period=5.0, actions=[control_node,load_joint_state_controller])
+    andino_visualization_timer = TimerAction(period=8.0, actions=[load_joint_state_controller, rviz])
     return LaunchDescription([
         RegisterEventHandler(
             event_handler=OnProcessExit(
