@@ -1,10 +1,8 @@
-<!--
-  Xacro macros were inspired on https://github.com/ros-mobile-robots/mobile_robot_description/wiki/ 
--->
-
 <?xml version="1.0"?>
 <robot xmlns:xacro="http://www.ros.org/wiki/xacro">
-
+<!--
+  Xacro macros were inspired on https://github.com/ros-mobile-robots/mobile_robot_description/wiki/
+-->
 <!-- ===================== Caster xacro =========================================
 
   Xacro to create caster links and the respective joints.
