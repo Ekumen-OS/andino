@@ -57,87 +57,87 @@ def get_robot_description(use_ros_control: str) -> str:
     """
     doc = process_file(
         os.path.join(
-            get_package_share_directory("andino_gazebo"), "urdf", "andino.gazebo.xacro"
+            get_package_share_directory('andino_gazebo'), 'urdf', 'andino.gazebo.xacro'
         ),
-        mappings={"use_gazebo_ros_control": use_ros_control},
+        mappings={'use_gazebo_ros_control': use_ros_control},
     )
-    robot_desc = doc.toprettyxml(indent="  ")
-    folder = get_package_share_directory("andino_description")
+    robot_desc = doc.toprettyxml(indent='  ')
+    folder = get_package_share_directory('andino_description')
     robot_desc = robot_desc.replace(
-        "package://andino_description/", f"file://{folder}/"
+        'package://andino_description/', f'file://{folder}/'
     )
     return robot_desc
 
 
 def generate_launch_description():
     # Arguments
-    use_sim_time = LaunchConfiguration("use_sim_time")
-    initial_pose_x = LaunchConfiguration("initial_pose_x")
-    initial_pose_y = LaunchConfiguration("initial_pose_y")
-    initial_pose_z = LaunchConfiguration("initial_pose_z")
-    initial_pose_yaw = LaunchConfiguration("initial_pose_yaw")
-    use_ros_control = LaunchConfiguration("use_gazebo_ros_control")
-    entity = LaunchConfiguration("entity")
-    robot_description_topic = LaunchConfiguration("robot_description_topic")
-    rsp_frequency = LaunchConfiguration("rsp_frequency")
+    use_sim_time = LaunchConfiguration('use_sim_time')
+    initial_pose_x = LaunchConfiguration('initial_pose_x')
+    initial_pose_y = LaunchConfiguration('initial_pose_y')
+    initial_pose_z = LaunchConfiguration('initial_pose_z')
+    initial_pose_yaw = LaunchConfiguration('initial_pose_yaw')
+    use_ros_control = LaunchConfiguration('use_gazebo_ros_control')
+    entity = LaunchConfiguration('entity')
+    robot_description_topic = LaunchConfiguration('robot_description_topic')
+    rsp_frequency = LaunchConfiguration('rsp_frequency')
 
     x_argument = DeclareLaunchArgument(
-        "initial_pose_x",
-        default_value="0.0",
-        description="Initial x pose of andino in the simulation",
+        'initial_pose_x',
+        default_value='0.0',
+        description='Initial x pose of andino in the simulation',
     )
     y_argument = DeclareLaunchArgument(
-        "initial_pose_y",
-        default_value="0.0",
-        description="Initial y pose of andino in the simulation",
+        'initial_pose_y',
+        default_value='0.0',
+        description='Initial y pose of andino in the simulation',
     )
     z_argument = DeclareLaunchArgument(
-        "initial_pose_z",
-        default_value="0.0",
-        description="Initial z pose of andino in the simulation",
+        'initial_pose_z',
+        default_value='0.0',
+        description='Initial z pose of andino in the simulation',
     )
     yaw_argument = DeclareLaunchArgument(
-        "initial_pose_yaw",
-        default_value="0.0",
-        description="Initial yaw pose of andino in the simulation",
+        'initial_pose_yaw',
+        default_value='0.0',
+        description='Initial yaw pose of andino in the simulation',
     )
     gazebo_ros_control_argument = DeclareLaunchArgument(
-        "use_gazebo_ros_control",
-        default_value="false",
-        description="True to use the gazebo_ros_control plugin",
+        'use_gazebo_ros_control',
+        default_value='false',
+        description='True to use the gazebo_ros_control plugin',
     )
     entity_argument = DeclareLaunchArgument(
-        "entity", default_value="andino", description="Name of the robot"
+        'entity', default_value='andino', description='Name of the robot'
     )
     robot_desc_argument = DeclareLaunchArgument(
-        "robot_description_topic",
-        default_value="/robot_description",
-        description="robot description topic ",
+        'robot_description_topic',
+        default_value='/robot_description',
+        description='robot description topic ',
     )
     rsp_frequency_argument = DeclareLaunchArgument(
-        "rsp_frequency",
-        default_value="30.0",
-        description="robot state publisher frequency",
+        'rsp_frequency',
+        default_value='30.0',
+        description='robot state publisher frequency',
     )
     use_sim_time_argument = DeclareLaunchArgument(
-        "use_sim_time",
-        default_value="true",
-        description="Use simulation (Gazebo) clock if true",
+        'use_sim_time',
+        default_value='true',
+        description='Use simulation (Gazebo) clock if true',
     )
 
     # TODO (olmerg) Multirobot. How to change the name of topic with entity parameter
-    remappings = [("/tf", "tf"), ("/tf_static", "tf_static")]
+    remappings = [('/tf', 'tf'), ('/tf_static', 'tf_static')]
 
     rsp = Node(
-        package="robot_state_publisher",
-        executable="robot_state_publisher",
-        name="robot_state_publisher",
-        output="screen",
+        package='robot_state_publisher',
+        executable='robot_state_publisher',
+        name='robot_state_publisher',
+        output='screen',
         parameters=[
             {
-                "use_sim_time": use_sim_time,
-                "publish_frequency": rsp_frequency,
-                "robot_description": get_robot_description("false"),
+                'use_sim_time': use_sim_time,
+                'publish_frequency': rsp_frequency,
+                'robot_description': get_robot_description('false'),
             }
         ],
         remappings=remappings,
@@ -145,39 +145,39 @@ def generate_launch_description():
     )
 
     rsp_control = Node(
-        package="robot_state_publisher",
-        executable="robot_state_publisher",
-        name="robot_state_publisher",
-        output="screen",
+        package='robot_state_publisher',
+        executable='robot_state_publisher',
+        name='robot_state_publisher',
+        output='screen',
         parameters=[
             {
-                "use_sim_time": use_sim_time,
-                "publish_frequency": rsp_frequency,
-                "robot_description": get_robot_description("true"),
+                'use_sim_time': use_sim_time,
+                'publish_frequency': rsp_frequency,
+                'robot_description': get_robot_description('true'),
             }
         ],
         remappings=remappings,
         condition=IfCondition(use_ros_control),
     )
     robot_spawn = Node(
-        package="gazebo_ros",
-        executable="spawn_entity.py",
+        package='gazebo_ros',
+        executable='spawn_entity.py',
         arguments=[
-            "-topic",
+            '-topic',
             robot_description_topic,
-            "-entity",
+            '-entity',
             entity,
-            "-x",
+            '-x',
             initial_pose_x,
-            "-y",
+            '-y',
             initial_pose_y,
-            "-z",
+            '-z',
             initial_pose_z,
-            "-R",
-            "0.0",
-            "-P",
-            "0.0",
-            "-Y",
+            '-R',
+            '0.0',
+            '-P',
+            '0.0',
+            '-Y',
             initial_pose_yaw,
         ],
     )

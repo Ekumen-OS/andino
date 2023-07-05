@@ -44,44 +44,44 @@ from launch_ros.actions import Node
 
 def generate_launch_description():
     # Arguments
-    use_sim_time = LaunchConfiguration("use_sim_time")
-    use_rviz = LaunchConfiguration("rviz")
+    use_sim_time = LaunchConfiguration('use_sim_time')
+    use_rviz = LaunchConfiguration('rviz')
 
-    pkg_gazebo_ros = get_package_share_directory("gazebo_ros")
-    pkg_andino_gazebo = get_package_share_directory("andino_gazebo")
+    pkg_gazebo_ros = get_package_share_directory('gazebo_ros')
+    pkg_andino_gazebo = get_package_share_directory('andino_gazebo')
 
     use_sim_time_argument = DeclareLaunchArgument(
-        "use_sim_time",
-        default_value="true",
-        description="Use simulation (Gazebo) clock if true",
+        'use_sim_time',
+        default_value='true',
+        description='Use simulation (Gazebo) clock if true',
     )
     world_argument = DeclareLaunchArgument(
-        "world", default_value=["empty_world.world"], description="SDF world file"
+        'world', default_value=['empty_world.world'], description='SDF world file'
     )
     use_rviz_argument = DeclareLaunchArgument(
-        "rviz", default_value="true", description="Open RViz."
+        'rviz', default_value='true', description='Open RViz.'
     )
 
     # Include andino
     include_andino = IncludeLaunchDescription(
         PythonLaunchDescriptionSource(
-            os.path.join(pkg_andino_gazebo, "launch", "spawn_robot.launch.py")
+            os.path.join(pkg_andino_gazebo, 'launch', 'spawn_robot.launch.py')
         ),
-        launch_arguments={"use_gazebo_ros_control": "false"}.items(),
+        launch_arguments={'use_gazebo_ros_control': 'false'}.items(),
     )
     # Gazebo launch
     gazebo = IncludeLaunchDescription(
         PythonLaunchDescriptionSource(
-            os.path.join(pkg_gazebo_ros, "launch", "gazebo.launch.py")
+            os.path.join(pkg_gazebo_ros, 'launch', 'gazebo.launch.py')
         )
     )
 
     # RViz
     rviz = Node(
-        package="rviz2",
-        executable="rviz2",
-        parameters=[{"use_sim_time": use_sim_time}],
-        arguments=["-d", os.path.join(pkg_andino_gazebo, "rviz", "andino_gazebo.rviz")],
+        package='rviz2',
+        executable='rviz2',
+        parameters=[{'use_sim_time': use_sim_time}],
+        arguments=['-d', os.path.join(pkg_andino_gazebo, 'rviz', 'andino_gazebo.rviz')],
     )
 
     andino_visualization_timer = TimerAction(
