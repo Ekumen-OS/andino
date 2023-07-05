@@ -7,6 +7,7 @@
     Launch Gazebo simulation with Andino
   </description>
   <maintainer email="olmerg@ekumenlabs.com">Olmer Garcia</maintainer>
+  <maintainer email="franco.c@ekumenlabs.com">Franco Cipollone</maintainer>
   <license file="LICENSE">BSD Clause 3</license>
 
   <buildtool_depend>ament_cmake</buildtool_depend>
