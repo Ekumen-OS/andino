@@ -75,4 +75,6 @@ The parameters of this launch let to put the robot in any place of the simulatio
 
 - `entity`: Name of the robot. (default: 'andino')
 
+- `rsp_frequency`: robot state publisher frequency. (default: '30.0')
+
 Spawn multiple andino robots has some issues, so no namespace is created.

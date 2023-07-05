@@ -79,6 +79,7 @@ def generate_launch_description():
     use_ros_control = LaunchConfiguration("use_gazebo_ros_control")
     entity = LaunchConfiguration("entity")
     robot_description_topic = LaunchConfiguration("robot_description_topic")
+    rsp_frequency = LaunchConfiguration("rsp_frequency")
 
     x_argument = DeclareLaunchArgument(
         "initial_pose_x",
@@ -113,7 +114,11 @@ def generate_launch_description():
         default_value="/robot_description",
         description="robot description topic ",
     )
-
+    rsp_frequency_argument = DeclareLaunchArgument(
+        "rsp_frequency",
+        default_value="30.0",
+        description="robot state publisher frequency",
+    )
     use_sim_time_argument = DeclareLaunchArgument(
         "use_sim_time",
         default_value="true",
@@ -131,7 +136,7 @@ def generate_launch_description():
         parameters=[
             {
                 "use_sim_time": use_sim_time,
-                "publish_frequency": 30.0,
+                "publish_frequency": rsp_frequency,
                 "robot_description": get_robot_description("false"),
             }
         ],
@@ -147,7 +152,7 @@ def generate_launch_description():
         parameters=[
             {
                 "use_sim_time": use_sim_time,
-                "publish_frequency": 30.0,
+                "publish_frequency": rsp_frequency,
                 "robot_description": get_robot_description("true"),
             }
         ],
@@ -184,6 +189,7 @@ def generate_launch_description():
             y_argument,
             z_argument,
             robot_desc_argument,
+            rsp_frequency_argument,
             yaw_argument,
             gazebo_ros_control_argument,
             entity_argument,

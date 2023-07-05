@@ -56,12 +56,7 @@ def generate_launch_description():
         description="Use simulation (Gazebo) clock if true",
     )
     world_argument = DeclareLaunchArgument(
-        "world",
-        default_value=[
-            os.path.join(pkg_andino_gazebo, "worlds", "empty_world.world"),
-            "",
-        ],
-        description="SDF world file",
+        "world", default_value=["empty_world.world"], description="SDF world file"
     )
     use_rviz_argument = DeclareLaunchArgument(
         "rviz", default_value="true", description="Open RViz."
@@ -87,10 +82,11 @@ def generate_launch_description():
         executable="rviz2",
         parameters=[{"use_sim_time": use_sim_time}],
         arguments=["-d", os.path.join(pkg_andino_gazebo, "rviz", "andino_gazebo.rviz")],
-        condition=IfCondition(use_rviz),
     )
 
-    andino_visualization_timer = TimerAction(period=5.0, actions=[rviz])
+    andino_visualization_timer = TimerAction(
+        period=5.0, actions=[rviz], condition=IfCondition(use_rviz)
+    )
     return LaunchDescription(
         [
             use_sim_time_argument,
