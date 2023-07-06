@@ -15,8 +15,8 @@
   </xacro:macro>
 
   <xacro:friction reference="front_right_wheel" mu="10"/>
-  <xacro:friction reference="front_left_wheel" mu="10"/> 
-  <xacro:friction reference="rear_caster_wheel_link" mu="0.000"/>
+  <xacro:friction reference="front_left_wheel" mu="10"/>
+  <xacro:friction reference="caster_wheel_link" mu="0.0"/>
 
    <xacro:if value="$(arg use_gazebo_ros_control)">
     <ros2_control name="diff_controller" type="system">
@@ -55,9 +55,9 @@
         <remapping>/tf:=tf</remapping>
       </ros>
       <update_rate>10</update_rate>
-      <joint_name>right_wheel_joint</joint_name> 
-      <joint_name>left_wheel_joint</joint_name> 
-      
+      <joint_name>right_wheel_joint</joint_name>
+      <joint_name>left_wheel_joint</joint_name>
+
     </plugin>
 
     <plugin name='andino_diff_drive' filename='libgazebo_ros_diff_drive.so'>
@@ -71,8 +71,8 @@
       <right_joint>left_wheel_joint</right_joint>
 
       <!-- kinematics -->
-      <wheel_separation>0.137</wheel_separation> 
-      <wheel_diameter>0.035</wheel_diameter> 
+      <wheel_separation>0.137</wheel_separation>
+      <wheel_diameter>0.035</wheel_diameter>
 
       <!-- limits -->
       <max_wheel_torque>20</max_wheel_torque>
