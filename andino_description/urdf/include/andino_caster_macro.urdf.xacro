@@ -9,6 +9,7 @@
 
   params:
   - reflect [1/-1]: value to set the side of the caster;
+  - use_fixed [bool]: wheter to use a fixed model or not
   - wheel_props [dictionary]: wheel properties;
   - base_props [dictionary]: base link properties;
   - mesh [string]: file name of the wheel mesh;
@@ -17,7 +18,7 @@
 
 <!-- Caster wheel link & joint macro -->
   <xacro:macro name="caster_wheel"
-                params="reflect wheel_props locationright:=${0} scale:=''">
+                params="reflect use_fixed wheel_props locationright:=${0} scale:=''">
     <link name="caster_base_link">
       <xacro:box_inertia  m="${wheel_props['base']['mass']}"
                           x="${wheel_props['base']['size']['x']}"
@@ -56,7 +57,7 @@
       </collision>
     </link>
     <joint name="caster_base_joint" type="fixed">
-      <origin xyz="${wheel_props['base']['dx']} ${-wheel_props['base']['dy'] * locationright} ${wheel_props['base']['dz']}" 
+      <origin xyz="${wheel_props['base']['dx']} ${-wheel_props['base']['dy'] * locationright} ${wheel_props['base']['dz']}"
               rpy="0 0 0" />
       <parent link="base_link" />
       <child link="caster_base_link" />
@@ -103,14 +104,26 @@
         </geometry>
       </collision>
     </link>
-    <joint name="caster_rotation_joint" type="fixed">
-      <origin xyz="${wheel_props['hub']['dx']} ${-wheel_props['hub']['dy'] * locationright} ${wheel_props['hub']['dz']}"
-              rpy="0 0 0" />
-      <parent link="base_link" />
-      <child link="caster_rotation_link" />
-      <axis xyz="0 0 1" />
-      <dynamics damping="0.01" friction="0.0"/>
-    </joint>
+    <xacro:if value="${use_fixed}">
+      <joint name="caster_rotation_joint" type="fixed">
+        <origin xyz="${wheel_props['hub']['dx']} ${-wheel_props['hub']['dy'] * locationright} ${wheel_props['hub']['dz']}"
+                rpy="0 0 0" />
+        <parent link="base_link" />
+        <child link="caster_rotation_link" />
+        <axis xyz="0 0 1" />
+        <dynamics damping="0.01" friction="0.0"/>
+      </joint>
+    </xacro:if>
+    <xacro:unless value="${use_fixed}">
+      <joint name="caster_rotation_joint" type="continuous">
+        <origin xyz="${wheel_props['hub']['dx']} ${-wheel_props['hub']['dy'] * locationright} ${wheel_props['hub']['dz']}"
+                rpy="0 0 0" />
+        <parent link="base_link" />
+        <child link="caster_rotation_link" />
+        <axis xyz="0 0 1" />
+        <dynamics damping="0.01" friction="0.0"/>
+      </joint>
+    </xacro:unless>
 
 
     <!-- caster wheel -->
@@ -149,13 +162,24 @@
         </geometry>
       </collision>
     </link>
-    <joint name="caster_wheel_joint" type="fixed">
-      <origin xyz="${wheel_props['wheel']['dx']} ${-wheel_props['wheel']['dy'] * locationright} ${wheel_props['wheel']['dz']}" 
-              rpy="0 0 0" />
-      <parent link="caster_rotation_link" />
-      <child link="caster_wheel_link" />
-      <axis xyz="0 1 0" />
-    </joint>
+    <xacro:if value="${use_fixed}">
+      <joint name="caster_wheel_joint" type="fixed">
+        <origin xyz="${wheel_props['wheel']['dx']} ${-wheel_props['wheel']['dy'] * locationright} ${wheel_props['wheel']['dz']}"
+                rpy="0 0 0" />
+        <parent link="caster_rotation_link" />
+        <child link="caster_wheel_link" />
+        <axis xyz="0 1 0" />
+      </joint>
+    </xacro:if>
+    <xacro:unless value="${use_fixed}">
+      <joint name="caster_wheel_joint" type="continuous">
+        <origin xyz="${wheel_props['wheel']['dx']} ${-wheel_props['wheel']['dy'] * locationright} ${wheel_props['wheel']['dz']}"
+                rpy="0 0 0" />
+        <parent link="caster_rotation_link" />
+        <child link="caster_wheel_link" />
+        <axis xyz="0 1 0" />
+      </joint>
+    </xacro:unless>
   </xacro:macro>
 
 </robot>
