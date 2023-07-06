@@ -123,7 +123,7 @@ long arg2;
 
 /* Clear the current command parameters */
 void resetCommand() {
-  cmd = NULL;
+  cmd = 0;
   memset(argv1, 0, sizeof(argv1));
   memset(argv2, 0, sizeof(argv2));
   arg1 = 0;
@@ -200,7 +200,7 @@ int runCommand() {
     break;
   case UPDATE_PID:
     /* Example: "u 30:20:10:50" */
-    while ((str = strtok_r(p, ":", &p)) != '\0') {
+    while ((str = strtok_r(p, ":", &p)) != NULL) {
        pid_args[i] = atoi(str);
        i++;
     }
@@ -257,8 +257,8 @@ void loop() {
 
     // Terminate a command with a CR
     if (chr == 13) {
-      if (arg == 1) argv1[index] = NULL;
-      else if (arg == 2) argv2[index] = NULL;
+      if (arg == 1) argv1[index] = 0;
+      else if (arg == 2) argv2[index] = 0;
       runCommand();
       resetCommand();
     }
@@ -267,7 +267,7 @@ void loop() {
       // Step through the arguments
       if (arg == 0) arg = 1;
       else if (arg == 1)  {
-        argv1[index] = NULL;
+        argv1[index] = 0;
         arg = 2;
         index = 0;
       }

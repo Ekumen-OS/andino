@@ -1,5 +1,5 @@
 // Code in this file is inspired by:
-// https://github.com/hbrobotics/ros_arduino_bridge/blob/indigo-devel/ros_arduino_firmware/src/libraries/ROSArduinoBridge/motor_driver.ino
+// https://github.com/hbrobotics/ros_arduino_bridge/blob/indigo-devel/ros_arduino_firmware/src/libraries/ROSArduinoBridge/encoder_driver.ino
 //
 // ----------------------------------------------------------------------------
 // ros_arduino_bridge's license follows:
@@ -63,39 +63,56 @@
 // OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-void initMotorController() {
-  digitalWrite(RIGHT_MOTOR_ENABLE, HIGH);
-  digitalWrite(LEFT_MOTOR_ENABLE, HIGH);
+#include "encoder_driver.h"
+
+#include <stdint.h>
+
+#include "Arduino.h"
+#include "commands.h"
+
+volatile long left_enc_pos = 0L;
+volatile long right_enc_pos = 0L;
+static const int8_t ENC_STATES [] = {0,1,-1,0,-1,0,0,1,1,0,0,-1,0,-1,1,0};  //encoder lookup table
+  
+/* Interrupt routine for LEFT encoder, taking care of actual counting */
+ISR (PCINT2_vect){
+  static uint8_t enc_last=0;
+      
+enc_last <<=2; //shift previous state two places
+enc_last |= (PIND & (3 << 2)) >> 2; //read the current state into lowest 2 bits
+
+  left_enc_pos += ENC_STATES[(enc_last & 0x0f)];
 }
 
-void setMotorSpeed(int i, int spd) {
-  bool forward = true;
+/* Interrupt routine for RIGHT encoder, taking care of actual counting */
+ISR (PCINT1_vect){
+      static uint8_t enc_last=0;
+          
+enc_last <<=2; //shift previous state two places
+enc_last |= (PINC & (3 << 4)) >> 4; //read the current state into lowest 2 bits
 
-  if (spd < 0)
-  {
-    spd = -spd;
-    forward = false;
-  }
-  if (spd > 255)
-    spd = 255;
+  right_enc_pos += ENC_STATES[(enc_last & 0x0f)];
+}
 
-  if (i == LEFT) {
-    if      (forward) {
-      analogWrite(LEFT_MOTOR_FORWARD, spd); analogWrite(LEFT_MOTOR_BACKWARD, 0);
-    } else {
-      analogWrite(LEFT_MOTOR_BACKWARD, spd); analogWrite(LEFT_MOTOR_FORWARD, 0);
-    }
-  }
-  else /*if (i == RIGHT) //no need for condition*/ {
-    if (forward) {
-      analogWrite(RIGHT_MOTOR_FORWARD, spd); analogWrite(RIGHT_MOTOR_BACKWARD, 0);
-    } else {
-      analogWrite(RIGHT_MOTOR_BACKWARD, spd); analogWrite(RIGHT_MOTOR_FORWARD, 0);
-    }
+/* Wrap the encoder reading function */
+long readEncoder(int i) {
+  if (i == LEFT) return left_enc_pos;
+  else return right_enc_pos;
+}
+
+/* Wrap the encoder reset function */
+void resetEncoder(int i) {
+  if (i == LEFT){
+    left_enc_pos=0L;
+    return;
+  } else { 
+    right_enc_pos=0L;
+    return;
   }
 }
 
-void setMotorSpeeds(int leftSpeed, int rightSpeed) {
-  setMotorSpeed(LEFT, leftSpeed);
-  setMotorSpeed(RIGHT, rightSpeed);
+/* Wrap the encoder reset function */
+void resetEncoders() {
+  resetEncoder(LEFT);
+  resetEncoder(RIGHT);
 }
