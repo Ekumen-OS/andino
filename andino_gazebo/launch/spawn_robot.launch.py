@@ -59,7 +59,10 @@ def get_robot_description(use_ros_control: str) -> str:
         os.path.join(
             get_package_share_directory('andino_gazebo'), 'urdf', 'andino.gazebo.xacro'
         ),
-        mappings={'use_gazebo_ros_control': use_ros_control},
+        mappings={'use_gazebo_ros_control': use_ros_control,
+                  'use_real_ros_control': 'false',
+                  'use_fixed_caster': 'false',
+                  },
     )
     robot_desc = doc.toprettyxml(indent='  ')
     folder = get_package_share_directory('andino_description')
@@ -93,7 +96,7 @@ def generate_launch_description():
     )
     z_argument = DeclareLaunchArgument(
         'initial_pose_z',
-        default_value='0.0',
+        default_value='0.05',
         description='Initial z pose of andino in the simulation',
     )
     yaw_argument = DeclareLaunchArgument(

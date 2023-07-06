@@ -14,9 +14,11 @@
     </gazebo>
   </xacro:macro>
 
-  <xacro:friction reference="front_right_wheel" mu="10"/>
-  <xacro:friction reference="front_left_wheel" mu="10"/>
-  <xacro:friction reference="caster_wheel_link" mu="0.0"/>
+  <xacro:friction reference="front_right_wheel" mu="100.0"/>
+  <xacro:friction reference="front_left_wheel" mu="100.0"/>
+  <xacro:friction reference="caster_wheel_link" mu="0.05"/>
+  <xacro:friction reference="caster_rotation_link" mu="0.0"/>
+
 
    <xacro:if value="$(arg use_gazebo_ros_control)">
     <ros2_control name="diff_controller" type="system">
@@ -44,6 +46,15 @@
       <plugin filename="libgazebo_ros2_control.so" name="gazebo_ros2_control">
           <parameters>$(find andino_control)/config/andino_controllers.yaml</parameters>
       </plugin>
+      <plugin name="andino_joint_state_caster" filename="libgazebo_ros_joint_state_publisher.so">
+      <ros>
+        <remapping>~/out:=joint_states</remapping>
+        <remapping>/tf:=tf</remapping>
+      </ros>
+      <update_rate>10</update_rate>
+      <joint_name>caster_wheel_joint</joint_name>
+      <joint_name>caster_rotation_joint</joint_name>
+    </plugin>
     </gazebo>
   </xacro:if>
 
@@ -57,7 +68,8 @@
       <update_rate>10</update_rate>
       <joint_name>right_wheel_joint</joint_name>
       <joint_name>left_wheel_joint</joint_name>
-
+      <joint_name>caster_wheel_joint</joint_name>
+      <joint_name>caster_rotation_joint</joint_name>
     </plugin>
 
     <plugin name='andino_diff_drive' filename='libgazebo_ros_diff_drive.so'>
@@ -67,8 +79,8 @@
       </ros>
 
       <!-- wheels -->
-      <left_joint>right_wheel_joint</left_joint>
-      <right_joint>left_wheel_joint</right_joint>
+      <left_joint>left_wheel_joint</left_joint>
+      <right_joint>right_wheel_joint</right_joint>
 
       <!-- kinematics -->
       <wheel_separation>0.137</wheel_separation>
