@@ -44,7 +44,6 @@ from launch.actions import ExecuteProcess
 from launch.event_handlers import OnProcessExit
 
 
-
 def generate_launch_description():
     # Arguments
     use_sim_time = LaunchConfiguration('use_sim_time')
@@ -107,7 +106,7 @@ def generate_launch_description():
     )
 
     andino_visualization_timer = TimerAction(
-        period=5.0, actions=[load_joint_state_controller,rviz]
+        period=5.0, actions=[load_joint_state_controller, rviz]
     )
     return LaunchDescription(
         [
