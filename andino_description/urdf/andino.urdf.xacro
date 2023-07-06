@@ -10,6 +10,7 @@
 
   <xacro:property name="caster_wheel_yaml" value="$(find ${package_name})/config/${robot_name}/caster_wheel.yaml" />
   <xacro:property name="caster_wheel_props" value="${xacro.load_yaml(caster_wheel_yaml)}"/>
+  <xacro:arg name="use_fixed_caster" default="True"/>
 
   <xacro:property name="wheel_yaml" value="$(find ${package_name})/config/${robot_name}/wheel.yaml" />
   <xacro:property name="wheel_props" value="${xacro.load_yaml(wheel_yaml)}"/>
@@ -44,6 +45,7 @@
 
   <!-- Caster Wheel -->
   <xacro:caster_wheel reflect="-1"
+                      use_fixed="$(arg use_fixed_caster)"
                       wheel_props="${caster_wheel_props}">
   </xacro:caster_wheel>
 
