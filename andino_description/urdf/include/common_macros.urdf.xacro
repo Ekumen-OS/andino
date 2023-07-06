@@ -29,9 +29,9 @@
           <xacro:if value="${wheel_props['scale'] == '' }" >
             <mesh filename="package://andino_description/meshes/${robot_name}/${wheel_props['mesh']}" />
           </xacro:if>
-          <xacro:if value="${wheel_props['scale'] == '' }" >
+          <xacro:unless value="${wheel_props['scale'] == '' }" >
             <mesh filename="package://andino_description/meshes/${robot_name}/${wheel_props['mesh']}" scale="${wheel_props['scale']}" />
-          </xacro:if>
+          </xacro:unless>
         </geometry>
         <material name="dark_grey"/>
       </visual>
