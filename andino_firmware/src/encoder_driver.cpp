@@ -69,6 +69,7 @@
 
 #include "Arduino.h"
 #include "commands.h"
+#include "hw.h"
 
 volatile long left_enc_pos = 0L;
 volatile long right_enc_pos = 0L;
@@ -92,6 +93,28 @@ ISR(PCINT1_vect) {
   enc_last |= (PINC & (3 << 4)) >> 4;  // read the current state into lowest 2 bits
 
   right_enc_pos += ENC_STATES[(enc_last & 0x0f)];
+}
+
+void initEncoders() {
+  // set as inputs
+  DDRD &= ~(1 << LEFT_ENCODER_A_GPIO_PIN);
+  DDRD &= ~(1 << LEFT_ENCODER_B_GPIO_PIN);
+  DDRC &= ~(1 << RIGHT_ENCODER_A_GPIO_PIN);
+  DDRC &= ~(1 << RIGHT_ENCODER_B_GPIO_PIN);
+
+  // enable pull up resistors
+  PORTD |= (1 << LEFT_ENCODER_A_GPIO_PIN);
+  PORTD |= (1 << LEFT_ENCODER_B_GPIO_PIN);
+  PORTC |= (1 << RIGHT_ENCODER_A_GPIO_PIN);
+  PORTC |= (1 << RIGHT_ENCODER_B_GPIO_PIN);
+
+  // tell pin change mask to listen to left encoder pins
+  PCMSK2 |= (1 << LEFT_ENCODER_A_GPIO_PIN) | (1 << LEFT_ENCODER_B_GPIO_PIN);
+  // tell pin change mask to listen to right encoder pins
+  PCMSK1 |= (1 << RIGHT_ENCODER_A_GPIO_PIN) | (1 << RIGHT_ENCODER_B_GPIO_PIN);
+
+  // enable PCINT1 and PCINT2 interrupt in the general interrupt mask
+  PCICR |= (1 << PCIE1) | (1 << PCIE2);
 }
 
 /* Wrap the encoder reading function */
