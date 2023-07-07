@@ -76,26 +76,27 @@ void initMotorController() {
 void setMotorSpeed(int i, int spd) {
   bool forward = true;
 
-  if (spd < 0)
-  {
+  if (spd < 0) {
     spd = -spd;
     forward = false;
   }
-  if (spd > 255)
-    spd = 255;
+  if (spd > 255) spd = 255;
 
   if (i == LEFT) {
-    if      (forward) {
-      analogWrite(LEFT_MOTOR_FORWARD, spd); analogWrite(LEFT_MOTOR_BACKWARD, 0);
-    } else {
-      analogWrite(LEFT_MOTOR_BACKWARD, spd); analogWrite(LEFT_MOTOR_FORWARD, 0);
-    }
-  }
-  else /*if (i == RIGHT) //no need for condition*/ {
     if (forward) {
-      analogWrite(RIGHT_MOTOR_FORWARD, spd); analogWrite(RIGHT_MOTOR_BACKWARD, 0);
+      analogWrite(LEFT_MOTOR_FORWARD, spd);
+      analogWrite(LEFT_MOTOR_BACKWARD, 0);
     } else {
-      analogWrite(RIGHT_MOTOR_BACKWARD, spd); analogWrite(RIGHT_MOTOR_FORWARD, 0);
+      analogWrite(LEFT_MOTOR_BACKWARD, spd);
+      analogWrite(LEFT_MOTOR_FORWARD, 0);
+    }
+  } else /*if (i == RIGHT) //no need for condition*/ {
+    if (forward) {
+      analogWrite(RIGHT_MOTOR_FORWARD, spd);
+      analogWrite(RIGHT_MOTOR_BACKWARD, 0);
+    } else {
+      analogWrite(RIGHT_MOTOR_BACKWARD, spd);
+      analogWrite(RIGHT_MOTOR_FORWARD, 0);
     }
   }
 }

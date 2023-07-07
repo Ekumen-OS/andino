@@ -71,7 +71,7 @@
 // to 5V directly in case your Motor Driver Board has a jumper to do this.
 // This way two pins are saved.
 #define RIGHT_MOTOR_ENABLE 12
-#define LEFT_MOTOR_ENABLE 13
+#define LEFT_MOTOR_ENABLE  13
 
 void initMotorController();
 void setMotorSpeed(int i, int spd);
