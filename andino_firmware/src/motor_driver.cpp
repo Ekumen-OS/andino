@@ -67,10 +67,11 @@
 
 #include "Arduino.h"
 #include "commands.h"
+#include "hw.h"
 
 void initMotorController() {
-  digitalWrite(RIGHT_MOTOR_ENABLE, HIGH);
-  digitalWrite(LEFT_MOTOR_ENABLE, HIGH);
+  digitalWrite(RIGHT_MOTOR_ENABLE_GPIO_PIN, HIGH);
+  digitalWrite(LEFT_MOTOR_ENABLE_GPIO_PIN, HIGH);
 }
 
 void setMotorSpeed(int i, int spd) {
@@ -84,19 +85,19 @@ void setMotorSpeed(int i, int spd) {
 
   if (i == LEFT) {
     if (forward) {
-      analogWrite(LEFT_MOTOR_FORWARD, spd);
-      analogWrite(LEFT_MOTOR_BACKWARD, 0);
+      analogWrite(LEFT_MOTOR_FORWARD_GPIO_PIN, spd);
+      analogWrite(LEFT_MOTOR_BACKWARD_GPIO_PIN, 0);
     } else {
-      analogWrite(LEFT_MOTOR_BACKWARD, spd);
-      analogWrite(LEFT_MOTOR_FORWARD, 0);
+      analogWrite(LEFT_MOTOR_BACKWARD_GPIO_PIN, spd);
+      analogWrite(LEFT_MOTOR_FORWARD_GPIO_PIN, 0);
     }
   } else /*if (i == RIGHT) //no need for condition*/ {
     if (forward) {
-      analogWrite(RIGHT_MOTOR_FORWARD, spd);
-      analogWrite(RIGHT_MOTOR_BACKWARD, 0);
+      analogWrite(RIGHT_MOTOR_FORWARD_GPIO_PIN, spd);
+      analogWrite(RIGHT_MOTOR_BACKWARD_GPIO_PIN, 0);
     } else {
-      analogWrite(RIGHT_MOTOR_BACKWARD, spd);
-      analogWrite(RIGHT_MOTOR_FORWARD, 0);
+      analogWrite(RIGHT_MOTOR_BACKWARD_GPIO_PIN, spd);
+      analogWrite(RIGHT_MOTOR_FORWARD_GPIO_PIN, 0);
     }
   }
 }
