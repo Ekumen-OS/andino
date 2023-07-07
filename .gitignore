@@ -1,2 +1,8 @@
 *.build
 *.install
+
+# PlatformIO files
+.pio
+
+# Visual Studio Code files
+.vscode
