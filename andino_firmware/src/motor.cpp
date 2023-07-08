@@ -63,46 +63,39 @@
 // OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-#include "motor_driver.h"
+#include "motor.h"
 
 #include "Arduino.h"
-#include "commands.h"
-#include "hw.h"
 
-void initMotorController() {
-  digitalWrite(RIGHT_MOTOR_ENABLE_GPIO_PIN, HIGH);
-  digitalWrite(LEFT_MOTOR_ENABLE_GPIO_PIN, HIGH);
+namespace andino {
+
+void Motor::set_state(bool enabled) {
+  if (enabled) {
+    digitalWrite(enable_gpio_pin_, HIGH);
+  } else {
+    digitalWrite(enable_gpio_pin_, LOW);
+  }
 }
 
-void setMotorSpeed(int i, int spd) {
+void Motor::set_speed(int speed) {
   bool forward = true;
 
-  if (spd < 0) {
-    spd = -spd;
+  if (speed < kMinSpeed) {
+    speed = -speed;
     forward = false;
   }
-  if (spd > 255) spd = 255;
+  if (speed > kMaxSpeed) {
+    speed = kMaxSpeed;
+  }
 
-  if (i == LEFT) {
-    if (forward) {
-      analogWrite(LEFT_MOTOR_FORWARD_GPIO_PIN, spd);
-      analogWrite(LEFT_MOTOR_BACKWARD_GPIO_PIN, 0);
-    } else {
-      analogWrite(LEFT_MOTOR_BACKWARD_GPIO_PIN, spd);
-      analogWrite(LEFT_MOTOR_FORWARD_GPIO_PIN, 0);
-    }
-  } else /*if (i == RIGHT) //no need for condition*/ {
-    if (forward) {
-      analogWrite(RIGHT_MOTOR_FORWARD_GPIO_PIN, spd);
-      analogWrite(RIGHT_MOTOR_BACKWARD_GPIO_PIN, 0);
-    } else {
-      analogWrite(RIGHT_MOTOR_BACKWARD_GPIO_PIN, spd);
-      analogWrite(RIGHT_MOTOR_FORWARD_GPIO_PIN, 0);
-    }
+  // The motor speed is controlled by sending a PWM wave to the corresponding pin.
+  if (forward) {
+    analogWrite(forward_gpio_pin_, speed);
+    analogWrite(backward_gpio_pin_, 0);
+  } else {
+    analogWrite(backward_gpio_pin_, speed);
+    analogWrite(forward_gpio_pin_, 0);
   }
 }
 
-void setMotorSpeeds(int leftSpeed, int rightSpeed) {
-  setMotorSpeed(LEFT, leftSpeed);
-  setMotorSpeed(RIGHT, rightSpeed);
-}
+}  // namespace andino
