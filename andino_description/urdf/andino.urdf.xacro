@@ -83,7 +83,7 @@
 
   <!-- ros2_control -->
   <xacro:if value="$(arg use_real_ros_control)">
-  <xacro:include filename="$(find ${package_name})/urdf/include/andino_control.urdf.xacro" />
+    <xacro:include filename="$(find ${package_name})/urdf/include/andino_control.urdf.xacro" />
   </xacro:if>
 
 

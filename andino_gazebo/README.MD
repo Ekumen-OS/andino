@@ -50,6 +50,13 @@ Finally, all the parameters of spawn an andino robot to put the robot in specifi
 ```
 ros2 launch andino_gazebo andino_one_robot.launch.py -s
 ```
+## Andino simulation with Gazebo ros2 control plugin
+
+```
+ros2 launch andino_gazebo andino_one_robot.launch.py use_gazebo_ros_control:=true
+```
+
+Some physics issue made that the robot do not move in straight-line with ros_control activated. Another limitation to take account is that the twist topic should be sent at a frequency of at least $10hz$ because it the action has a validity timeout. Finally, note that the twist topic is `diff_controller/cmd_vel_unstamped`.
 
 ## Spawn an Andino robot
 

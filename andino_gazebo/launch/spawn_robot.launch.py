@@ -184,6 +184,19 @@ def generate_launch_description():
             initial_pose_yaw,
         ],
     )
+    joint_state_broadcaster_spawner = Node(
+        package="controller_manager",
+        executable="spawner",
+        arguments=["joint_state_broadcaster", "--controller-manager", "/controller_manager"],
+        condition=IfCondition(use_ros_control),
+    )
+
+    diff_drive_controller_spawner = Node(
+        package="controller_manager",
+        executable="spawner",
+        arguments=["diff_controller", "--controller-manager", "/controller_manager"],
+        condition=IfCondition(use_ros_control),
+    )
 
     return LaunchDescription(
         [
@@ -199,5 +212,7 @@ def generate_launch_description():
             rsp,
             rsp_control,
             robot_spawn,
+            joint_state_broadcaster_spawner,
+            diff_drive_controller_spawner,
         ]
     )
