@@ -115,7 +115,8 @@
       </joint>
     </xacro:if>
     <xacro:unless value="${use_fixed}">
-      <joint name="caster_rotation_joint" type="continuous">
+      <!--TODO(olmerg) initial solution problem with ros control  -->
+      <joint name="caster_rotation_joint" type="fixed">
         <origin xyz="${wheel_props['hub']['dx']} ${-wheel_props['hub']['dy'] * locationright} ${wheel_props['hub']['dz']}"
                 rpy="0 0 0" />
         <parent link="base_link" />
