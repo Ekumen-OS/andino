@@ -143,7 +143,7 @@ def generate_launch_description():
             arguments=['--ros-args', '--log-level', log_level],
             remappings=remappings,
             output='screen'),
-        #TODO(olmerg) change to andino slam launch
+        # TODO(olmerg) change to andino slam launch
         IncludeLaunchDescription(
             PythonLaunchDescriptionSource(os.path.join(nav2_launch_dir, 'slam_launch.py')),
             condition=IfCondition(slam),
@@ -152,7 +152,7 @@ def generate_launch_description():
                               'autostart': autostart,
                               'use_respawn': use_respawn,
                               'params_file': params_file}.items()),
-        #TODO(olmerg)create andino localization launch
+        # TODO(olmerg)create andino localization launch
         IncludeLaunchDescription(
             PythonLaunchDescriptionSource(os.path.join(nav2_launch_dir,
                                                        'localization_launch.py')),
