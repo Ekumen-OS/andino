@@ -42,7 +42,6 @@ from launch.actions import (
 from launch.conditions import IfCondition
 from launch.launch_description_sources import PythonLaunchDescriptionSource
 from launch.substitutions import LaunchConfiguration, PythonExpression
-from launch_ros.actions import Node
 
 
 def generate_launch_description():
@@ -202,7 +201,7 @@ def generate_launch_description():
 
     bringup_cmd = IncludeLaunchDescription(
         PythonLaunchDescriptionSource(
-            os.path.join(andino_navigation_dir,'launch', 'bringup_launch.py')
+            os.path.join(andino_navigation_dir, 'launch', 'bringup_launch.py')
         ),
         launch_arguments={
             'namespace': namespace,
