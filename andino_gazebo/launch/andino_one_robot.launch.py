@@ -67,7 +67,6 @@ def generate_launch_description():
         PythonLaunchDescriptionSource(
             os.path.join(pkg_andino_gazebo, 'launch', 'spawn_robot.launch.py')
         ),
-        # launch_arguments={'use_gazebo_ros_control': 'false'}.items(),
     )
     # Gazebo launch
     gazebo = IncludeLaunchDescription(

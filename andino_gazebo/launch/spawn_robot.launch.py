@@ -69,6 +69,11 @@ def get_robot_description(use_ros_control: str) -> str:
     robot_desc = robot_desc.replace(
         'package://andino_description/', f'file://{folder}/'
     )
+    # Solve the problem of the caster
+    robot_desc = robot_desc.replace( 
+    '<joint name="caster_rotation_joint" type="continuous">',
+    '<joint name="caster_rotation_joint" type="fixed">'
+    )
     return robot_desc
 
 

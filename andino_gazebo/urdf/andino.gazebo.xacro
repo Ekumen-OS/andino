@@ -54,7 +54,6 @@
       </ros>
       <update_rate>10</update_rate>
       <joint_name>caster_wheel_joint</joint_name>
-      <!-- <joint_name>caster_rotation_joint</joint_name> -->
     </plugin>
     </gazebo>
   </xacro:if>
@@ -70,7 +69,6 @@
       <joint_name>right_wheel_joint</joint_name>
       <joint_name>left_wheel_joint</joint_name>
       <joint_name>caster_wheel_joint</joint_name>
-      <!-- <joint_name>caster_rotation_joint</joint_name> -->
     </plugin>
 
     <plugin name='andino_diff_drive' filename='libgazebo_ros_diff_drive.so'>
