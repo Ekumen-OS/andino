@@ -27,7 +27,7 @@ This package has the next option to be executed.
 
 ## Andino with nav2 in Gazebo Simulation
 
-This launch file use the [turtlebot3_world](https://github.com/ROBOTIS-GIT/turtlebot3_simulations/tree/master) like world example.
+This launch file use the [turtlebot3_world](https://github.com/ROBOTIS-GIT/turtlebot3_simulations/tree/master) like world example which has an Apache 2 license.
 
 ```
  . /usr/share/gazebo/setup.bash
