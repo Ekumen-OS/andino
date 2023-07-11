@@ -59,10 +59,11 @@ def get_robot_description(use_ros_control: str) -> str:
         os.path.join(
             get_package_share_directory('andino_gazebo'), 'urdf', 'andino.gazebo.xacro'
         ),
-        mappings={'use_gazebo_ros_control': use_ros_control,
-                  'use_real_ros_control': 'false',
-                  'use_fixed_caster': 'false',
-                  },
+        mappings={
+            'use_gazebo_ros_control': use_ros_control,
+            'use_real_ros_control': 'false',
+            'use_fixed_caster': 'false',
+        },
     )
     robot_desc = doc.toprettyxml(indent='  ')
     folder = get_package_share_directory('andino_description')
@@ -70,9 +71,9 @@ def get_robot_description(use_ros_control: str) -> str:
         'package://andino_description/', f'file://{folder}/'
     )
     # Solve the problem of the caster
-    robot_desc = robot_desc.replace( 
-    '<joint name="caster_rotation_joint" type="continuous">',
-    '<joint name="caster_rotation_joint" type="fixed">'
+    robot_desc = robot_desc.replace(
+        '<joint name="caster_rotation_joint" type="continuous">',
+        '<joint name="caster_rotation_joint" type="fixed">',
     )
     return robot_desc
 
@@ -192,7 +193,11 @@ def generate_launch_description():
     joint_state_broadcaster_spawner = Node(
         package='controller_manager',
         executable='spawner',
-        arguments=['joint_state_broadcaster', '--controller-manager', '/controller_manager'],
+        arguments=[
+            'joint_state_broadcaster',
+            '--controller-manager',
+            '/controller_manager',
+        ],
         condition=IfCondition(use_ros_control),
     )
 
