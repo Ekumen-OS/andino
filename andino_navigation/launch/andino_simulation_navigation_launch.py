@@ -45,15 +45,11 @@ def generate_launch_description():
     andino_navigation_dir = get_package_share_directory('andino_navigation')
     andino_gazebo_dir = get_package_share_directory('andino_gazebo')
 
-    # This checks that tb3 exists needed for the URDF. If not using TB3, its safe to remove.
-    _ = get_package_share_directory('turtlebot3_gazebo')
-
     # Create the launch configuration variables
     use_sim_time = LaunchConfiguration('use_sim_time')
     params_file = LaunchConfiguration('params_file')
 
     # Declare the launch arguments
-
     declare_use_sim_time_cmd = DeclareLaunchArgument(
         'use_sim_time',
         default_value='true',

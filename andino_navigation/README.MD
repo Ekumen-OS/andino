@@ -42,6 +42,4 @@ To test the navigation inside the rviz:
 
 You test adding obstacles inside the Gazebo simulation or use the rviz button Waypoint/ nav through Poses mode to select sequential targets.
 
-This package has been tested with the Andino robot with `diff drive plugin` in gazebo. If you change the world you should change the map but also it is recommended to tune navigation[parameters](params/nav2_params.yaml) will be required at the moment to change the world.
-
-This package also has a bringup launch which could be used with the real robot after some remap of the topics, but it has not been tested yet.
+This package has been tested with the Andino robot with `diff drive plugin` in gazebo. If you change the world you should change the map but also it is recommended to tune navigation [parameters](params/nav2_params.yaml).
