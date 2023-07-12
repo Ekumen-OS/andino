@@ -12,12 +12,13 @@ _Note: For videos go to [Media](#media) section._
 
 ## :books: Package Summary
 
+- :rocket: [`andino_bringup`](./andino_bringup): Contains mainly launch files in order to launch all related driver and nodes to be used in the real robot.
 - :robot: [`andino_hardware`](./andino_hardware): Contains information about the Andino assembly and hardware parts.
 - :ledger: [`andino_description`](./andino_description): Contains the URDF description of the robot.
-- :oncoming_automobile: [`andino_firmware`](./andino_firmware): Contains the code be run in the microcontroller for interfacing low level hardware with the SBC.
-- :computer: [`andino_base`](./andino_base): [ROS Control hardware interface](https://control.ros.org/master/doc/ros2_control/hardware_interface/doc/writing_new_hardware_interface.html) is implemented.
+- :hammer_and_pick: [`andino_firmware`](./andino_firmware): Contains the code be run in the microcontroller for interfacing low level hardware with the SBC.
+- :gear: [`andino_base`](./andino_base): [ROS Control hardware interface](https://control.ros.org/master/doc/ros2_control/hardware_interface/doc/writing_new_hardware_interface.html) is implemented.
 - :control_knobs: [`andino_control`](./andino_control/): It launches the [`controller_manager`](https://control.ros.org/humble/doc/ros2_control/controller_manager/doc/userdoc.html) along with the [ros2 controllers](https://control.ros.org/master/doc/ros2_controllers/doc/controllers_index.html): [diff_drive_controller](https://control.ros.org/master/doc/ros2_controllers/diff_drive_controller/doc/userdoc.html) and the [joint_state_broadcaster](https://control.ros.org/master/doc/ros2_controllers/joint_state_broadcaster/doc/userdoc.html).
-- :rocket: [`andino_bringup`](./andino_bringup): Contains mainly launch files in order to launch all related driver and nodes to be used in the real robot.
+- :computer: [`andino_gazebo`](./andino_gazebo/): Gazebo simulation of the `andino` robot.
 - :world_map: [`andino_slam`](./andino_slam/): Provides support for SLAM with your `andino` robot.
 
 ## Robot Assembly
@@ -57,7 +58,7 @@ cd ~/ws/src
 ```
 
 ```
-git clone <Insert Correct Path> --> TODO
+git clone https://github.com/Ekumen-OS/andino.git
 ```
 
 3. Install dependencies via `rosdep`
