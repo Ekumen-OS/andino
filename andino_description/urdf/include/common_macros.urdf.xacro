@@ -65,7 +65,7 @@
       <parent link="base_link"/>
       <child link="${prefix}_wheel"/>
       <origin xyz="${pos_x_joint} ${reflect* pos_y_joint} ${pos_z_joint}" rpy="0 0 0"/>
-      <dynamics damping="0.0" friction="4.5"/>
+      <dynamics damping="0.01" friction="0.0"/>
     </joint>
 
   </xacro:macro>

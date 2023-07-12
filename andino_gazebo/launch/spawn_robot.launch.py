@@ -59,12 +59,23 @@ def get_robot_description(use_ros_control: str) -> str:
         os.path.join(
             get_package_share_directory('andino_gazebo'), 'urdf', 'andino.gazebo.xacro'
         ),
-        mappings={'use_gazebo_ros_control': use_ros_control},
+        mappings={
+            'use_gazebo_ros_control': use_ros_control,
+            'use_real_ros_control': 'false',
+            'use_fixed_caster': 'false',
+        },
     )
     robot_desc = doc.toprettyxml(indent='  ')
     folder = get_package_share_directory('andino_description')
     robot_desc = robot_desc.replace(
         'package://andino_description/', f'file://{folder}/'
+    )
+    # TODO(issue #110). Gazebo simulation with ros control and caster wheel working complete
+    # made that the robot do not move in straight-line.
+    # hack to solve the problem of the caster.
+    robot_desc = robot_desc.replace(
+        '<joint name="caster_rotation_joint" type="continuous">',
+        '<joint name="caster_rotation_joint" type="fixed">',
     )
     return robot_desc
 
@@ -93,7 +104,7 @@ def generate_launch_description():
     )
     z_argument = DeclareLaunchArgument(
         'initial_pose_z',
-        default_value='0.0',
+        default_value='0.05',
         description='Initial z pose of andino in the simulation',
     )
     yaw_argument = DeclareLaunchArgument(
@@ -181,6 +192,23 @@ def generate_launch_description():
             initial_pose_yaw,
         ],
     )
+    joint_state_broadcaster_spawner = Node(
+        package='controller_manager',
+        executable='spawner',
+        arguments=[
+            'joint_state_broadcaster',
+            '--controller-manager',
+            '/controller_manager',
+        ],
+        condition=IfCondition(use_ros_control),
+    )
+
+    diff_drive_controller_spawner = Node(
+        package='controller_manager',
+        executable='spawner',
+        arguments=['diff_controller', '--controller-manager', '/controller_manager'],
+        condition=IfCondition(use_ros_control),
+    )
 
     return LaunchDescription(
         [
@@ -196,5 +224,7 @@ def generate_launch_description():
             rsp,
             rsp_control,
             robot_spawn,
+            joint_state_broadcaster_spawner,
+            diff_drive_controller_spawner,
         ]
     )

@@ -11,6 +11,7 @@
   <xacro:property name="caster_wheel_yaml" value="$(find ${package_name})/config/${robot_name}/caster_wheel.yaml" />
   <xacro:property name="caster_wheel_props" value="${xacro.load_yaml(caster_wheel_yaml)}"/>
   <xacro:arg name="use_fixed_caster" default="True"/>
+  <xacro:arg name="use_real_ros_control" default="True"/>
 
   <xacro:property name="wheel_yaml" value="$(find ${package_name})/config/${robot_name}/wheel.yaml" />
   <xacro:property name="wheel_props" value="${xacro.load_yaml(wheel_yaml)}"/>
@@ -81,7 +82,9 @@
   </xacro:camera_sensor>
 
   <!-- ros2_control -->
-  <xacro:include filename="$(find ${package_name})/urdf/include/andino_control.urdf.xacro" />
+  <xacro:if value="$(arg use_real_ros_control)">
+    <xacro:include filename="$(find ${package_name})/urdf/include/andino_control.urdf.xacro" />
+  </xacro:if>
 
 
 </robot>
