@@ -1,4 +1,14 @@
-# Andino
+<div align="center">
+
+  ![Logo White](https://raw.githubusercontent.com/Ekumen-OS/andino/humble/docs/logo_white.svg#gh-dark-mode-only)
+
+</div>
+
+<div align="center">
+
+  ![Logo Black](https://raw.githubusercontent.com/Ekumen-OS/andino/humble/docs/logo_black.svg#gh-light-mode-only)
+
+</div>
 
 Andino is a fully open-source diff drive robot designed for educational purposes and low-cost applications.
 It is fully integrated with ROS2 and it is a great base platform to improve skills over the robotics field.
