@@ -1,5 +1,7 @@
 
-# Gazebo Classic simulation for the Andino robot 
+# Gazebo Classic simulation for the Andino robot
+
+<img src="docs/andino_gazebo.png">
 
 ## Build
 
