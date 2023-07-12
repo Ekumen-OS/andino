@@ -101,7 +101,7 @@
             <mesh filename="package://andino_description/meshes/${robot_name}/${motor_props['mesh']}" scale="${motor_props['scale']}"/>
           </xacro:if>
         </geometry>
-        <material name="yellow"/>
+        <material name="light_blue"/>
       </visual>
     </xacro:if>
     <xacro:if value="${motor_props['mesh'] == '' }" >
@@ -281,7 +281,7 @@
     <color rgba="0 0 1 1"/>
   </material>
   <material name="light_blue">
-    <color rgba="0 0.9 1.0 1"/>
+    <color rgba="0 0.5 0.8 1"/>
   </material>
   <material name="black">
     <color rgba="0 0 0 1"/>
