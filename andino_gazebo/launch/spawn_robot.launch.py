@@ -70,7 +70,9 @@ def get_robot_description(use_ros_control: str) -> str:
     robot_desc = robot_desc.replace(
         'package://andino_description/', f'file://{folder}/'
     )
-    # Solve the problem of the caster
+    # TODO(issue #110). Gazebo simulation with ros control and caster wheel working complete
+    # made that the robot do not move in straight-line.
+    # hack to solve the problem of the caster.
     robot_desc = robot_desc.replace(
         '<joint name="caster_rotation_joint" type="continuous">',
         '<joint name="caster_rotation_joint" type="fixed">',
