@@ -21,11 +21,11 @@ _Note: For videos go to [Media](#media) section._
 - :computer: [`andino_gazebo`](./andino_gazebo/): Gazebo simulation of the `andino` robot.
 - :world_map: [`andino_slam`](./andino_slam/): Provides support for SLAM with your `andino` robot.
 
-## Robot Assembly
+## :pick: Robot Assembly
 
 Visit [`andino_hardware`](./andino_hardware/) for assembly instructions.
 
-## Installation
+## :mechanical_arm: Installation
 
 ### Platforms
 
@@ -126,7 +126,13 @@ ros2 launch andino_bringup rviz.launch.py
 
 For starting `rviz2` visualization with a provided configuration.
 
-## Media
+## :computer: Simulation
+
+The [`andino_gazebo`](./andino_gazebo/README.MD) package provides a Gazebo simulation fo the Andino robot.
+
+<img src="./andino_gazebo/docs/andino_gazebo.png" width=400/>
+
+## :selfie: Media
 
 ### RVIZ Visualization
 
@@ -140,6 +146,8 @@ https://github.com/Ekumen-OS/andino/assets/53065142/d73f6053-b422-4334-8f62-029a
 
 https://github.com/Ekumen-OS/andino/assets/53065142/133a4587-f384-4420-a843-15062ddb3e35
 
+
+See [`andino_slam`](./andino_slam/) for more information.
 
 ## :robot: Share your Andino!
 
