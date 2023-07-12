@@ -163,4 +163,7 @@
           </plugin>
         </sensor>
   </gazebo>
+
+  <xacro:include filename="$(find andino_gazebo)/urdf/include/andino_materials.xacro"/>
+
 </robot>
