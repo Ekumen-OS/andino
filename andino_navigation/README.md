@@ -1,4 +1,6 @@
 # Nav2 with Andino robot
+*Note*: Nav2 is only configured to work with the simulation for the moment.
+ Support to real robot is forthcoming.
 
 ## Build
 
