@@ -21,7 +21,6 @@
 
   <exec_depend>control_msgs</exec_depend>
   <exec_depend>gazebo_ros2_control</exec_depend>
-  <exec_depend>ros2_control</exec_depend>
 
   <exec_depend>ros2launch</exec_depend>
   <exec_depend>rviz2</exec_depend>
