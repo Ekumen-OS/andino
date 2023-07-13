@@ -91,7 +91,7 @@ def generate_launch_description():
 
     bringup_cmd = IncludeLaunchDescription(
         PythonLaunchDescriptionSource(
-            os.path.join(andino_navigation_dir, 'launch', 'bringup_launch.py')
+            os.path.join(andino_navigation_dir, 'launch', 'bringup.launch.py')
         ),
         launch_arguments={
             'map': LaunchConfiguration(

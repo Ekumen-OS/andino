@@ -11,16 +11,13 @@
   <license file="LICENSE">BSD Clause 3</license>
 
   <buildtool_depend>ament_cmake</buildtool_depend>
-  <build_depend>nav2_common</build_depend>
 
-  <build_depend>navigation2</build_depend>
   <build_depend>launch_ros</build_depend>
 
   <exec_depend>launch_ros</exec_depend>
   <exec_depend>navigation2</exec_depend>
   <exec_depend>nav2_bringup</exec_depend>
   <exec_depend>nav2_common</exec_depend>
-  <exec_depend>slam_toolbox</exec_depend>
   <exec_depend>turtlebot3_gazebo</exec_depend>
   <exec_depend>rviz2</exec_depend>
 
