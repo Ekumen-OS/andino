@@ -3,8 +3,6 @@ cmake_minimum_required(VERSION 3.5)
 project(andino_navigation)
 
 find_package(ament_cmake REQUIRED)
-find_package(nav2_common REQUIRED)
-find_package(navigation2 REQUIRED)
 
 if(BUILD_TESTING)
   find_package(ament_lint_auto REQUIRED)

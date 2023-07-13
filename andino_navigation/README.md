@@ -31,10 +31,10 @@ This launch file use the [turtlebot3_world](https://github.com/ROBOTIS-GIT/turtl
 
 ```
  . /usr/share/gazebo/setup.bash
- ros2 launch andino_navigation andino_simulation_navigation_launch.py 
+ ros2 launch andino_navigation andino_simulation_navigation.launch.py 
 ```
 
-To test the navigation inside the rviz:
+To test the navigation inside rviz:
 
 - click in 2D pose estimate button and select the initial pose of the robot
 - click in nav2 Goal button and select the final point.
