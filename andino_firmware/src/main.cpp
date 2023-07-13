@@ -63,22 +63,19 @@
 // OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-// Requirements:
-// - Arduino Uno/Nano
-// - L298 Motor driver
-
 /* Serial port baud rate */
 #define BAUDRATE 57600
 /* Maximum PWM signal */
 #define MAX_PWM 255
 
 #include "Arduino.h"
+#include "hw.h"
 
 /* Include definition of serial commands */
 #include "commands.h"
 
 /* Motor driver function definitions */
-#include "motor_driver.h"
+#include "motor.h"
 
 /* Encoder driver function definitions */
 #include "encoder_driver.h"
@@ -119,6 +116,12 @@ char argv2[16];
 // The arguments converted to integers
 long arg1;
 long arg2;
+
+// TODO(jballoffet): Make these objects local to the main function.
+andino::Motor left_motor(LEFT_MOTOR_ENABLE_GPIO_PIN, LEFT_MOTOR_FORWARD_GPIO_PIN,
+                         LEFT_MOTOR_BACKWARD_GPIO_PIN);
+andino::Motor right_motor(RIGHT_MOTOR_ENABLE_GPIO_PIN, RIGHT_MOTOR_FORWARD_GPIO_PIN,
+                          RIGHT_MOTOR_BACKWARD_GPIO_PIN);
 
 /* Clear the current command parameters */
 void resetCommand() {
@@ -182,7 +185,8 @@ int runCommand() {
       /* Reset the auto stop timer */
       lastMotorCommand = millis();
       if (arg1 == 0 && arg2 == 0) {
-        setMotorSpeeds(0, 0);
+        left_motor.set_speed(0);
+        right_motor.set_speed(0);
         resetPID();
         moving = 0;
       } else
@@ -198,7 +202,8 @@ int runCommand() {
       lastMotorCommand = millis();
       resetPID();
       moving = 0;  // Sneaky way to temporarily disable the PID
-      setMotorSpeeds(arg1, arg2);
+      left_motor.set_speed(arg1);
+      right_motor.set_speed(arg2);
       Serial.println("OK");
       break;
     case UPDATE_PID:
@@ -232,7 +237,11 @@ void setup() {
   Serial.begin(BAUDRATE);
 
   initEncoders();
-  initMotorController();
+
+  // Enable motors.
+  left_motor.set_state(true);
+  right_motor.set_state(true);
+
   resetPID();
 }
 
@@ -282,14 +291,17 @@ void loop() {
 
   // Run a PID calculation at the appropriate intervals
   if (millis() > nextPID) {
-    updatePID();
+    int left_motor_speed, right_motor_speed;
+    updatePID(left_motor_speed, right_motor_speed);
+    left_motor.set_speed(left_motor_speed);
+    right_motor.set_speed(right_motor_speed);
     nextPID += PID_INTERVAL;
   }
 
   // Check to see if we have exceeded the auto-stop interval
   if ((millis() - lastMotorCommand) > AUTO_STOP_INTERVAL) {
-    ;
-    setMotorSpeeds(0, 0);
+    left_motor.set_speed(0);
+    right_motor.set_speed(0);
     moving = 0;
   }
 }
