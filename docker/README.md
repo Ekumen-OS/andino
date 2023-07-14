@@ -50,7 +50,7 @@ You can also try to set specific image and container names:
 - Inside the container, install dependencies via `rosdep`:
 
   ```sh
-  rosdep install -i -y --rosdistro foxy --from-paths src
+  rosdep install -i -y --rosdistro humble --from-paths src
   ```
 
 Note that the repository is mounted into a workspace. That is convenient if you
