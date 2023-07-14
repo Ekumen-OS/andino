@@ -30,6 +30,7 @@ _Note: For videos go to [Media](#media) section._
 - :control_knobs: [`andino_control`](./andino_control/): It launches the [`controller_manager`](https://control.ros.org/humble/doc/ros2_control/controller_manager/doc/userdoc.html) along with the [ros2 controllers](https://control.ros.org/master/doc/ros2_controllers/doc/controllers_index.html): [diff_drive_controller](https://control.ros.org/master/doc/ros2_controllers/diff_drive_controller/doc/userdoc.html) and the [joint_state_broadcaster](https://control.ros.org/master/doc/ros2_controllers/joint_state_broadcaster/doc/userdoc.html).
 - :computer: [`andino_gazebo`](./andino_gazebo/): Gazebo simulation of the `andino` robot.
 - :world_map: [`andino_slam`](./andino_slam/): Provides support for SLAM with your `andino` robot.
+- :compass: [`andino_navigation`](./andino_navigation/): Navigation stack based on `nav2`.
 
 ## :pick: Robot Assembly
 
@@ -141,6 +142,15 @@ For starting `rviz2` visualization with a provided configuration.
 The [`andino_gazebo`](./andino_gazebo/README.MD) package provides a Gazebo simulation fo the Andino robot.
 
 <img src="./andino_gazebo/docs/andino_gazebo.png" width=400/>
+
+## :compass: Navigation
+
+The [`andino_navigation`](./andino_navigation/README.md) package provides a navigation stack based on the great [Nav2](https://github.com/ros-planning/navigation2) package.
+
+<Insert video>
+
+_Important!: At the moment this package is only working with the simulation. The support for the real robot is forthcoming._
+
 
 ## :selfie: Media
 
