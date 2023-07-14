@@ -147,7 +147,7 @@ The [`andino_gazebo`](./andino_gazebo/README.MD) package provides a Gazebo simul
 
 The [`andino_navigation`](./andino_navigation/README.md) package provides a navigation stack based on the great [Nav2](https://github.com/ros-planning/navigation2) package.
 
-<Insert video>
+https://github.com/Ekumen-OS/andino/assets/53065142/29951e74-e604-4a6e-80fc-421c0c6d8fee
 
 _Important!: At the moment this package is only working with the simulation. The support for the real robot is forthcoming._
 
