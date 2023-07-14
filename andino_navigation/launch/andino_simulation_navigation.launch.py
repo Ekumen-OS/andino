@@ -97,7 +97,7 @@ def generate_launch_description():
             'map': LaunchConfiguration(
                 'map',
                 default=os.path.join(
-                    andino_navigation_dir, 'maps', 'turtlebot3_world.yaml'
+                    nav2_bringup_dir, 'maps', 'turtlebot3_world.yaml'
                 ),
             ),
             'use_sim_time': use_sim_time,
