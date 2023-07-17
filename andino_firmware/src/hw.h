@@ -27,9 +27,7 @@
 // CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
 // OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-
-#ifndef ANDINO_FIRMWARE_SRC_HW_H_
-#define ANDINO_FIRMWARE_SRC_HW_H_
+#pragma once
 
 // PC4 (pin A4), RIGHT ENCODER PIN A
 #define RIGHT_ENCODER_A_GPIO_PIN PC4
@@ -64,5 +62,3 @@
 // Note: In order to save two pins, the motor driver enable pins could be
 // directly jumped to 5V in case your L298N motor driver board has a jumper to
 // do so.
-
-#endif  // ANDINO_FIRMWARE_SRC_HW_H_
