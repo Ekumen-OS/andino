@@ -81,7 +81,7 @@
 #include "encoder_driver.h"
 
 /* PID parameters and functions */
-#include "diff_controller.h"
+#include "pid.h"
 
 /* Run the PID loop at 30 times per second */
 #define PID_RATE 30  // Hz
@@ -178,7 +178,7 @@ int runCommand() {
       break;
     case RESET_ENCODERS:
       resetEncoders();
-      resetPID();
+      resetPID(readEncoder(LEFT), readEncoder(RIGHT));
       Serial.println("OK");
       break;
     case MOTOR_SPEEDS:
@@ -187,21 +187,20 @@ int runCommand() {
       if (arg1 == 0 && arg2 == 0) {
         left_motor.set_speed(0);
         right_motor.set_speed(0);
-        resetPID();
-        moving = 0;
+        resetPID(readEncoder(LEFT), readEncoder(RIGHT));
+        set_state(false);
       } else
-        moving = 1;
+        set_state(true);
       // The target speeds are in ticks per second, so we need to convert them
       // to ticks per PID_INTERVAL
-      leftPID.TargetTicksPerFrame = arg1 / PID_RATE;
-      rightPID.TargetTicksPerFrame = arg2 / PID_RATE;
+      set_setpoints(arg1 / PID_RATE, arg2 / PID_RATE);
       Serial.println("OK");
       break;
     case MOTOR_RAW_PWM:
       /* Reset the auto stop timer */
       lastMotorCommand = millis();
-      resetPID();
-      moving = 0;  // Sneaky way to temporarily disable the PID
+      resetPID(readEncoder(LEFT), readEncoder(RIGHT));
+      set_state(false);  // Sneaky way to temporarily disable the PID
       left_motor.set_speed(arg1);
       right_motor.set_speed(arg2);
       Serial.println("OK");
@@ -212,18 +211,15 @@ int runCommand() {
         pid_args[i] = atoi(str);
         i++;
       }
-      Kp = pid_args[0];
-      Kd = pid_args[1];
-      Ki = pid_args[2];
-      Ko = pid_args[3];
+      set_tunings(pid_args[0], pid_args[1], pid_args[2], pid_args[3]);
       Serial.print("PID Updated: ");
-      Serial.print(Kp);
+      Serial.print(pid_args[0]);
       Serial.print(" ");
-      Serial.print(Kd);
+      Serial.print(pid_args[1]);
       Serial.print(" ");
-      Serial.print(Ki);
+      Serial.print(pid_args[2]);
       Serial.print(" ");
-      Serial.println(Ko);
+      Serial.println(pid_args[3]);
       Serial.println("OK");
       break;
     default:
@@ -242,7 +238,8 @@ void setup() {
   left_motor.set_state(true);
   right_motor.set_state(true);
 
-  resetPID();
+  resetPID(readEncoder(LEFT), readEncoder(RIGHT));
+  set_output_limits(-MAX_PWM, MAX_PWM);
 }
 
 /* Enter the main loop.  Read and parse input from the serial port
@@ -292,7 +289,7 @@ void loop() {
   // Run a PID calculation at the appropriate intervals
   if (millis() > nextPID) {
     int left_motor_speed, right_motor_speed;
-    updatePID(left_motor_speed, right_motor_speed);
+    updatePID(readEncoder(LEFT), readEncoder(RIGHT), left_motor_speed, right_motor_speed);
     left_motor.set_speed(left_motor_speed);
     right_motor.set_speed(right_motor_speed);
     nextPID += PID_INTERVAL;
@@ -302,6 +299,6 @@ void loop() {
   if ((millis() - lastMotorCommand) > AUTO_STOP_INTERVAL) {
     left_motor.set_speed(0);
     right_motor.set_speed(0);
-    moving = 0;
+    set_state(false);
   }
 }
