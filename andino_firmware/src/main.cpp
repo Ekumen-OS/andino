@@ -123,6 +123,10 @@ andino::Motor left_motor(LEFT_MOTOR_ENABLE_GPIO_PIN, LEFT_MOTOR_FORWARD_GPIO_PIN
 andino::Motor right_motor(RIGHT_MOTOR_ENABLE_GPIO_PIN, RIGHT_MOTOR_FORWARD_GPIO_PIN,
                           RIGHT_MOTOR_BACKWARD_GPIO_PIN);
 
+// TODO(jballoffet): Make these objects local to the main function.
+andino::PID left_pid_controller;
+andino::PID right_pid_controller;
+
 /* Clear the current command parameters */
 void resetCommand() {
   cmd = 0;
@@ -178,7 +182,8 @@ int runCommand() {
       break;
     case RESET_ENCODERS:
       resetEncoders();
-      resetPID(readEncoder(LEFT), readEncoder(RIGHT));
+      left_pid_controller.reset(readEncoder(LEFT));
+      right_pid_controller.reset(readEncoder(RIGHT));
       Serial.println("OK");
       break;
     case MOTOR_SPEEDS:
@@ -187,20 +192,28 @@ int runCommand() {
       if (arg1 == 0 && arg2 == 0) {
         left_motor.set_speed(0);
         right_motor.set_speed(0);
-        resetPID(readEncoder(LEFT), readEncoder(RIGHT));
-        set_state(false);
-      } else
-        set_state(true);
+        left_pid_controller.reset(readEncoder(LEFT));
+        right_pid_controller.reset(readEncoder(RIGHT));
+        left_pid_controller.set_state(false);
+        right_pid_controller.set_state(false);
+      } else {
+        left_pid_controller.set_state(true);
+        right_pid_controller.set_state(true);
+      }
       // The target speeds are in ticks per second, so we need to convert them
       // to ticks per PID_INTERVAL
-      set_setpoints(arg1 / PID_RATE, arg2 / PID_RATE);
+      left_pid_controller.set_setpoint(arg1 / PID_RATE);
+      right_pid_controller.set_setpoint(arg2 / PID_RATE);
       Serial.println("OK");
       break;
     case MOTOR_RAW_PWM:
       /* Reset the auto stop timer */
       lastMotorCommand = millis();
-      resetPID(readEncoder(LEFT), readEncoder(RIGHT));
-      set_state(false);  // Sneaky way to temporarily disable the PID
+      left_pid_controller.reset(readEncoder(LEFT));
+      right_pid_controller.reset(readEncoder(RIGHT));
+      // Sneaky way to temporarily disable the PID
+      left_pid_controller.set_state(false);
+      right_pid_controller.set_state(false);
       left_motor.set_speed(arg1);
       right_motor.set_speed(arg2);
       Serial.println("OK");
@@ -211,7 +224,8 @@ int runCommand() {
         pid_args[i] = atoi(str);
         i++;
       }
-      set_tunings(pid_args[0], pid_args[1], pid_args[2], pid_args[3]);
+      left_pid_controller.set_tunings(pid_args[0], pid_args[1], pid_args[2], pid_args[3]);
+      right_pid_controller.set_tunings(pid_args[0], pid_args[1], pid_args[2], pid_args[3]);
       Serial.print("PID Updated: ");
       Serial.print(pid_args[0]);
       Serial.print(" ");
@@ -238,8 +252,10 @@ void setup() {
   left_motor.set_state(true);
   right_motor.set_state(true);
 
-  resetPID(readEncoder(LEFT), readEncoder(RIGHT));
-  set_output_limits(-MAX_PWM, MAX_PWM);
+  left_pid_controller.reset(readEncoder(LEFT));
+  right_pid_controller.reset(readEncoder(RIGHT));
+  left_pid_controller.set_output_limits(-MAX_PWM, MAX_PWM);
+  right_pid_controller.set_output_limits(-MAX_PWM, MAX_PWM);
 }
 
 /* Enter the main loop.  Read and parse input from the serial port
@@ -289,7 +305,8 @@ void loop() {
   // Run a PID calculation at the appropriate intervals
   if (millis() > nextPID) {
     int left_motor_speed, right_motor_speed;
-    updatePID(readEncoder(LEFT), readEncoder(RIGHT), left_motor_speed, right_motor_speed);
+    left_pid_controller.update(readEncoder(LEFT), left_motor_speed);
+    right_pid_controller.update(readEncoder(RIGHT), right_motor_speed);
     left_motor.set_speed(left_motor_speed);
     right_motor.set_speed(right_motor_speed);
     nextPID += PID_INTERVAL;
@@ -299,6 +316,7 @@ void loop() {
   if ((millis() - lastMotorCommand) > AUTO_STOP_INTERVAL) {
     left_motor.set_speed(0);
     right_motor.set_speed(0);
-    set_state(false);
+    left_pid_controller.set_state(false);
+    right_pid_controller.set_state(false);
   }
 }
