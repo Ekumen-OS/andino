@@ -27,40 +27,39 @@
 // CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
 // OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+#pragma once
 
-// TODO(jballoffet): Turn this module into a class.
+namespace andino {
 
-/* PID setpoint info For a Motor */
-typedef struct {
-  int TargetTicksPerFrame;  // target speed in ticks per frame
-  long Encoder;             // encoder count
-  long PrevEnc;             // last encoder count
+// TODO(jballoffet): Revisit overall logic and add proper documentation.
+class PID {
+ public:
+  void reset(int encoder_count);
+  void compute();
+  void update(int encoder_count, int& motor_speed);
+  void set_output_limits(int min, int max);
+  void set_tunings(int kp, int kd, int ki, int ko);
+  void set_state(bool enabled);
+  void set_setpoint(int setpoint);
 
-  /*
-   * Using previous input (PrevInput) instead of PrevError to avoid derivative kick,
-   * see
-   * http://brettbeauregard.com/blog/2011/04/improving-the-beginner%E2%80%99s-pid-derivative-kick/
-   */
-  int PrevInput;  // last input
-  // int PrevErr;                   // last error
+ private:
+  int target_ticks_per_frame_;  // target speed in ticks per frame
+  long encoder_;                // encoder count
+  long prev_enc_;               // last encoder count
+  int prev_input_;              // last input
+  int i_term_;                  // integrated term
+  long output_;                 // last motor setting
 
-  /*
-   * Using integrated term (ITerm) instead of integrated error (Ierror),
-   * to allow tuning changes,
-   * see
-   * http://brettbeauregard.com/blog/2011/04/improving-the-beginner%E2%80%99s-pid-tuning-changes/
-   */
-  // int Ierror;
-  int ITerm;  // integrated term
+  /* PID Parameters */
+  int kp_ = 30;
+  int kd_ = 10;
+  int ki_ = 0;
+  int ko_ = 10;
 
-  long output;  // last motor setting
-} SetPointInfo;
+  bool enabled_ = false;  // is the base in motion?
 
-void resetPID(int left_encoder_count, int right_encoder_count);
-void doPID(SetPointInfo* p);
-void updatePID(int left_encoder_count, int right_encoder_count, int& left_motor_speed,
-               int& right_motor_speed);
-void set_output_limits(int min, int max);
-void set_tunings(int kp, int kd, int ki, int ko);
-void set_state(bool enabled);
-void set_setpoints(int left_setpoint, int right_setpoint);
+  int output_limit_min_;
+  int output_limit_max_;
+};
+
+}  // namespace andino
