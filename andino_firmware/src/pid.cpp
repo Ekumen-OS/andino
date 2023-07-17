@@ -63,38 +63,9 @@
 // OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-/* Functions and type-defs for PID control.
+#include "pid.h"
 
-   Taken mostly from Mike Ferguson's ArbotiX code which lives at:
-
-   http://vanadium-ros-pkg.googlecode.com/svn/trunk/arbotix/
-*/
-
-/* PID setpoint info For a Motor */
-typedef struct {
-  int TargetTicksPerFrame;  // target speed in ticks per frame
-  long Encoder;             // encoder count
-  long PrevEnc;             // last encoder count
-
-  /*
-   * Using previous input (PrevInput) instead of PrevError to avoid derivative kick,
-   * see
-   * http://brettbeauregard.com/blog/2011/04/improving-the-beginner%E2%80%99s-pid-derivative-kick/
-   */
-  int PrevInput;  // last input
-  // int PrevErr;                   // last error
-
-  /*
-   * Using integrated term (ITerm) instead of integrated error (Ierror),
-   * to allow tuning changes,
-   * see
-   * http://brettbeauregard.com/blog/2011/04/improving-the-beginner%E2%80%99s-pid-tuning-changes/
-   */
-  // int Ierror;
-  int ITerm;  // integrated term
-
-  long output;  // last motor setting
-} SetPointInfo;
+// TODO(jballoffet): Turn this module into a class.
 
 SetPointInfo leftPID, rightPID;
 
@@ -104,7 +75,10 @@ int Kd = 10;
 int Ki = 0;
 int Ko = 10;
 
-unsigned char moving = 0;  // is the base in motion?
+bool enabled_ = false;  // is the base in motion?
+
+int output_limit_min_;
+int output_limit_max_;
 
 /*
  * Initialize PID variables to zero to prevent startup spikes
@@ -114,16 +88,16 @@ unsigned char moving = 0;  // is the base in motion?
  * Note that the assumption here is that PID is only turned on
  * when going from stop to moving, that's why we can init everything on zero.
  */
-void resetPID() {
+void resetPID(int left_encoder_count, int right_encoder_count) {
   leftPID.TargetTicksPerFrame = 0.0;
-  leftPID.Encoder = readEncoder(LEFT);
+  leftPID.Encoder = left_encoder_count;
   leftPID.PrevEnc = leftPID.Encoder;
   leftPID.output = 0;
   leftPID.PrevInput = 0;
   leftPID.ITerm = 0;
 
   rightPID.TargetTicksPerFrame = 0.0;
-  rightPID.Encoder = readEncoder(RIGHT);
+  rightPID.Encoder = right_encoder_count;
   rightPID.PrevEnc = rightPID.Encoder;
   rightPID.output = 0;
   rightPID.PrevInput = 0;
@@ -155,10 +129,10 @@ void doPID(SetPointInfo* p) {
   output += p->output;
   // Accumulate Integral error *or* Limit output.
   // Stop accumulating when output saturates
-  if (output >= MAX_PWM)
-    output = MAX_PWM;
-  else if (output <= -MAX_PWM)
-    output = -MAX_PWM;
+  if (output >= output_limit_max_)
+    output = output_limit_max_;
+  else if (output <= output_limit_min_)
+    output = output_limit_min_;
   else
     /*
      * allow turning changes, see
@@ -172,13 +146,14 @@ void doPID(SetPointInfo* p) {
 
 /* Read the encoder values and call the PID routine */
 // TODO(jballoffet): This definitely needs to be improved while refactoring the PID module.
-void updatePID(int& left_motor_speed, int& right_motor_speed) {
+void updatePID(int left_encoder_count, int right_encoder_count, int& left_motor_speed,
+               int& right_motor_speed) {
   /* Read the encoders */
-  leftPID.Encoder = readEncoder(LEFT);
-  rightPID.Encoder = readEncoder(RIGHT);
+  leftPID.Encoder = left_encoder_count;
+  rightPID.Encoder = right_encoder_count;
 
   /* If we're not moving there is nothing more to do */
-  if (!moving) {
+  if (!enabled_) {
     /*
      * Reset PIDs once, to prevent startup spikes,
      * see
@@ -186,7 +161,8 @@ void updatePID(int& left_motor_speed, int& right_motor_speed) {
      * PrevInput is considered a good proxy to detect
      * whether reset has already happened
      */
-    if (leftPID.PrevInput != 0 || rightPID.PrevInput != 0) resetPID();
+    if (leftPID.PrevInput != 0 || rightPID.PrevInput != 0)
+      resetPID(left_encoder_count, right_encoder_count);
     return;
   }
 
@@ -197,4 +173,23 @@ void updatePID(int& left_motor_speed, int& right_motor_speed) {
   /* Set the motor speeds accordingly */
   left_motor_speed = leftPID.output;
   right_motor_speed = rightPID.output;
+}
+
+void set_output_limits(int min, int max) {
+  output_limit_min_ = min;
+  output_limit_max_ = max;
+}
+
+void set_tunings(int kp, int kd, int ki, int ko) {
+  Kp = kp;
+  Kd = kd;
+  Ki = ki;
+  Ko = ko;
+}
+
+void set_state(bool enabled) { enabled_ = enabled; }
+
+void set_setpoints(int left_setpoint, int right_setpoint) {
+  leftPID.TargetTicksPerFrame = left_setpoint;
+  rightPID.TargetTicksPerFrame = right_setpoint;
 }

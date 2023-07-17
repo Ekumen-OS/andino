@@ -64,6 +64,11 @@ def generate_launch_description():
     # In case of the transforms (tf), currently, there doesn't seem to be a better alternative
     # https://github.com/ros/geometry2/issues/32
     # https://github.com/ros/robot_state_publisher/pull/30
+<<<<<<< HEAD
+=======
+    # TODO(orduno) Substitute with `PushNodeRemapping`
+    #              https://github.com/ros2/launch_ros/issues/56
+>>>>>>> 52a781092251e82ebba98f81b7f0b5ff7b28107e
     remappings = [('/tf', 'tf'),
                   ('/tf_static', 'tf_static')]
 

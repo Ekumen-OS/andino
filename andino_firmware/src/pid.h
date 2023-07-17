@@ -27,38 +27,40 @@
 // CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
 // OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-#pragma once
 
-// PC4 (pin A4), RIGHT ENCODER PIN A
-#define RIGHT_ENCODER_A_GPIO_PIN PC4
+// TODO(jballoffet): Turn this module into a class.
 
-// PC5 (pin A5), RIGHT ENCODER PIN B
-#define RIGHT_ENCODER_B_GPIO_PIN PC5
+/* PID setpoint info For a Motor */
+typedef struct {
+  int TargetTicksPerFrame;  // target speed in ticks per frame
+  long Encoder;             // encoder count
+  long PrevEnc;             // last encoder count
 
-// PD2 (pin 2), LEFT ENCODER PIN A
-#define LEFT_ENCODER_A_GPIO_PIN PD2
+  /*
+   * Using previous input (PrevInput) instead of PrevError to avoid derivative kick,
+   * see
+   * http://brettbeauregard.com/blog/2011/04/improving-the-beginner%E2%80%99s-pid-derivative-kick/
+   */
+  int PrevInput;  // last input
+  // int PrevErr;                   // last error
 
-// PD3 (pin 3), LEFT ENCODER PIN B
-#define LEFT_ENCODER_B_GPIO_PIN PD3
+  /*
+   * Using integrated term (ITerm) instead of integrated error (Ierror),
+   * to allow tuning changes,
+   * see
+   * http://brettbeauregard.com/blog/2011/04/improving-the-beginner%E2%80%99s-pid-tuning-changes/
+   */
+  // int Ierror;
+  int ITerm;  // integrated term
 
-// PD5 (pin 5), RIGHT MOTOR DRIVER BACKWARD PIN
-#define RIGHT_MOTOR_BACKWARD_GPIO_PIN 5
+  long output;  // last motor setting
+} SetPointInfo;
 
-// PD6 (pin 6), LEFT MOTOR DRIVER BACKWARD PIN
-#define LEFT_MOTOR_BACKWARD_GPIO_PIN 6
-
-// PB1 (pin 9), RIGHT MOTOR DRIVER FORWARD PIN
-#define RIGHT_MOTOR_FORWARD_GPIO_PIN 9
-
-// PB2 (pin 10), LEFT MOTOR DRIVER FORWARD PIN
-#define LEFT_MOTOR_FORWARD_GPIO_PIN 10
-
-// PB4 (pin 12), RIGHT MOTOR DRIVER ENABLE PIN
-#define RIGHT_MOTOR_ENABLE_GPIO_PIN 12
-
-// PB5 (pin 13), LEFT MOTOR DRIVER ENABLE PIN
-#define LEFT_MOTOR_ENABLE_GPIO_PIN 13
-
-// Note: In order to save two pins, the motor driver enable pins could be
-// directly jumped to 5V in case your L298N motor driver board has a jumper to
-// do so.
+void resetPID(int left_encoder_count, int right_encoder_count);
+void doPID(SetPointInfo* p);
+void updatePID(int left_encoder_count, int right_encoder_count, int& left_motor_speed,
+               int& right_motor_speed);
+void set_output_limits(int min, int max);
+void set_tunings(int kp, int kd, int ki, int ko);
+void set_state(bool enabled);
+void set_setpoints(int left_setpoint, int right_setpoint);
