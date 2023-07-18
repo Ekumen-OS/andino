@@ -81,7 +81,7 @@
 #include "encoder_driver.h"
 
 /* PID parameters and functions */
-#include "diff_controller.h"
+#include "pid.h"
 
 /* Run the PID loop at 30 times per second */
 #define PID_RATE 30  // Hz
@@ -122,6 +122,10 @@ andino::Motor left_motor(LEFT_MOTOR_ENABLE_GPIO_PIN, LEFT_MOTOR_FORWARD_GPIO_PIN
                          LEFT_MOTOR_BACKWARD_GPIO_PIN);
 andino::Motor right_motor(RIGHT_MOTOR_ENABLE_GPIO_PIN, RIGHT_MOTOR_FORWARD_GPIO_PIN,
                           RIGHT_MOTOR_BACKWARD_GPIO_PIN);
+
+// TODO(jballoffet): Make these objects local to the main function.
+andino::PID left_pid_controller;
+andino::PID right_pid_controller;
 
 /* Clear the current command parameters */
 void resetCommand() {
@@ -178,7 +182,8 @@ int runCommand() {
       break;
     case RESET_ENCODERS:
       resetEncoders();
-      resetPID();
+      left_pid_controller.reset(readEncoder(LEFT));
+      right_pid_controller.reset(readEncoder(RIGHT));
       Serial.println("OK");
       break;
     case MOTOR_SPEEDS:
@@ -187,21 +192,28 @@ int runCommand() {
       if (arg1 == 0 && arg2 == 0) {
         left_motor.set_speed(0);
         right_motor.set_speed(0);
-        resetPID();
-        moving = 0;
-      } else
-        moving = 1;
+        left_pid_controller.reset(readEncoder(LEFT));
+        right_pid_controller.reset(readEncoder(RIGHT));
+        left_pid_controller.set_state(false);
+        right_pid_controller.set_state(false);
+      } else {
+        left_pid_controller.set_state(true);
+        right_pid_controller.set_state(true);
+      }
       // The target speeds are in ticks per second, so we need to convert them
       // to ticks per PID_INTERVAL
-      leftPID.TargetTicksPerFrame = arg1 / PID_RATE;
-      rightPID.TargetTicksPerFrame = arg2 / PID_RATE;
+      left_pid_controller.set_setpoint(arg1 / PID_RATE);
+      right_pid_controller.set_setpoint(arg2 / PID_RATE);
       Serial.println("OK");
       break;
     case MOTOR_RAW_PWM:
       /* Reset the auto stop timer */
       lastMotorCommand = millis();
-      resetPID();
-      moving = 0;  // Sneaky way to temporarily disable the PID
+      left_pid_controller.reset(readEncoder(LEFT));
+      right_pid_controller.reset(readEncoder(RIGHT));
+      // Sneaky way to temporarily disable the PID
+      left_pid_controller.set_state(false);
+      right_pid_controller.set_state(false);
       left_motor.set_speed(arg1);
       right_motor.set_speed(arg2);
       Serial.println("OK");
@@ -212,18 +224,16 @@ int runCommand() {
         pid_args[i] = atoi(str);
         i++;
       }
-      Kp = pid_args[0];
-      Kd = pid_args[1];
-      Ki = pid_args[2];
-      Ko = pid_args[3];
+      left_pid_controller.set_tunings(pid_args[0], pid_args[1], pid_args[2], pid_args[3]);
+      right_pid_controller.set_tunings(pid_args[0], pid_args[1], pid_args[2], pid_args[3]);
       Serial.print("PID Updated: ");
-      Serial.print(Kp);
+      Serial.print(pid_args[0]);
       Serial.print(" ");
-      Serial.print(Kd);
+      Serial.print(pid_args[1]);
       Serial.print(" ");
-      Serial.print(Ki);
+      Serial.print(pid_args[2]);
       Serial.print(" ");
-      Serial.println(Ko);
+      Serial.println(pid_args[3]);
       Serial.println("OK");
       break;
     default:
@@ -242,7 +252,10 @@ void setup() {
   left_motor.set_state(true);
   right_motor.set_state(true);
 
-  resetPID();
+  left_pid_controller.reset(readEncoder(LEFT));
+  right_pid_controller.reset(readEncoder(RIGHT));
+  left_pid_controller.set_output_limits(-MAX_PWM, MAX_PWM);
+  right_pid_controller.set_output_limits(-MAX_PWM, MAX_PWM);
 }
 
 /* Enter the main loop.  Read and parse input from the serial port
@@ -292,7 +305,8 @@ void loop() {
   // Run a PID calculation at the appropriate intervals
   if (millis() > nextPID) {
     int left_motor_speed, right_motor_speed;
-    updatePID(left_motor_speed, right_motor_speed);
+    left_pid_controller.update(readEncoder(LEFT), left_motor_speed);
+    right_pid_controller.update(readEncoder(RIGHT), right_motor_speed);
     left_motor.set_speed(left_motor_speed);
     right_motor.set_speed(right_motor_speed);
     nextPID += PID_INTERVAL;
@@ -302,6 +316,7 @@ void loop() {
   if ((millis() - lastMotorCommand) > AUTO_STOP_INTERVAL) {
     left_motor.set_speed(0);
     right_motor.set_speed(0);
-    moving = 0;
+    left_pid_controller.set_state(false);
+    right_pid_controller.set_state(false);
   }
 }

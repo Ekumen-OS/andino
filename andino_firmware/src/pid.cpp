@@ -62,83 +62,37 @@
 // CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
 // OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+#include "pid.h"
 
-/* Functions and type-defs for PID control.
-
-   Taken mostly from Mike Ferguson's ArbotiX code which lives at:
-
-   http://vanadium-ros-pkg.googlecode.com/svn/trunk/arbotix/
-*/
-
-/* PID setpoint info For a Motor */
-typedef struct {
-  int TargetTicksPerFrame;  // target speed in ticks per frame
-  long Encoder;             // encoder count
-  long PrevEnc;             // last encoder count
-
-  /*
-   * Using previous input (PrevInput) instead of PrevError to avoid derivative kick,
-   * see
-   * http://brettbeauregard.com/blog/2011/04/improving-the-beginner%E2%80%99s-pid-derivative-kick/
-   */
-  int PrevInput;  // last input
-  // int PrevErr;                   // last error
-
-  /*
-   * Using integrated term (ITerm) instead of integrated error (Ierror),
-   * to allow tuning changes,
-   * see
-   * http://brettbeauregard.com/blog/2011/04/improving-the-beginner%E2%80%99s-pid-tuning-changes/
-   */
-  // int Ierror;
-  int ITerm;  // integrated term
-
-  long output;  // last motor setting
-} SetPointInfo;
-
-SetPointInfo leftPID, rightPID;
-
-/* PID Parameters */
-int Kp = 30;
-int Kd = 10;
-int Ki = 0;
-int Ko = 10;
-
-unsigned char moving = 0;  // is the base in motion?
+// TODO(jballoffet): Revisit overall logic and add proper documentation.
+namespace andino {
 
 /*
  * Initialize PID variables to zero to prevent startup spikes
  * when turning PID on to start moving
- * In particular, assign both Encoder and PrevEnc the current encoder value
+ * In particular, assign both encoder_ and prev_enc_ the current encoder value
  * See http://brettbeauregard.com/blog/2011/04/improving-the-beginner%E2%80%99s-pid-initialization/
  * Note that the assumption here is that PID is only turned on
  * when going from stop to moving, that's why we can init everything on zero.
  */
-void resetPID() {
-  leftPID.TargetTicksPerFrame = 0.0;
-  leftPID.Encoder = readEncoder(LEFT);
-  leftPID.PrevEnc = leftPID.Encoder;
-  leftPID.output = 0;
-  leftPID.PrevInput = 0;
-  leftPID.ITerm = 0;
-
-  rightPID.TargetTicksPerFrame = 0.0;
-  rightPID.Encoder = readEncoder(RIGHT);
-  rightPID.PrevEnc = rightPID.Encoder;
-  rightPID.output = 0;
-  rightPID.PrevInput = 0;
-  rightPID.ITerm = 0;
+void PID::reset(int encoder_count) {
+  target_ticks_per_frame_ = 0.0;
+  encoder_ = encoder_count;
+  prev_enc_ = encoder_;
+  output_ = 0;
+  prev_input_ = 0;
+  i_term_ = 0;
 }
 
 /* PID routine to compute the next motor commands */
-void doPID(SetPointInfo* p) {
+void PID::compute() {
   long Perror;
   long output;
   int input;
 
-  // Perror = p->TargetTicksPerFrame - (p->Encoder - p->PrevEnc);
-  input = p->Encoder - p->PrevEnc;
-  Perror = p->TargetTicksPerFrame - input;
+  // Perror = target_ticks_per_frame_ - (encoder_ - prev_enc_);
+  input = encoder_ - prev_enc_;
+  Perror = target_ticks_per_frame_ - input;
 
   /*
    * Avoid derivative kick and allow tuning changes,
@@ -147,54 +101,68 @@ void doPID(SetPointInfo* p) {
    * see
    * http://brettbeauregard.com/blog/2011/04/improving-the-beginner%E2%80%99s-pid-tuning-changes/
    */
-  // output = (Kp * Perror + Kd * (Perror - p->PrevErr) + Ki * p->Ierror) / Ko;
-  //  p->PrevErr = Perror;
-  output = (Kp * Perror - Kd * (input - p->PrevInput) + p->ITerm) / Ko;
-  p->PrevEnc = p->Encoder;
+  // output = (Kp * Perror + Kd * (Perror - PrevErr) + Ki * Ierror) / Ko;
+  //  PrevErr = Perror;
+  output = (kp_ * Perror - kd_ * (input - prev_input_) + i_term_) / ko_;
+  prev_enc_ = encoder_;
 
-  output += p->output;
+  output += output_;
   // Accumulate Integral error *or* Limit output.
   // Stop accumulating when output saturates
-  if (output >= MAX_PWM)
-    output = MAX_PWM;
-  else if (output <= -MAX_PWM)
-    output = -MAX_PWM;
+  if (output >= output_limit_max_)
+    output = output_limit_max_;
+  else if (output <= output_limit_min_)
+    output = output_limit_min_;
   else
     /*
      * allow turning changes, see
      * http://brettbeauregard.com/blog/2011/04/improving-the-beginner%E2%80%99s-pid-tuning-changes/
      */
-    p->ITerm += Ki * Perror;
+    i_term_ += ki_ * Perror;
 
-  p->output = output;
-  p->PrevInput = input;
+  output_ = output;
+  prev_input_ = input;
 }
 
 /* Read the encoder values and call the PID routine */
-// TODO(jballoffet): This definitely needs to be improved while refactoring the PID module.
-void updatePID(int& left_motor_speed, int& right_motor_speed) {
+void PID::update(int encoder_count, int& motor_speed) {
   /* Read the encoders */
-  leftPID.Encoder = readEncoder(LEFT);
-  rightPID.Encoder = readEncoder(RIGHT);
+  encoder_ = encoder_count;
 
   /* If we're not moving there is nothing more to do */
-  if (!moving) {
+  if (!enabled_) {
     /*
      * Reset PIDs once, to prevent startup spikes,
      * see
      * http://brettbeauregard.com/blog/2011/04/improving-the-beginner%E2%80%99s-pid-initialization/
-     * PrevInput is considered a good proxy to detect
+     * prev_input_ is considered a good proxy to detect
      * whether reset has already happened
      */
-    if (leftPID.PrevInput != 0 || rightPID.PrevInput != 0) resetPID();
+    if (prev_input_ != 0) reset(encoder_count);
     return;
   }
 
   /* Compute PID update for each motor */
-  doPID(&rightPID);
-  doPID(&leftPID);
+  compute();
 
   /* Set the motor speeds accordingly */
-  left_motor_speed = leftPID.output;
-  right_motor_speed = rightPID.output;
+  motor_speed = output_;
 }
+
+void PID::set_output_limits(int min, int max) {
+  output_limit_min_ = min;
+  output_limit_max_ = max;
+}
+
+void PID::set_tunings(int kp, int kd, int ki, int ko) {
+  kp_ = kp;
+  kd_ = kd;
+  ki_ = ki;
+  ko_ = ko;
+}
+
+void PID::set_state(bool enabled) { enabled_ = enabled; }
+
+void PID::set_setpoint(int setpoint) { target_ticks_per_frame_ = setpoint; }
+
+}  // namespace andino

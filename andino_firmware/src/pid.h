@@ -29,36 +29,37 @@
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #pragma once
 
-// PC4 (pin A4), RIGHT ENCODER PIN A
-#define RIGHT_ENCODER_A_GPIO_PIN PC4
+namespace andino {
 
-// PC5 (pin A5), RIGHT ENCODER PIN B
-#define RIGHT_ENCODER_B_GPIO_PIN PC5
+// TODO(jballoffet): Revisit overall logic and add proper documentation.
+class PID {
+ public:
+  void reset(int encoder_count);
+  void compute();
+  void update(int encoder_count, int& motor_speed);
+  void set_output_limits(int min, int max);
+  void set_tunings(int kp, int kd, int ki, int ko);
+  void set_state(bool enabled);
+  void set_setpoint(int setpoint);
 
-// PD2 (pin 2), LEFT ENCODER PIN A
-#define LEFT_ENCODER_A_GPIO_PIN PD2
+ private:
+  int target_ticks_per_frame_;  // target speed in ticks per frame
+  long encoder_;                // encoder count
+  long prev_enc_;               // last encoder count
+  int prev_input_;              // last input
+  int i_term_;                  // integrated term
+  long output_;                 // last motor setting
 
-// PD3 (pin 3), LEFT ENCODER PIN B
-#define LEFT_ENCODER_B_GPIO_PIN PD3
+  /* PID Parameters */
+  int kp_ = 30;
+  int kd_ = 10;
+  int ki_ = 0;
+  int ko_ = 10;
 
-// PD5 (pin 5), RIGHT MOTOR DRIVER BACKWARD PIN
-#define RIGHT_MOTOR_BACKWARD_GPIO_PIN 5
+  bool enabled_ = false;  // is the base in motion?
 
-// PD6 (pin 6), LEFT MOTOR DRIVER BACKWARD PIN
-#define LEFT_MOTOR_BACKWARD_GPIO_PIN 6
+  int output_limit_min_;
+  int output_limit_max_;
+};
 
-// PB1 (pin 9), RIGHT MOTOR DRIVER FORWARD PIN
-#define RIGHT_MOTOR_FORWARD_GPIO_PIN 9
-
-// PB2 (pin 10), LEFT MOTOR DRIVER FORWARD PIN
-#define LEFT_MOTOR_FORWARD_GPIO_PIN 10
-
-// PB4 (pin 12), RIGHT MOTOR DRIVER ENABLE PIN
-#define RIGHT_MOTOR_ENABLE_GPIO_PIN 12
-
-// PB5 (pin 13), LEFT MOTOR DRIVER ENABLE PIN
-#define LEFT_MOTOR_ENABLE_GPIO_PIN 13
-
-// Note: In order to save two pins, the motor driver enable pins could be
-// directly jumped to 5V in case your L298N motor driver board has a jumper to
-// do so.
+}  // namespace andino
