@@ -46,6 +46,7 @@ def generate_launch_description():
     # Arguments
     use_sim_time = LaunchConfiguration('use_sim_time')
     use_rviz = LaunchConfiguration('rviz')
+    rviz_config_file = LaunchConfiguration('rviz_config_file')
 
     pkg_gazebo_ros = get_package_share_directory('gazebo_ros')
     pkg_andino_gazebo = get_package_share_directory('andino_gazebo')
@@ -60,6 +61,12 @@ def generate_launch_description():
     )
     use_rviz_argument = DeclareLaunchArgument(
         'rviz', default_value='true', description='Open RViz.'
+    )
+    declare_rviz_config_file_cmd = DeclareLaunchArgument(
+        'rviz_config_file',
+        default_value=os.path.join(
+            pkg_andino_gazebo, 'rviz', 'andino_gazebo.rviz'),
+        description='Full path to the RVIZ config file to use',
     )
 
     # Include andino
@@ -80,7 +87,7 @@ def generate_launch_description():
         package='rviz2',
         executable='rviz2',
         parameters=[{'use_sim_time': use_sim_time}],
-        arguments=['-d', os.path.join(pkg_andino_gazebo, 'rviz', 'andino_gazebo.rviz')],
+        arguments=['-d', rviz_config_file],
     )
 
     andino_visualization_timer = TimerAction(
@@ -89,6 +96,7 @@ def generate_launch_description():
     return LaunchDescription(
         [
             use_sim_time_argument,
+            declare_rviz_config_file_cmd,
             world_argument,
             use_rviz_argument,
             gazebo,

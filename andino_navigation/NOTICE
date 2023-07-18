@@ -1,0 +1,3 @@
+This software contains code derived from the navigation2 project.
+https://github.com/ros-planning/navigation2
+In particular the parameter files, refer to:  https://github.com/ros-planning/navigation2/blob/3bb9a95719539fcdfedf520c63339bc3157f80b4/nav2_bringup/params/nav2_params.yaml
