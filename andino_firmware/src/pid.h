@@ -31,35 +31,83 @@
 
 namespace andino {
 
-// TODO(jballoffet): Revisit overall logic and add proper documentation.
+/// @brief This class provides a simple PID controller implementation.
 class PID {
  public:
+  /// @brief Constructs a new PID object.
+  ///
+  /// @param kp Tuning proportional gain.
+  /// @param kd Tuning derivative gain.
+  /// @param ki Tuning integral gain.
+  /// @param ko Tuning output gain.
+  /// @param output_min Output minimum limit.
+  /// @param output_max Output maximum limit.
+  PID(int kp, int kd, int ki, int ko, int output_min, int output_max)
+      : kp_(kp),
+        kd_(kd),
+        ki_(ki),
+        ko_(ko),
+        output_min_(output_min),
+        output_max_(output_max),
+        enabled_(false) {}
+
+  /// @brief Resets the PID controller.
+  ///
+  /// @param encoder_count Current encoder value.
   void reset(int encoder_count);
-  void compute();
-  void update(int encoder_count, int& motor_speed);
-  void set_output_limits(int min, int max);
-  void set_tunings(int kp, int kd, int ki, int ko);
-  void set_state(bool enabled);
+
+  /// @brief Enables the PID controller.
+  ///
+  /// @param enabled True to enable the PID, false otherwise.
+  void enable(bool enabled);
+
+  /// @brief Computes a new output.
+  ///
+  /// @param encoder_count Current encoder value.
+  /// @param computed_output Computed output value.
+  void compute(int encoder_count, int& computed_output);
+
+  /// @brief Sets the setpoint.
+  ///
+  /// @param setpoint Desired setpoint value.
   void set_setpoint(int setpoint);
 
+  /// @brief Sets the tuning gains.
+  ///
+  /// @param kp Tuning proportional gain.
+  /// @param kd Tuning derivative gain.
+  /// @param ki Tuning integral gain.
+  /// @param ko Tuning output gain.
+  void set_tunings(int kp, int kd, int ki, int ko);
+
  private:
-  int target_ticks_per_frame_;  // target speed in ticks per frame
-  long encoder_;                // encoder count
-  long prev_enc_;               // last encoder count
-  int prev_input_;              // last input
-  int i_term_;                  // integrated term
-  long output_;                 // last motor setting
+  /// Tuning proportional gain.
+  int kp_;
+  /// Tuning derivative gain.
+  int kd_;
+  /// Tuning integral gain.
+  int ki_;
+  /// Tuning output gain.
+  int ko_;
 
-  /* PID Parameters */
-  int kp_ = 30;
-  int kd_ = 10;
-  int ki_ = 0;
-  int ko_ = 10;
+  /// Output minimum limit.
+  int output_min_;
+  /// Output maximum limit.
+  int output_max_;
 
-  bool enabled_ = false;  // is the base in motion?
+  /// True if the PID is enabled, false otherwise.
+  bool enabled_;
 
-  int output_limit_min_;
-  int output_limit_max_;
+  /// Setpoint value.
+  int setpoint_;
+  /// Accumulated integral term.
+  int integral_term_;
+  /// Last received encoder value.
+  long last_encoder_count_;
+  /// Last computed input value.
+  int last_input_;
+  /// Last computed output value.
+  long last_output_;
 };
 
 }  // namespace andino
