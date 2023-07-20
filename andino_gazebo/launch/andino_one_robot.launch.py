@@ -57,12 +57,9 @@ def generate_launch_description():
         description='Use simulation (Gazebo) clock if true',
     )
 
-    # Set the path to the world file
-    world_file_name = 'empty.world'
-
     world_argument = DeclareLaunchArgument(
         name='world',
-        default_value=world_file_name,
+        default_value='empty.world',
         description='Full path to the world model file to load')
 
     use_rviz_argument = DeclareLaunchArgument(
@@ -83,9 +80,9 @@ def generate_launch_description():
     )
 
     # Gazebo launch
-    include_gazebo = IncludeLaunchDescription(
+    gazebo = IncludeLaunchDescription(
         PythonLaunchDescriptionSource(
-            os.path.join(pkg_gazebo_ros, 'launch', 'gazebo.launch.py'),
+            os.path.join(pkg_gazebo_ros, 'launch', 'gazebo.launch.py')
         ),
         launch_arguments={
             'world': LaunchConfiguration('world'),
@@ -109,7 +106,7 @@ def generate_launch_description():
             declare_rviz_config_file_cmd,
             world_argument,
             use_rviz_argument,
-            include_gazebo,
+            gazebo,
             include_andino,
             andino_visualization_timer,
         ]

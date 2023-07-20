@@ -2,10 +2,7 @@
 <sdf version="1.6">
   <world name="default">
     <plugin name="gazebo_ros_state" filename="libgazebo_ros_state.so">
-      <ros>
-      </ros>
-
-      <update_rate>1.0</update_rate>
+      <update_rate>10.0</update_rate>
     </plugin>
     <!-- A global light source -->
     <include>
@@ -16,6 +13,4 @@
       <uri>model://ground_plane</uri>
     </include>
   </world>
-
-
 </sdf>
