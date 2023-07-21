@@ -56,9 +56,12 @@ def generate_launch_description():
         default_value='true',
         description='Use simulation (Gazebo) clock if true',
     )
+
     world_argument = DeclareLaunchArgument(
-        'world', default_value=['empty_world.world'], description='SDF world file'
-    )
+        name='world',
+        default_value='empty.world',
+        description='Full path to the world model file to load')
+
     use_rviz_argument = DeclareLaunchArgument(
         'rviz', default_value='true', description='Open RViz.'
     )
@@ -75,11 +78,15 @@ def generate_launch_description():
             os.path.join(pkg_andino_gazebo, 'launch', 'spawn_robot.launch.py')
         ),
     )
+
     # Gazebo launch
     gazebo = IncludeLaunchDescription(
         PythonLaunchDescriptionSource(
             os.path.join(pkg_gazebo_ros, 'launch', 'gazebo.launch.py')
-        )
+        ),
+        launch_arguments={
+            'world': LaunchConfiguration('world'),
+        }.items()
     )
 
     # RViz
