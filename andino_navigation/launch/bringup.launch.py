@@ -149,7 +149,7 @@ def generate_launch_description():
                               'use_sim_time': use_sim_time,
                               'autostart': autostart,
                               'use_respawn': use_respawn,
-                              'params_file': params_file}.items()),
+                              'params_file': configured_params}.items()),
         # TODO(olmerg)create andino localization launch
         IncludeLaunchDescription(
             PythonLaunchDescriptionSource(os.path.join(nav2_launch_dir,
@@ -159,7 +159,7 @@ def generate_launch_description():
                               'map': map_yaml_file,
                               'use_sim_time': use_sim_time,
                               'autostart': autostart,
-                              'params_file': params_file,
+                              'params_file': configured_params,
                               'use_composition': use_composition,
                               'use_respawn': use_respawn,
                               'container_name': 'nav2_container'}.items()),
@@ -169,7 +169,7 @@ def generate_launch_description():
             launch_arguments={'namespace': namespace,
                               'use_sim_time': use_sim_time,
                               'autostart': autostart,
-                              'params_file': params_file,
+                              'params_file': configured_params,
                               'use_composition': use_composition,
                               'use_respawn': use_respawn,
                               'container_name': 'nav2_container'}.items()),
