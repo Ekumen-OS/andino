@@ -1,12 +1,12 @@
 <div align="center">
 
-  ![Logo White](https://raw.githubusercontent.com/Ekumen-OS/andino/humble/docs/logo_white.svg#gh-dark-mode-only)
+  ![Logo White](./docs/logo_white.svg#gh-dark-mode-only)
 
 </div>
 
 <div align="center">
 
-  ![Logo Black](https://raw.githubusercontent.com/Ekumen-OS/andino/humble/docs/logo_black.svg#gh-light-mode-only)
+  ![Logo Black](./docs/logo_black.svg#gh-light-mode-only)
 
 </div>
 
