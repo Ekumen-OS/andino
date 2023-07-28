@@ -44,7 +44,7 @@ def generate_launch_description():
         'slam_params_file',
         default_value=os.path.join(get_package_share_directory("andino_slam"),
                                    'config', 'slam_toolbox_online_async.yaml'),
-        description='Full path to the ROS2 parameters file to use for the slam_toolbox node')
+        description='Full path to the ROS 2 parameters file to use for the slam_toolbox node')
 
     start_async_slam_toolbox_node = Node(
         parameters=[

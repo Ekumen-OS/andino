@@ -2,7 +2,7 @@
 
 ## Description
 
-The hardware-software-ros interaction in the `andino` project is developed using [ROS2 Control](https://control.ros.org/master/index.html).
+The hardware-software-ros interaction in the `andino` project is developed using [ROS 2 Control](https://control.ros.org/master/index.html).
 
 This package:
  - Implements `andino`'s [hardware interface](https://control.ros.org/master/doc/ros2_control/hardware_interface/doc/writing_new_hardware_interface.html).
