@@ -64,95 +64,59 @@
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "pid.h"
 
-// TODO(jballoffet): Revisit overall logic and add proper documentation.
 namespace andino {
 
-/*
- * Initialize PID variables to zero to prevent startup spikes
- * when turning PID on to start moving
- * In particular, assign both encoder_ and prev_enc_ the current encoder value
- * See http://brettbeauregard.com/blog/2011/04/improving-the-beginner%E2%80%99s-pid-initialization/
- * Note that the assumption here is that PID is only turned on
- * when going from stop to moving, that's why we can init everything on zero.
- */
+// Note: see the following links for more information regarding this class implementation:
+//  - http://brettbeauregard.com/blog/2011/04/improving-the-beginner%E2%80%99s-pid-initialization/
+//  - http://brettbeauregard.com/blog/2011/04/improving-the-beginner%E2%80%99s-pid-derivative-kick/
+//  - http://brettbeauregard.com/blog/2011/04/improving-the-beginner%E2%80%99s-pid-tuning-changes/
+
 void PID::reset(int encoder_count) {
-  target_ticks_per_frame_ = 0.0;
-  encoder_ = encoder_count;
-  prev_enc_ = encoder_;
-  output_ = 0;
-  prev_input_ = 0;
-  i_term_ = 0;
+  // Since we can assume that the PID is only turned on when going from stop to moving, we can init
+  // everything on zero.
+  setpoint_ = 0;
+  integral_term_ = 0;
+  last_encoder_count_ = encoder_count;
+  last_input_ = 0;
+  last_output_ = 0;
 }
 
-/* PID routine to compute the next motor commands */
-void PID::compute() {
-  long Perror;
-  long output;
-  int input;
+void PID::enable(bool enabled) { enabled_ = enabled; }
 
-  // Perror = target_ticks_per_frame_ - (encoder_ - prev_enc_);
-  input = encoder_ - prev_enc_;
-  Perror = target_ticks_per_frame_ - input;
-
-  /*
-   * Avoid derivative kick and allow tuning changes,
-   * see
-   * http://brettbeauregard.com/blog/2011/04/improving-the-beginner%E2%80%99s-pid-derivative-kick/
-   * see
-   * http://brettbeauregard.com/blog/2011/04/improving-the-beginner%E2%80%99s-pid-tuning-changes/
-   */
-  // output = (Kp * Perror + Kd * (Perror - PrevErr) + Ki * Ierror) / Ko;
-  //  PrevErr = Perror;
-  output = (kp_ * Perror - kd_ * (input - prev_input_) + i_term_) / ko_;
-  prev_enc_ = encoder_;
-
-  output += output_;
-  // Accumulate Integral error *or* Limit output.
-  // Stop accumulating when output saturates
-  if (output >= output_limit_max_)
-    output = output_limit_max_;
-  else if (output <= output_limit_min_)
-    output = output_limit_min_;
-  else
-    /*
-     * allow turning changes, see
-     * http://brettbeauregard.com/blog/2011/04/improving-the-beginner%E2%80%99s-pid-tuning-changes/
-     */
-    i_term_ += ki_ * Perror;
-
-  output_ = output;
-  prev_input_ = input;
-}
-
-/* Read the encoder values and call the PID routine */
-void PID::update(int encoder_count, int& motor_speed) {
-  /* Read the encoders */
-  encoder_ = encoder_count;
-
-  /* If we're not moving there is nothing more to do */
+void PID::compute(int encoder_count, int& computed_output) {
   if (!enabled_) {
-    /*
-     * Reset PIDs once, to prevent startup spikes,
-     * see
-     * http://brettbeauregard.com/blog/2011/04/improving-the-beginner%E2%80%99s-pid-initialization/
-     * prev_input_ is considered a good proxy to detect
-     * whether reset has already happened
-     */
-    if (prev_input_ != 0) reset(encoder_count);
+    // Reset PID once to prevent startup spikes.
+    if (last_input_ != 0) {
+      reset(encoder_count);
+    }
     return;
   }
 
-  /* Compute PID update for each motor */
-  compute();
+  int input = encoder_count - last_encoder_count_;
+  long error = setpoint_ - input;
 
-  /* Set the motor speeds accordingly */
-  motor_speed = output_;
+  long output = (kp_ * error - kd_ * (input - last_input_) + integral_term_) / ko_;
+  output += last_output_;
+
+  // Accumulate integral term as long as output doesn't saturate.
+  if (output >= output_max_) {
+    output = output_max_;
+  } else if (output <= output_min_) {
+    output = output_min_;
+  } else {
+    integral_term_ += ki_ * error;
+  }
+
+  // Set the computed output accordingly.
+  computed_output = output;
+
+  // Store obtained values.
+  last_encoder_count_ = encoder_count;
+  last_input_ = input;
+  last_output_ = output;
 }
 
-void PID::set_output_limits(int min, int max) {
-  output_limit_min_ = min;
-  output_limit_max_ = max;
-}
+void PID::set_setpoint(int setpoint) { setpoint_ = setpoint; }
 
 void PID::set_tunings(int kp, int kd, int ki, int ko) {
   kp_ = kp;
@@ -160,9 +124,5 @@ void PID::set_tunings(int kp, int kd, int ki, int ko) {
   ki_ = ki;
   ko_ = ko;
 }
-
-void PID::set_state(bool enabled) { enabled_ = enabled; }
-
-void PID::set_setpoint(int setpoint) { target_ticks_per_frame_ = setpoint; }
 
 }  // namespace andino
