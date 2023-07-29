@@ -70,13 +70,15 @@
 #include "Arduino.h"
 #include "commands.h"
 #include "hw.h"
+#include "pcint.h"
 
 volatile long left_enc_pos = 0L;
 volatile long right_enc_pos = 0L;
-static const int8_t ENC_STATES[] = {0, 1, -1, 0, -1, 0, 0, 1, 1, 0, 0, -1, 0, -1, 1, 0};  // encoder lookup table
+static const int8_t ENC_STATES[] = {0, 1, -1, 0,  -1, 0,  0, 1,
+                                    1, 0, 0,  -1, 0,  -1, 1, 0};  // encoder lookup table
 
 /* Interrupt routine for LEFT encoder, taking care of actual counting */
-ISR(PCINT2_vect) {
+void left_encoder_cb() {
   static uint8_t enc_last = 0;
 
   enc_last <<= 2;                      // shift previous state two places
@@ -86,7 +88,7 @@ ISR(PCINT2_vect) {
 }
 
 /* Interrupt routine for RIGHT encoder, taking care of actual counting */
-ISR(PCINT1_vect) {
+void right_encoder_cb() {
   static uint8_t enc_last = 0;
 
   enc_last <<= 2;                      // shift previous state two places
@@ -96,25 +98,15 @@ ISR(PCINT1_vect) {
 }
 
 void initEncoders() {
-  // set as inputs
-  DDRD &= ~(1 << LEFT_ENCODER_A_GPIO_PIN);
-  DDRD &= ~(1 << LEFT_ENCODER_B_GPIO_PIN);
-  DDRC &= ~(1 << RIGHT_ENCODER_A_GPIO_PIN);
-  DDRC &= ~(1 << RIGHT_ENCODER_B_GPIO_PIN);
+  pinMode(LEFT_ENCODER_A_GPIO_PIN, INPUT_PULLUP);
+  pinMode(LEFT_ENCODER_B_GPIO_PIN, INPUT_PULLUP);
+  pinMode(RIGHT_ENCODER_A_GPIO_PIN, INPUT_PULLUP);
+  pinMode(RIGHT_ENCODER_B_GPIO_PIN, INPUT_PULLUP);
 
-  // enable pull up resistors
-  PORTD |= (1 << LEFT_ENCODER_A_GPIO_PIN);
-  PORTD |= (1 << LEFT_ENCODER_B_GPIO_PIN);
-  PORTC |= (1 << RIGHT_ENCODER_A_GPIO_PIN);
-  PORTC |= (1 << RIGHT_ENCODER_B_GPIO_PIN);
-
-  // tell pin change mask to listen to left encoder pins
-  PCMSK2 |= (1 << LEFT_ENCODER_A_GPIO_PIN) | (1 << LEFT_ENCODER_B_GPIO_PIN);
-  // tell pin change mask to listen to right encoder pins
-  PCMSK1 |= (1 << RIGHT_ENCODER_A_GPIO_PIN) | (1 << RIGHT_ENCODER_B_GPIO_PIN);
-
-  // enable PCINT1 and PCINT2 interrupt in the general interrupt mask
-  PCICR |= (1 << PCIE1) | (1 << PCIE2);
+  andino::PCInt::attach_interrupt(LEFT_ENCODER_A_GPIO_PIN, left_encoder_cb);
+  andino::PCInt::attach_interrupt(LEFT_ENCODER_B_GPIO_PIN, left_encoder_cb);
+  andino::PCInt::attach_interrupt(RIGHT_ENCODER_A_GPIO_PIN, right_encoder_cb);
+  andino::PCInt::attach_interrupt(RIGHT_ENCODER_B_GPIO_PIN, right_encoder_cb);
 }
 
 /* Wrap the encoder reading function */
