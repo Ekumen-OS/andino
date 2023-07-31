@@ -29,36 +29,28 @@
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #pragma once
 
-// PC4 (pin 18), RIGHT ENCODER PIN A
-#define RIGHT_ENCODER_A_GPIO_PIN 18
+#include <stdint.h>
 
-// PC5 (pin 19), RIGHT ENCODER PIN B
-#define RIGHT_ENCODER_B_GPIO_PIN 19
+#include "Arduino.h"
 
-// PD2 (pin 2), LEFT ENCODER PIN A
-#define LEFT_ENCODER_A_GPIO_PIN 2
+namespace andino {
 
-// PD3 (pin 3), LEFT ENCODER PIN B
-#define LEFT_ENCODER_B_GPIO_PIN 3
+/// @brief This class provides a simple way to set and use Pin Change Interrupts.
+class PCInt {
+ public:
+  /// @brief Interrupt callback type.
+  typedef void (*InterruptCallback)();
 
-// PD5 (pin 5), RIGHT MOTOR DRIVER BACKWARD PIN
-#define RIGHT_MOTOR_BACKWARD_GPIO_PIN 5
+  /// @brief Attaches an interrupt callback.
+  /// @note Only one callback per port is supported.
+  ///
+  /// @param pin Pin of interest.
+  /// @param callback Callback function.
+  static void attach_interrupt(uint8_t pin, InterruptCallback callback);
 
-// PD6 (pin 6), LEFT MOTOR DRIVER BACKWARD PIN
-#define LEFT_MOTOR_BACKWARD_GPIO_PIN 6
+ private:
+  /// Map between ports and Pin Change Mask registers.
+  static constexpr volatile uint8_t* kPortToPCMask[]{&PCMSK0, &PCMSK1, &PCMSK2};
+};
 
-// PB1 (pin 9), RIGHT MOTOR DRIVER FORWARD PIN
-#define RIGHT_MOTOR_FORWARD_GPIO_PIN 9
-
-// PB2 (pin 10), LEFT MOTOR DRIVER FORWARD PIN
-#define LEFT_MOTOR_FORWARD_GPIO_PIN 10
-
-// PB4 (pin 12), RIGHT MOTOR DRIVER ENABLE PIN
-#define RIGHT_MOTOR_ENABLE_GPIO_PIN 12
-
-// PB5 (pin 13), LEFT MOTOR DRIVER ENABLE PIN
-#define LEFT_MOTOR_ENABLE_GPIO_PIN 13
-
-// Note: In order to save two pins, the motor driver enable pins could be
-// directly jumped to 5V in case your L298N motor driver board has a jumper to
-// do so.
+}  // namespace andino
