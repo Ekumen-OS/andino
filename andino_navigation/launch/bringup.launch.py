@@ -47,6 +47,7 @@ def generate_launch_description():
     # Get the launch directory
     andino_navigation_dir = get_package_share_directory('andino_navigation')
     nav2_launch_dir = os.path.join(get_package_share_directory('nav2_bringup'), 'launch')
+    beluga_example_dir = get_package_share_directory('beluga_example')
 
     # Create the launch configuration variables
     namespace = LaunchConfiguration('namespace')
@@ -152,17 +153,23 @@ def generate_launch_description():
                               'params_file': configured_params}.items()),
         # TODO(olmerg)create andino localization launch
         IncludeLaunchDescription(
-            PythonLaunchDescriptionSource(os.path.join(nav2_launch_dir,
+            PythonLaunchDescriptionSource(os.path.join(beluga_example_dir,
+                                                    'launch', 'utils',
                                                        'localization_launch.py')),
             condition=IfCondition(PythonExpression(['not ', slam])),
-            launch_arguments={'namespace': namespace,
-                              'map': map_yaml_file,
+            launch_arguments={#'namespace': namespace,
+                              'localization_map': map_yaml_file,
                               'use_sim_time': use_sim_time,
-                              'autostart': autostart,
-                              'params_file': configured_params,
+                              'localization_node': 'amcl_node',
+                              'localization_package': 'beluga_amcl',
+                              'localization_plugin':'beluga_amcl::AmclNode',
+                              # 'autostart': autostart,
+                              'localization_prefix':'',
+                              'localization_params_file': configured_params,
                               'use_composition': use_composition,
-                              'use_respawn': use_respawn,
-                              'container_name': 'nav2_container'}.items()),
+                              # 'use_respawn': use_respawn,
+                              # 'container_name': 'nav2_container'
+                              }.items()),
 
         IncludeLaunchDescription(
             PythonLaunchDescriptionSource(os.path.join(nav2_launch_dir, 'navigation_launch.py')),
