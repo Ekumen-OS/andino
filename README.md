@@ -152,7 +152,7 @@ https://github.com/Ekumen-OS/andino/assets/53065142/29951e74-e604-4a6e-80fc-421c
 _Important!: At the moment this package is only working with the simulation. The support for the real robot is forthcoming._
 
 
-## :selfie: Media
+## Media
 
 ### RVIZ Visualization
 
