@@ -14,8 +14,8 @@
     </gazebo>
   </xacro:macro>
 
-  <xacro:friction reference="front_right_wheel" mu="100.0"/>
-  <xacro:friction reference="front_left_wheel" mu="100.0"/>
+  <xacro:friction reference="right_wheel" mu="100.0"/>
+  <xacro:friction reference="left_wheel" mu="100.0"/>
   <xacro:friction reference="caster_wheel_link" mu="0.05"/>
   <!--TODO(olmerg) initial solution problem with ros control  -->
   <!-- <xacro:friction reference="caster_rotation_link" mu="0.0"/> -->
