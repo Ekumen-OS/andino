@@ -154,42 +154,6 @@ For now, after connecting it to the usb port:
     - `ls -l /dev |grep ttyUSB`
     - Add extra bits by doing `sudo chmod 666 /dev/ttyUSB<number_of_device>`
 
-### Create robot workspace
-
-Let's create our workspace and build from source this repository.
-
-```
-cd ~
-```
-```
-mkdir robot_ws/src -p
-```
-Clone this repository in the `src` folder
-```
-cd robot_ws/src
-```
-```
-git clone <repository_address>
-```
-Install dependencies via rosdep:
-```
-cd ~/robot_ws
-```
-```
-rosdep install --from-paths src -i -y
-```
-Let's build the packages.
-```
-colcon build
-```
-After building is completed:
-```
-source install/setup.bash
-```
-
-After this, you are good to go and use the robot!
-Refer to [`usage`](../README.md#usage) section.
-
 ### USB Port name configuration
 
 #### Fixed USB port names
@@ -274,6 +238,42 @@ Done! You can always use your devices by the fixed names without using the port 
 Here, `ttyUSB_ARDUINO` and `ttyUSB_LIDAR` are fixed names for the Arduino Microcontroller and the Lidar Scanner respectively.
 
 For more information you can take a look at this external tutorial: [Here](https://www.freva.com/assign-fixed-usb-port-names-to-your-raspberry-pi/)
+
+### Create robot workspace
+
+Let's create our workspace and build from source this repository.
+
+```
+cd ~
+```
+```
+mkdir robot_ws/src -p
+```
+Clone this repository in the `src` folder
+```
+cd robot_ws/src
+```
+```
+git clone <repository_address>
+```
+Install dependencies via rosdep:
+```
+cd ~/robot_ws
+```
+```
+rosdep install --from-paths src -i -y
+```
+Let's build the packages.
+```
+colcon build
+```
+After building is completed:
+```
+source install/setup.bash
+```
+
+After this, you are good to go and use the robot!
+Refer to [`usage`](../README.md#usage) section.
 
 ### Extra Recommendations & Tools
 
