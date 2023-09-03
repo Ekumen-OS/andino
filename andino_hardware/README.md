@@ -310,3 +310,23 @@ TLDR? Export an environment variable with the same ID in **all** ROS 2 clients i
 ```
 export ROS_DOMAIN_ID=<a_number_between_0_and_101>
 ```
+
+#### Using joystick for teleoperation
+
+[`andino_bringup`](../andino_bringup/launch/teleop_joystick.launch.py) package provides a launch file for launching the corresponding `ROS 2` nodes for teleoperating the robot using a joystick.
+
+It is worth mentioning that a set up might be needed depending on the gamepad you are using. Here some general guidelines:
+ - In case you are using a _Xbox One Controller_ and you want use it wireless (via USB Wirless Dongle) installing [Xone](https://github.com/medusalix/xone) is recommended.
+ - Verify that your joystick is actually working on Ubuntu:
+    - Some tools that might be useful:
+      - `sudo apt install joystick jstest-gtk evtest`
+    - Run `evtest` to check if your pad is connected:
+      ```
+      $ evtest
+        No device specified, trying to scan all of /dev/input/event*
+        Not running as root, no devices may be available.
+        Available devices:
+          /dev/input/event22:	Microsoft X-Box One pad
+
+      ```
+    - Alternatively, you can use `jstest-gtk` to check the controller, you will find a pretty GUI to play with.
