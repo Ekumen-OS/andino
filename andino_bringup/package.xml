@@ -20,6 +20,7 @@
   <exec_depend>twist_mux</exec_depend>
   <exec_depend>v4l2_camera</exec_depend>
   <exec_depend>laser_filters</exec_depend>
+  <exec_depend>rosbag2-storage-mcap</exec_depend>
 
   <test_depend>ament_lint_auto</test_depend>
   <test_depend>ament_lint_common</test_depend>
