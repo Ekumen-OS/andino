@@ -36,7 +36,7 @@ from launch_ros.actions import Node
 
 def generate_launch_description():
     channel_type =  LaunchConfiguration('channel_type', default='serial')
-    serial_port = LaunchConfiguration('serial_port', default='/dev/ttyUSB1')
+    serial_port = LaunchConfiguration('serial_port', default='/dev/ttyUSB_LIDAR')
     serial_baudrate = LaunchConfiguration('serial_baudrate', default='115200')
     frame_id = LaunchConfiguration('frame_id', default='rplidar_laser_link')
     inverted = LaunchConfiguration('inverted', default='false')
@@ -91,5 +91,7 @@ def generate_launch_description():
                          'inverted': inverted,
                          'scan_mode': scan_mode,
                          'angle_compensate': angle_compensate}],
-            output='screen'),
+            output='screen',
+            remappings=[('scan', 'scan')]
+            ),
     ])
