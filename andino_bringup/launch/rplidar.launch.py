@@ -133,6 +133,7 @@ def generate_launch_description():
                     get_package_share_directory("andino_bringup"),
                     "config", "laser_range_filter.yaml",
                 ])],
+            output='screen',
             remappings=[
               ('scan', 'scan_raw'),
               ('scan_filtered', 'scan'),
