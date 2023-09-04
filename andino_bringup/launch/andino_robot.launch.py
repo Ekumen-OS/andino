@@ -81,6 +81,7 @@ def generate_launch_description():
             os.path.join(pkg_andino_bringup, 'launch', 'rplidar.launch.py'),
         ),
         launch_arguments={
+            "serial_port": '/dev/ttyUSB_LIDAR',
         }.items(),
                 condition=IfCondition(rplidar)
     )

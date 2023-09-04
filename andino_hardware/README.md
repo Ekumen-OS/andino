@@ -154,6 +154,91 @@ For now, after connecting it to the usb port:
     - `ls -l /dev |grep ttyUSB`
     - Add extra bits by doing `sudo chmod 666 /dev/ttyUSB<number_of_device>`
 
+### USB Port name configuration
+
+#### Fixed USB port names
+
+As having multiple USB devices connected to the USB ports of the Raspberry Pi, the automatically assigned USB port numbers could unexpectedly change after a reboot.
+To avoid assigning your device to a `tty_USBX` number that isn't the correct onew we should assign fixed USB port name for each connected device.
+
+The idea is to be able to generate a link between the real `ttyUSBX` port and an invented one. For this we will need to create rules, that every time the Raspberry Pi boots are executed, and therefore we
+always point to the correct port name.
+
+In order to create fixed names for the USB devices follow the instructions:
+
+1. Check the devices you have connected:
+    ```
+    sudo dmesg | grep ttyUSB
+    ```
+
+    ```
+    [  10.016170] usb 1-1.2: ch341-uart converter now attached to ttyUSB0
+    [ 309.186487] usb 1-1.1: cp210x converter now attached to ttyUSB1
+    ```
+    In the setup where this was tested we have:
+      -> Arduino Microcontroller -> _usb 1-1.2: ch341-uart converter now attached to ttyUSB0_
+      -> A1M8 Lidar Scanner -> _usb 1-1.1: cp210x converter now attached to ttyUSB1_
+
+    _Note: If you don't know how to identify each one you can simply connect them one by one and check this output._
+
+2. Look for attributes for each device that we will use to anchor a particular device with a name.
+  We will use the `idProduct` and `idVendor` of each device.
+   - Arduino Microcontroller:
+      ```
+      udevadm info --name=/dev/ttyUSB0 --attribute-walk
+      ```
+      You should look for the `idProduct` and `idVendor` under the category that matches the usb number(1-1.X):
+      In this case the `ttyUSB0` was referenced to the `usb 1-1.2`, so go to that section and find the ids:
+      ```
+        ATTRS{idProduct}=="7523"
+        ATTRS{idVendor}=="1a86"
+      ```
+   - Lidar Scanner
+      ```
+      udevadm info --name=/dev/ttyUSB1 --attribute-walk
+      ```
+      In this case the `ttyUSB0` was referenced to the `usb 1-1.1`, so go to that section and find the ids:
+      ```
+        ATTRS{idProduct}=="ea60"
+        ATTRS{idVendor}=="10c4"
+      ```
+
+3. Create the rules:
+
+    Open the file:
+    ```
+    sudo nano /etc/udev/rules.d/10-usb-serial.rules
+    ```
+
+    Add the following:
+
+    ```
+    SUBSYSTEM=="tty", ATTRS{idProduct}=="7523", ATTRS{idVendor}=="1a86", SYMLINK+="ttyUSB_ARDUINO"
+    SUBSYSTEM=="tty", ATTRS{idProduct}=="ea60", ATTRS{idVendor}=="10c4", SYMLINK+="ttyUSB_LIDAR"
+    ```
+    Note that in the `symlink` field a fixed name is indicated.
+
+4. Re-trigger the device manager:
+    ```
+    sudo udevadm trigger
+    ```
+
+5. Verify
+    ```
+    ls -l /dev/ttyUSB*
+    ```
+    ```
+    crw-rw---- 1 root dialout 188, 0 Sep  2 15:09 /dev/ttyUSB0
+    crw-rw---- 1 root dialout 188, 1 Sep  2 15:09 /dev/ttyUSB1
+    lrwxrwxrwx 1 root root         7 Sep  2 15:09 /dev/ttyUSB_ARDUINO -> ttyUSB0
+    lrwxrwxrwx 1 root root         7 Sep  2 15:09 /dev/ttyUSB_LIDAR -> ttyUSB1
+    ```
+
+Done! You can always use your devices by the fixed names without using the port number.
+Here, `ttyUSB_ARDUINO` and `ttyUSB_LIDAR` are fixed names for the Arduino Microcontroller and the Lidar Scanner respectively.
+
+For more information you can take a look at this external tutorial: [Here](https://www.freva.com/assign-fixed-usb-port-names-to-your-raspberry-pi/)
+
 ### Create robot workspace
 
 Let's create our workspace and build from source this repository.
