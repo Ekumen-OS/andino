@@ -18,7 +18,7 @@ With its open-source design, anyone can modify and customize the robot to suit t
   <img src="docs/real_robot.png" width=500 />
 </p>
 
-_Note: For videos go to [Media](#media) section._
+_Note: For videos go to [Media](#selfie-media) section._
 
 ## :books: Package Summary
 
