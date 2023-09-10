@@ -302,7 +302,8 @@ void loop() {
 
   // Run a PID calculation at the appropriate intervals
   if (millis() > nextPID) {
-    int left_motor_speed, right_motor_speed;
+    int left_motor_speed = 0;
+    int right_motor_speed = 0;
     left_pid_controller.compute(readEncoder(LEFT), left_motor_speed);
     right_pid_controller.compute(readEncoder(RIGHT), right_motor_speed);
     left_motor.set_speed(left_motor_speed);
