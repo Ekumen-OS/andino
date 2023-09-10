@@ -312,6 +312,7 @@ void loop() {
 
   // Check to see if we have exceeded the auto-stop interval
   if ((millis() - lastMotorCommand) > AUTO_STOP_INTERVAL) {
+    lastMotorCommand = millis();
     left_motor.set_speed(0);
     right_motor.set_speed(0);
     left_pid_controller.enable(false);
