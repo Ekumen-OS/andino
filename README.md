@@ -28,7 +28,7 @@ _Note: For videos go to [Media](#media) section._
 - :hammer_and_pick: [`andino_firmware`](./andino_firmware): Contains the code be run in the microcontroller for interfacing low level hardware with the SBC.
 - :gear: [`andino_base`](./andino_base): [ROS Control hardware interface](https://control.ros.org/master/doc/ros2_control/hardware_interface/doc/writing_new_hardware_interface.html) is implemented.
 - :control_knobs: [`andino_control`](./andino_control/): It launches the [`controller_manager`](https://control.ros.org/humble/doc/ros2_control/controller_manager/doc/userdoc.html) along with the [ros2 controllers](https://control.ros.org/master/doc/ros2_controllers/doc/controllers_index.html): [diff_drive_controller](https://control.ros.org/master/doc/ros2_controllers/diff_drive_controller/doc/userdoc.html) and the [joint_state_broadcaster](https://control.ros.org/master/doc/ros2_controllers/joint_state_broadcaster/doc/userdoc.html).
-- :computer: [`andino_gazebo`](./andino_gazebo/): Gazebo simulation of the `andino` robot.
+- :computer: [`andino_gz_classic`](./andino_gz_classic/): Gazebo simulation of the `andino` robot.
 - :world_map: [`andino_slam`](./andino_slam/): Provides support for SLAM with your `andino` robot.
 - :compass: [`andino_navigation`](./andino_navigation/): Navigation stack based on `nav2`.
 
@@ -139,9 +139,9 @@ For starting `rviz2` visualization with a provided configuration.
 
 ## :computer: Simulation
 
-The [`andino_gazebo`](./andino_gazebo/README.MD) package provides a Gazebo simulation fo the Andino robot.
+The [`andino_gz_classic`](./andino_gz_classic/README.MD) package provides a Gazebo simulation fo the Andino robot.
 
-<img src="./andino_gazebo/docs/andino_gazebo.png" width=400/>
+<img src="./andino_gz_classic/docs/andino_gz_classic.png" width=400/>
 
 ## :compass: Navigation
 

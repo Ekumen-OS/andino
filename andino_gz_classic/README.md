@@ -1,7 +1,7 @@
 
 # Gazebo Classic simulation for the Andino robot
 
-<img src="docs/andino_gazebo.png">
+<img src="docs/andino_gz_classic.png">
 
 ## Build
 
@@ -38,7 +38,7 @@ This package has the next option to be executed.
 
 
 ```
-ros2 launch andino_gazebo andino_one_robot.launch.py initial_pose_x:=3.0
+ros2 launch andino_gz_classic andino_one_robot.launch.py initial_pose_x:=3.0
 ```
 
 This launch file supports the following launch arguments:
@@ -50,12 +50,12 @@ This launch file supports the following launch arguments:
 Finally, all the parameters of spawn an andino robot to put the robot in specific position are available. for more information of all the parameters of the child launch files you can write:
 
 ```
-ros2 launch andino_gazebo andino_one_robot.launch.py -s
+ros2 launch andino_gz_classic andino_one_robot.launch.py -s
 ```
 ## Andino simulation with Gazebo ros2 control plugin
 
 ```
-ros2 launch andino_gazebo andino_one_robot.launch.py use_gazebo_ros_control:=true
+ros2 launch andino_gz_classic andino_one_robot.launch.py use_gazebo_ros_control:=true
 ```
 
 ### Considerations
@@ -65,7 +65,7 @@ ros2 launch andino_gazebo andino_one_robot.launch.py use_gazebo_ros_control:=tru
 ## Spawn an Andino robot
 
 ```
-ros2 launch andino_gazebo spawn_robot.launch.py initial_pose_x:=3.0 entity:=andino robot_description_topic:=/andino/robot_description
+ros2 launch andino_gz_classic spawn_robot.launch.py initial_pose_x:=3.0 entity:=andino robot_description_topic:=/andino/robot_description
 ```
 
 The parameters of this launch let to put the robot in any place of the simulation.

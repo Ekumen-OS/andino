@@ -49,7 +49,7 @@ def generate_launch_description():
     rviz_config_file = LaunchConfiguration('rviz_config_file')
 
     pkg_gazebo_ros = get_package_share_directory('gazebo_ros')
-    pkg_andino_gazebo = get_package_share_directory('andino_gazebo')
+    pkg_andino_gz_classic = get_package_share_directory('andino_gz_classic')
 
     use_sim_time_argument = DeclareLaunchArgument(
         'use_sim_time',
@@ -68,14 +68,14 @@ def generate_launch_description():
     declare_rviz_config_file_cmd = DeclareLaunchArgument(
         'rviz_config_file',
         default_value=os.path.join(
-            pkg_andino_gazebo, 'rviz', 'andino_gazebo.rviz'),
+            pkg_andino_gz_classic, 'rviz', 'andino_gz_classic.rviz'),
         description='Full path to the RVIZ config file to use',
     )
 
     # Include andino
     include_andino = IncludeLaunchDescription(
         PythonLaunchDescriptionSource(
-            os.path.join(pkg_andino_gazebo, 'launch', 'spawn_robot.launch.py')
+            os.path.join(pkg_andino_gz_classic, 'launch', 'spawn_robot.launch.py')
         ),
     )
 

@@ -43,7 +43,7 @@ def generate_launch_description():
     # Get the launch directory
     nav2_bringup_dir = get_package_share_directory('nav2_bringup')
     andino_navigation_dir = get_package_share_directory('andino_navigation')
-    andino_gazebo_dir = get_package_share_directory('andino_gazebo')
+    andino_gz_classic_dir = get_package_share_directory('andino_gz_classic')
 
     # Create the launch configuration variables
     use_sim_time = LaunchConfiguration('use_sim_time')
@@ -65,7 +65,7 @@ def generate_launch_description():
     # Include andino simulation
     include_andino = IncludeLaunchDescription(
         PythonLaunchDescriptionSource(
-            os.path.join(andino_gazebo_dir, 'launch', 'andino_one_robot.launch.py')
+            os.path.join(andino_gz_classic_dir, 'launch', 'andino_one_robot.launch.py')
         ),
         launch_arguments={
             'use_gazebo_ros_control': LaunchConfiguration(

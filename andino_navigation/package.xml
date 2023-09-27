@@ -14,7 +14,7 @@
 
   <build_depend>launch_ros</build_depend>
 
-  <exec_depend>andino_gazebo</exec_depend>
+  <exec_depend>andino_gz_classic</exec_depend>
   <exec_depend>launch_ros</exec_depend>
   <exec_depend>navigation2</exec_depend>
   <exec_depend>nav2_bringup</exec_depend>

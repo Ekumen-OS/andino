@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.8)
 
-project(andino_gazebo)
+project(andino_gz_classic)
 
 # Skip if Gazebo not present
 find_package(gazebo QUIET)

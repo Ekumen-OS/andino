@@ -57,7 +57,7 @@ def get_robot_description(use_ros_control: str) -> str:
     """
     doc = process_file(
         os.path.join(
-            get_package_share_directory('andino_gazebo'), 'urdf', 'andino.gazebo.xacro'
+            get_package_share_directory('andino_gz_classic'), 'urdf', 'andino_gz_classic.xacro'
         ),
         mappings={
             'use_gazebo_ros_control': use_ros_control,
