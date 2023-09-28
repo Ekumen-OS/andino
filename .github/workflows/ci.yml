@@ -2,6 +2,8 @@ name: colcon build & test
 
 on:
   push:
+    branches:
+      - humble
   pull_request:
     branches:
       - humble
@@ -9,6 +11,11 @@ on:
 
 env:
   ROS_DISTRO: humble
+
+# Cancel previously running PR jobs
+concurrency:
+  group: '${{ github.workflow }} @ ${{ github.event.pull_request.head.label || github.head_ref || github.ref }}'
+  cancel-in-progress: true
 
 jobs:
   compile_and_test:
