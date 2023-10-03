@@ -10,6 +10,11 @@ find_package(hardware_interface REQUIRED)
 find_package(rclcpp REQUIRED)
 find_package(pluginlib REQUIRED)
 
+# libserial:
+# Following linking instructions from: https://github.com/crayzeewulf/libserial/blob/master/examples/example_project/CMakeLists.txt
+set(THREADS_HAVE_PTHREAD_ARG 1)
+find_package(Threads REQUIRED)
+
 # Include libserial for serial communication
 # Typical find_package() does not work for libserial, for reference see:
 # https://github.com/crayzeewulf/libserial/issues/113#issuecomment-432245159
