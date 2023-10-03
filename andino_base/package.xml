@@ -10,6 +10,7 @@
   <license file="LICENSE">BSD Clause 3</license>
 
   <buildtool_depend>ament_cmake</buildtool_depend>
+  <buildtool_depend>pkg-config</buildtool_depend>
 
   <depend>hardware_interface</depend>
   <depend>libgflags-dev</depend>

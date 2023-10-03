@@ -7,7 +7,7 @@ target_include_directories(motor_driver
 
 # Reference: See libserial example project for integration with CMake
 target_include_directories(motor_driver PUBLIC ${SERIAL_INCLUDE_DIRS})
-target_link_libraries(motor_driver PUBLIC ${SERIAL_LDFLAGS})
+target_link_libraries(motor_driver PUBLIC ${SERIAL_LDFLAGS} ${CMAKE_THREAD_LIBS_INIT})
 
 
 add_library(diffdrive_andino SHARED diffdrive_andino.cpp wheel.cpp)
