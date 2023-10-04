@@ -32,6 +32,13 @@ _Note: For videos go to [Media](#media) section._
 - :world_map: [`andino_slam`](./andino_slam/): Provides support for SLAM with your `andino` robot.
 - :compass: [`andino_navigation`](./andino_navigation/): Navigation stack based on `nav2`.
 
+## :paperclips: Related projects
+
+Other projects built upon Andino! :rocket:
+
+- :test_tube: [`andino_integration_tests`](https://github.com/Ekumen-OS/andino_integration_tests): Extension to the Andino robot showing how to build integration tests.
+- :lady_beetle: [`andino_webots`](https://github.com/Ekumen-OS/andino_webots): [Webots](https://github.com/cyberbotics/webots) simulation of the Andino robot fully integrated with ROS 2.
+
 ## :pick: Robot Assembly
 
 Visit [`andino_hardware`](./andino_hardware/) for assembly instructions.
