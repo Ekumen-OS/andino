@@ -1,10 +1,10 @@
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 Changelog for package andino_navigation
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-0.0.1 (2023-7-5)
-------------------
-* Humble+ nav2
-* Contributors: Olmer Garcia
-
-
+Forthcoming
+-----------
+* Renames andino_gazebo package to andino_gz_classic. (`#153 <https://github.com/Ekumen-OS/andino/issues/153>`_)
+* Updates logo and minor doc changes (`#130 <https://github.com/Ekumen-OS/andino/issues/130>`_)
+* nav2 gazebo example (`#109 <https://github.com/Ekumen-OS/andino/issues/109>`_)
+* Contributors: Franco Cipollone, Olmer Garcia-Bedoya
