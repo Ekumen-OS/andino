@@ -9,6 +9,11 @@ ENV TERM linux
 ENV DEBIAN_FRONTEND noninteractive
 RUN echo 'debconf debconf/frontend select Noninteractive' | debconf-set-selections
 
+# Copy requirement files and install dependencies
+COPY docker/requirements.txt .
+RUN apt-get update && apt-get install --no-install-recommends -y $(cat requirements.txt)
+RUN rm requirements.txt
+
 # Create a user with passwordless sudo
 RUN adduser --uid $USERID --gecos "ekumen developer" --disabled-password $USER
 RUN adduser $USER sudo
