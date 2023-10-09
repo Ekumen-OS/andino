@@ -2,8 +2,8 @@
 Changelog for package andino_firmware
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+0.1.0 (2023-10-09)
+------------------
 * Don't send stop constantly (`#150 <https://github.com/Ekumen-OS/andino/issues/150>`_)
 * Make sure to initialize motor speeds (`#149 <https://github.com/Ekumen-OS/andino/issues/149>`_)
 * Adds package structures to firmware and hardware. (`#133 <https://github.com/Ekumen-OS/andino/issues/133>`_)

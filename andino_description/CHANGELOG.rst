@@ -2,8 +2,8 @@
 Changelog for package andino_description
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+0.1.0 (2023-10-09)
+------------------
 * Updated lidar mesh (`#165 <https://github.com/Ekumen-OS/andino/issues/165>`_)
 * Fixes USB port names (`#143 <https://github.com/Ekumen-OS/andino/issues/143>`_)
 * Add new mesh for second base (`#141 <https://github.com/Ekumen-OS/andino/issues/141>`_)

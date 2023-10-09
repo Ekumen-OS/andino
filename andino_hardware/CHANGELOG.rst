@@ -2,8 +2,8 @@
 Changelog for package andino_hardware
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+0.1.0 (2023-10-09)
+------------------
 * Fixes USB port names (`#143 <https://github.com/Ekumen-OS/andino/issues/143>`_)
 * Provides info about joy teleoperation. (`#142 <https://github.com/Ekumen-OS/andino/issues/142>`_)
 * Adds package structures to firmware and hardware. (`#133 <https://github.com/Ekumen-OS/andino/issues/133>`_)

@@ -2,8 +2,8 @@
 Changelog for package andino_bringup
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+0.1.0 (2023-10-09)
+------------------
 * Fixes rosbag2 dependency. (`#151 <https://github.com/Ekumen-OS/andino/issues/151>`_)
 * Adds convenient launch file for recording a rosbag (`#147 <https://github.com/Ekumen-OS/andino/issues/147>`_)
 * Fixes USB port names (`#143 <https://github.com/Ekumen-OS/andino/issues/143>`_)
