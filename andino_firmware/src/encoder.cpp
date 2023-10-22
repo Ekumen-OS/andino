@@ -62,74 +62,55 @@
 // CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
 // OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-
-#include "encoder_driver.h"
+#include "encoder.h"
 
 #include <stdint.h>
 
 #include "Arduino.h"
-#include "commands.h"
-#include "hw.h"
 #include "pcint.h"
 
-volatile long left_enc_pos = 0L;
-volatile long right_enc_pos = 0L;
-static const int8_t ENC_STATES[] = {0, 1, -1, 0,  -1, 0,  0, 1,
-                                    1, 0, 0,  -1, 0,  -1, 1, 0};  // encoder lookup table
+namespace andino {
 
-/* Interrupt routine for LEFT encoder, taking care of actual counting */
-void left_encoder_cb() {
-  static uint8_t enc_last = 0;
+constexpr int8_t Encoder::kTicksDelta[];
 
-  enc_last <<= 2;                      // shift previous state two places
-  enc_last |= (PIND & (3 << 2)) >> 2;  // read the current state into lowest 2 bits
+const PCInt::InterruptCallback Encoder::callbacks[2] = {callback_0, callback_1};
 
-  left_enc_pos += ENC_STATES[(enc_last & 0x0f)];
-}
-
-/* Interrupt routine for RIGHT encoder, taking care of actual counting */
-void right_encoder_cb() {
-  static uint8_t enc_last = 0;
-
-  enc_last <<= 2;                      // shift previous state two places
-  enc_last |= (PINC & (3 << 4)) >> 4;  // read the current state into lowest 2 bits
-
-  right_enc_pos += ENC_STATES[(enc_last & 0x0f)];
-}
-
-void initEncoders() {
-  pinMode(LEFT_ENCODER_A_GPIO_PIN, INPUT_PULLUP);
-  pinMode(LEFT_ENCODER_B_GPIO_PIN, INPUT_PULLUP);
-  pinMode(RIGHT_ENCODER_A_GPIO_PIN, INPUT_PULLUP);
-  pinMode(RIGHT_ENCODER_B_GPIO_PIN, INPUT_PULLUP);
-
-  andino::PCInt::attach_interrupt(LEFT_ENCODER_A_GPIO_PIN, left_encoder_cb);
-  andino::PCInt::attach_interrupt(LEFT_ENCODER_B_GPIO_PIN, left_encoder_cb);
-  andino::PCInt::attach_interrupt(RIGHT_ENCODER_A_GPIO_PIN, right_encoder_cb);
-  andino::PCInt::attach_interrupt(RIGHT_ENCODER_B_GPIO_PIN, right_encoder_cb);
-}
-
-/* Wrap the encoder reading function */
-long readEncoder(int i) {
-  if (i == LEFT)
-    return left_enc_pos;
-  else
-    return right_enc_pos;
-}
-
-/* Wrap the encoder reset function */
-void resetEncoder(int i) {
-  if (i == LEFT) {
-    left_enc_pos = 0L;
-    return;
-  } else {
-    right_enc_pos = 0L;
-    return;
+void Encoder::callback_0() {
+  if (Encoder::instances_[0] != nullptr) {
+    Encoder::instances_[0]->callback();
   }
 }
 
-/* Wrap the encoder reset function */
-void resetEncoders() {
-  resetEncoder(LEFT);
-  resetEncoder(RIGHT);
+void Encoder::callback_1() {
+  if (Encoder::instances_[1] != nullptr) {
+    Encoder::instances_[1]->callback();
+  }
 }
+
+Encoder* Encoder::instances_[2] = {nullptr, nullptr};
+int Encoder::instance_count_ = 0;
+
+void Encoder::init() {
+  pinMode(a_gpio_pin_, INPUT_PULLUP);
+  pinMode(b_gpio_pin_, INPUT_PULLUP);
+  andino::PCInt::attach_interrupt(a_gpio_pin_, callbacks[instance_count_]);
+  andino::PCInt::attach_interrupt(b_gpio_pin_, callbacks[instance_count_]);
+
+  instances_[instance_count_] = this;
+  instance_count_++;
+}
+
+long Encoder::read() { return count_; }
+
+void Encoder::reset() { count_ = 0L; }
+
+void Encoder::callback() {
+  // Read the current channels state into the lowest 2 bits of the encoder state.
+  state_ <<= 2;
+  state_ |= (digitalRead(b_gpio_pin_) << 1) | digitalRead(a_gpio_pin_);
+
+  // Update the encoder count accordingly.
+  count_ += kTicksDelta[(state_ & 0x0F)];
+}
+
+}  // namespace andino
