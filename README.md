@@ -169,9 +169,9 @@ https://github.com/Ekumen-OS/andino/assets/53065142/c9878894-1785-4b81-b1ce-80e0
 
 Using the robot for mapping.
 
-https://github.com/Ekumen-OS/andino/assets/53065142/d73f6053-b422-4334-8f62-029a38799e66
+https://github.com/Ekumen-OS/andino/assets/53065142/283f4afd-0f9a-4d37-b71f-c9d7b2f3e453
 
-https://github.com/Ekumen-OS/andino/assets/53065142/133a4587-f384-4420-a843-15062ddb3e35
+https://github.com/Ekumen-OS/andino/assets/53065142/d73f6053-b422-4334-8f62-029a38799e66
 
 
 See [`andino_slam`](./andino_slam/) for more information.
