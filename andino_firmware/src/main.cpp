@@ -78,7 +78,7 @@
 #include "motor.h"
 
 /* Encoder driver function definitions */
-#include "encoder_driver.h"
+#include "encoder.h"
 
 /* PID parameters and functions */
 #include "pid.h"
@@ -126,6 +126,10 @@ andino::Motor right_motor(RIGHT_MOTOR_ENABLE_GPIO_PIN, RIGHT_MOTOR_FORWARD_GPIO_
 // TODO(jballoffet): Make these objects local to the main function.
 andino::PID left_pid_controller(30, 10, 0, 10, -MAX_PWM, MAX_PWM);
 andino::PID right_pid_controller(30, 10, 0, 10, -MAX_PWM, MAX_PWM);
+
+// TODO(jballoffet): Make these objects local to the main function.
+andino::Encoder left_encoder(LEFT_ENCODER_A_GPIO_PIN, LEFT_ENCODER_B_GPIO_PIN);
+andino::Encoder right_encoder(RIGHT_ENCODER_A_GPIO_PIN, RIGHT_ENCODER_B_GPIO_PIN);
 
 /* Clear the current command parameters */
 void resetCommand() {
@@ -176,14 +180,15 @@ int runCommand() {
       Serial.println("OK");
       break;
     case READ_ENCODERS:
-      Serial.print(readEncoder(LEFT));
+      Serial.print(left_encoder.read());
       Serial.print(" ");
-      Serial.println(readEncoder(RIGHT));
+      Serial.println(right_encoder.read());
       break;
     case RESET_ENCODERS:
-      resetEncoders();
-      left_pid_controller.reset(readEncoder(LEFT));
-      right_pid_controller.reset(readEncoder(RIGHT));
+      left_encoder.reset();
+      right_encoder.reset();
+      left_pid_controller.reset(left_encoder.read());
+      right_pid_controller.reset(right_encoder.read());
       Serial.println("OK");
       break;
     case MOTOR_SPEEDS:
@@ -192,8 +197,8 @@ int runCommand() {
       if (arg1 == 0 && arg2 == 0) {
         left_motor.set_speed(0);
         right_motor.set_speed(0);
-        left_pid_controller.reset(readEncoder(LEFT));
-        right_pid_controller.reset(readEncoder(RIGHT));
+        left_pid_controller.reset(left_encoder.read());
+        right_pid_controller.reset(right_encoder.read());
         left_pid_controller.enable(false);
         right_pid_controller.enable(false);
       } else {
@@ -209,8 +214,8 @@ int runCommand() {
     case MOTOR_RAW_PWM:
       /* Reset the auto stop timer */
       lastMotorCommand = millis();
-      left_pid_controller.reset(readEncoder(LEFT));
-      right_pid_controller.reset(readEncoder(RIGHT));
+      left_pid_controller.reset(left_encoder.read());
+      right_pid_controller.reset(right_encoder.read());
       // Sneaky way to temporarily disable the PID
       left_pid_controller.enable(false);
       right_pid_controller.enable(false);
@@ -246,14 +251,15 @@ int runCommand() {
 void setup() {
   Serial.begin(BAUDRATE);
 
-  initEncoders();
+  left_encoder.init();
+  right_encoder.init();
 
   // Enable motors.
   left_motor.set_state(true);
   right_motor.set_state(true);
 
-  left_pid_controller.reset(readEncoder(LEFT));
-  right_pid_controller.reset(readEncoder(RIGHT));
+  left_pid_controller.reset(left_encoder.read());
+  right_pid_controller.reset(right_encoder.read());
 }
 
 /* Enter the main loop.  Read and parse input from the serial port
@@ -304,8 +310,8 @@ void loop() {
   if (millis() > nextPID) {
     int left_motor_speed = 0;
     int right_motor_speed = 0;
-    left_pid_controller.compute(readEncoder(LEFT), left_motor_speed);
-    right_pid_controller.compute(readEncoder(RIGHT), right_motor_speed);
+    left_pid_controller.compute(left_encoder.read(), left_motor_speed);
+    right_pid_controller.compute(right_encoder.read(), right_motor_speed);
     left_motor.set_speed(left_motor_speed);
     right_motor.set_speed(right_motor_speed);
     nextPID += PID_INTERVAL;
