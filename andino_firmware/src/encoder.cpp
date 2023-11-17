@@ -73,7 +73,7 @@ namespace andino {
 
 constexpr int8_t Encoder::kTicksDelta[];
 
-const PCInt::InterruptCallback Encoder::callbacks[2] = {callback_0, callback_1};
+const PCInt::InterruptCallback Encoder::kCallbacks[kInstancesMax] = {callback_0, callback_1};
 
 void Encoder::callback_0() {
   if (Encoder::instances_[0] != nullptr) {
@@ -87,14 +87,20 @@ void Encoder::callback_1() {
   }
 }
 
-Encoder* Encoder::instances_[2] = {nullptr, nullptr};
+Encoder* Encoder::instances_[kInstancesMax] = {nullptr, nullptr};
 int Encoder::instance_count_ = 0;
 
 void Encoder::init() {
+  // The current implementation only supports two instances of this class to be constructed. This
+  // prevents reaching a buffer overflow.
+  if (instance_count_ == kInstancesMax) {
+    return;
+  }
+
   pinMode(a_gpio_pin_, INPUT_PULLUP);
   pinMode(b_gpio_pin_, INPUT_PULLUP);
-  andino::PCInt::attach_interrupt(a_gpio_pin_, callbacks[instance_count_]);
-  andino::PCInt::attach_interrupt(b_gpio_pin_, callbacks[instance_count_]);
+  andino::PCInt::attach_interrupt(a_gpio_pin_, kCallbacks[instance_count_]);
+  andino::PCInt::attach_interrupt(b_gpio_pin_, kCallbacks[instance_count_]);
 
   instances_[instance_count_] = this;
   instance_count_++;

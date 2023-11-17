@@ -117,8 +117,11 @@ class Encoder {
   ///   +--------+-----+-----+--------+-----------+
   static constexpr int8_t kTicksDelta[]{0, 1, -1, 0, -1, 0, 0, 1, 1, 0, 0, -1, 0, -1, 1, 0};
 
+  /// Maximum number of instances of this class that can be instantiated.
+  static constexpr int kInstancesMax{2};
+
   /// Static wrappers that redirect to instance callback methods.
-  static const PCInt::InterruptCallback callbacks[2];
+  static const PCInt::InterruptCallback kCallbacks[kInstancesMax];
 
   /// Static wrapper that redirects to the first instance callback method.
   static void callback_0();
@@ -130,7 +133,7 @@ class Encoder {
   void callback();
 
   /// Holds references to the constructed Encoder instances.
-  static Encoder* instances_[2];
+  static Encoder* instances_[kInstancesMax];
 
   /// Number of constructed Encoder instances.
   static int instance_count_;
@@ -142,7 +145,6 @@ class Encoder {
   int b_gpio_pin_;
 
   /// Encoder state. It contains both the current and previous channels state readings:
-  ///
   ///   +------+-----+-----+-----+-----+-----+-----+-----+-----+
   ///   | Bits |  7  |  6  |  5  |  4  |  3  |  2  |  1  |  0  |
   ///   +------+-----+-----+-----+-----+-----+-----+-----+-----+
