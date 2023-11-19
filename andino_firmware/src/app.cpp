@@ -66,31 +66,18 @@
 
 #include "Arduino.h"
 #include "commands.h"
+#include "constants.h"
 #include "encoder.h"
 #include "hw.h"
 #include "motor.h"
 #include "pid.h"
 
-// TODO(jballoffet): Move this variables and constants to a different module.
-
-/* Serial port baud rate */
-#define BAUDRATE 57600
-/* Maximum PWM signal */
-#define MAX_PWM 255
-
-/* Run the PID loop at 30 times per second */
-#define PID_RATE 30  // Hz
-
-/* Convert the rate into an interval in milliseconds */
-const int PID_INTERVAL = 1000 / PID_RATE;
+// TODO(jballoffet): Move this variables to a different module.
 
 /* Track the next time we make a PID calculation */
-unsigned long nextPID = PID_INTERVAL;
+unsigned long nextPID = andino::Constants::kPidPeriod;
 
-/* Stop the robot if it hasn't received a movement command
-  in this number of milliseconds */
-#define AUTO_STOP_INTERVAL 3000
-long lastMotorCommand = AUTO_STOP_INTERVAL;
+long lastMotorCommand = andino::Constants::kAutoStopWindow;
 
 // A pair of varibles to help parse serial commands
 int arg = 0;
@@ -120,14 +107,16 @@ Motor App::right_motor_(RIGHT_MOTOR_ENABLE_GPIO_PIN, RIGHT_MOTOR_FORWARD_GPIO_PI
 Encoder App::left_encoder_(LEFT_ENCODER_A_GPIO_PIN, LEFT_ENCODER_B_GPIO_PIN);
 Encoder App::right_encoder_(RIGHT_ENCODER_A_GPIO_PIN, RIGHT_ENCODER_B_GPIO_PIN);
 
-PID App::left_pid_controller_(30, 10, 0, 10, -MAX_PWM, MAX_PWM);
-PID App::right_pid_controller_(30, 10, 0, 10, -MAX_PWM, MAX_PWM);
+PID App::left_pid_controller_(Constants::kPidKp, Constants::kPidKd, Constants::kPidKi,
+                              Constants::kPidKo, -Constants::kPwmMax, Constants::kPwmMax);
+PID App::right_pid_controller_(Constants::kPidKp, Constants::kPidKd, Constants::kPidKi,
+                               Constants::kPidKo, -Constants::kPwmMax, Constants::kPwmMax);
 
 void App::setup() {
   // Required by Arduino libraries to work.
   init();
 
-  Serial.begin(BAUDRATE);
+  Serial.begin(Constants::kBaudrate);
 
   left_encoder_.init();
   right_encoder_.init();
@@ -188,11 +177,11 @@ void App::loop() {
     right_pid_controller_.compute(right_encoder_.read(), right_motor_speed);
     left_motor_.set_speed(left_motor_speed);
     right_motor_.set_speed(right_motor_speed);
-    nextPID += PID_INTERVAL;
+    nextPID += Constants::kPidPeriod;
   }
 
   // Check to see if we have exceeded the auto-stop interval
-  if ((millis() - lastMotorCommand) > AUTO_STOP_INTERVAL) {
+  if ((millis() - lastMotorCommand) > Constants::kAutoStopWindow) {
     lastMotorCommand = millis();
     left_motor_.set_speed(0);
     right_motor_.set_speed(0);
@@ -226,7 +215,7 @@ void App::run_command() {
 
   switch (cmd) {
     case GET_BAUDRATE:
-      Serial.println(BAUDRATE);
+      Serial.println(Constants::kBaudrate);
       break;
     case ANALOG_READ:
       Serial.println(analogRead(arg1));
@@ -280,8 +269,8 @@ void App::run_command() {
       }
       // The target speeds are in ticks per second, so we need to convert them
       // to ticks per PID_INTERVAL
-      left_pid_controller_.set_setpoint(arg1 / PID_RATE);
-      right_pid_controller_.set_setpoint(arg2 / PID_RATE);
+      left_pid_controller_.set_setpoint(arg1 / Constants::kPidRate);
+      right_pid_controller_.set_setpoint(arg2 / Constants::kPidRate);
       Serial.println("OK");
       break;
     case MOTOR_RAW_PWM:
