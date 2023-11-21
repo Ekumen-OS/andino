@@ -12,7 +12,7 @@ Verify and Upload `andino_firmware.ino` to your arduino board.
 
 ## Description
 
-Via `serial` connection (57600 baud) it is possible to interact with the microcontroller. The interface is described in the [andino_firmware/commands.h](andino_firmware/commands.h) file. Here are the most used commands:
+Via `serial` connection (57600 baud) it is possible to interact with the microcontroller. The interface is described in the [commands.h](src/commands.h) file. Here are the most used commands:
 
 
  - Get encoder values: `'e'`
