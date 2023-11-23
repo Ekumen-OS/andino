@@ -27,19 +27,12 @@
 // CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
 // OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-#include "app.h"
+#pragma once
 
-/// @brief Application entry point.
-///
-/// @return Execution final status (never reached).
-int main(void) {
-  // MCU configuration.
-  andino::setup();
+namespace andino {
 
-  // Main run loop.
-  while (1) {
-    andino::loop();
-  }
+// TODO(jballoffet): Turn this into a class.
+void setup();
+void loop();
 
-  return 0;
-}
+}  // namespace andino
