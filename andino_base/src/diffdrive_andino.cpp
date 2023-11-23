@@ -145,10 +145,25 @@ hardware_interface::return_type DiffDriveAndino::read(const rclcpp::Time& /* tim
     return hardware_interface::return_type::ERROR;
   }
 
-  const MotorDriver::Encoders encoders = motor_driver_.ReadEncoderValues();
-
-  left_wheel_.enc_ = encoders[0];
-  right_wheel_.enc_ = encoders[1];
+  if (motor_driver_.HasImu()) {
+    const MotorDriver::EncodersAndImu eai = motor_driver_.ReadEncoderAndImuValues();
+    left_wheel_.enc_ = eai.encoders[0];
+    right_wheel_.enc_ = eai.encoders[1];
+    imu_.orientation_x = eai.imu[0];
+    imu_.orientation_y = eai.imu[1];
+    imu_.orientation_z = eai.imu[2];
+    imu_.orientation_w = eai.imu[3];
+    imu_.angular_velocity_x_ = eai.imu[4];
+    imu_.angular_velocity_y_ = eai.imu[5];
+    imu_.angular_velocity_z_ = eai.imu[6];
+    imu_.linear_acceleration_x_ = eai.imu[7];
+    imu_.linear_acceleration_y_ = eai.imu[8];
+    imu_.linear_acceleration_z_ = eai.imu[9];
+  } else {
+    const MotorDriver::Encoders encoders = motor_driver_.ReadEncoderValues();
+    left_wheel_.enc_ = encoders[0];
+    right_wheel_.enc_ = encoders[1];
+  }
 
   const double left_pos_prev = left_wheel_.pos_;
   left_wheel_.pos_ = left_wheel_.Angle();

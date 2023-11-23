@@ -73,12 +73,20 @@
 #include "pid.h"
 #include "shell.h"
 
+/*BNO055 Imu  */
+#include <Wire.h>
+#include <Adafruit_Sensor.h>
+#include <Adafruit_BNO055.h>
+#include <utility/imumaths.h>
+
 // TODO(jballoffet): Move this variables to a different module.
 
 /* Track the next time we make a PID calculation */
 unsigned long nextPID = andino::Constants::kPidPeriod;
 
 long lastMotorCommand = andino::Constants::kAutoStopWindow;
+
+bool HAS_IMU = true;
 
 namespace andino {
 
@@ -123,6 +131,14 @@ void App::setup() {
   shell_.register_command(Commands::kSetMotorsSpeed, cmd_set_motors_speed_cb);
   shell_.register_command(Commands::kSetMotorsPwm, cmd_set_motors_pwm_cb);
   shell_.register_command(Commands::kSetPidsTuningGains, cmd_set_pid_tuning_gains_cb);
+  /* Initialise the IMU sensor */
+  if(!bno.begin())
+  {
+    /* There was a problem detecting the BNO055 ... check your connections */
+    Serial.print("Ooops, no BNO055 detected ... Check your wiring or I2C ADDR!");
+    HAS_IMU = false;
+  }
+  bno.setExtCrystalUse(true);
 }
 
 void App::loop() {

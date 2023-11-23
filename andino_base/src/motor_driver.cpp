@@ -62,14 +62,34 @@ bool MotorDriver::is_connected() const { return serial_port_.IsOpen(); }
 
 void MotorDriver::SendEmptyMsg() { std::string response = SendMsg(""); }
 
-MotorDriver::Encoders MotorDriver::ReadEncoderValues() {
-  static const std::string delimiter = " ";
+bool MotorDriver::HasImu() {
+  const std::string response = SendMsg("h");
+  return response != "0";
+}
 
-  const std::string response = SendMsg("e");
-  const size_t del_pos = response.find(delimiter);
-  const std::string token_1 = response.substr(0, del_pos).c_str();
-  const std::string token_2 = response.substr(del_pos + delimiter.length()).c_str();
-  return {std::atoi(token_1.c_str()), std::atoi(token_2.c_str())};
+MotorDriver::EncodersAndImu MotorDriver::ReadEncoderAndImuValues() {
+  std::istringstream is(SendMsg("i"));
+ 
+  MotorDriver::EncodersAndImu eai;
+  for(int &val : eai.encoders) {
+    is >> val;
+  }
+  for(double &val : eai.imu) {
+    is >> val;
+  }
+
+  return eai;
+}
+
+MotorDriver::Encoders MotorDriver::ReadEncoderValues() {
+  std::istringstream is(SendMsg("e"));
+ 
+  MotorDriver::Encoders enc;
+  for(int &val : enc) {
+    is >> val;
+  }
+
+  return enc;
 }
 
 void MotorDriver::SetMotorValues(int val_1, int val_2) {

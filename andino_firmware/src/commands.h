@@ -74,6 +74,10 @@ struct Commands {
   static constexpr const char* kReadDigitalGpio{"d"};
   /// @brief Reads the encoders tick count values.
   static constexpr const char* kReadEncoders{"e"};
+  /// @brief Reads if there is an IMU connected.
+  static constexpr const char* kHasImu{"h"};
+  /// @brief Reads the encoders tick count values and IMU data.
+  static constexpr const char* kReadEncodersAndImu{"i"};
   /// @brief Sets the encoders ticks count to zero.
   static constexpr const char* kResetEncoders{"r"};
   /// @brief Sets the motors speed [ticks/s].
