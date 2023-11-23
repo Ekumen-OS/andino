@@ -100,7 +100,8 @@ def generate_launch_description():
 
     declare_map_yaml_cmd = DeclareLaunchArgument(
         'map',
-        description='Full path to map yaml file to load')
+        description='Full path to map yaml file to load',
+        default_value='')
 
     declare_use_sim_time_cmd = DeclareLaunchArgument(
         'use_sim_time',
@@ -154,18 +155,18 @@ def generate_launch_description():
             condition=IfCondition(slam),
             launch_arguments={'slam_params_file': slam_params_file}.items()),
         # TODO(olmerg)create andino localization launch
-        IncludeLaunchDescription(
-            PythonLaunchDescriptionSource(os.path.join(nav2_launch_dir,
-                                                       'localization_launch.py')),
-            condition=IfCondition(PythonExpression(['not ', slam])),
-            launch_arguments={'namespace': namespace,
-                              'map': map_yaml_file,
-                              'use_sim_time': use_sim_time,
-                              'autostart': autostart,
-                              'params_file': params_file,
-                              'use_composition': use_composition,
-                              'use_respawn': use_respawn,
-                              'container_name': 'nav2_container'}.items()),
+        # IncludeLaunchDescription(
+        #    PythonLaunchDescriptionSource(os.path.join(nav2_launch_dir,
+        #                                               'localization_launch.py')),
+        #    condition=IfCondition(PythonExpression(['not ', slam])),
+        #    launch_arguments={'namespace': namespace,
+        #                      'map': map_yaml_file,
+        #                      'use_sim_time': use_sim_time,
+        #                      'autostart': autostart,
+        #                      'params_file': params_file,
+        #                      'use_composition': use_composition,
+        #                      'use_respawn': use_respawn,
+        #                      'container_name': 'nav2_container'}.items()),
 
         IncludeLaunchDescription(
             PythonLaunchDescriptionSource(os.path.join(nav2_launch_dir, 'navigation_launch.py')),
