@@ -82,7 +82,7 @@ hardware_interface::CallbackReturn DiffDriveAndino::on_init(const hardware_inter
   return hardware_interface::CallbackReturn::SUCCESS;
 }
 
-hardware_interface::CallbackReturn DiffDriveAinterface_names_ndino::on_configure(const rclcpp_lifecycle::State& /*previous_state*/) {
+hardware_interface::CallbackReturn DiffDriveAndino::on_configure(const rclcpp_lifecycle::State& /*previous_state*/) {
   RCLCPP_INFO(logger_, "On configure...");
 
   // Set up communication with motor driver controller.
