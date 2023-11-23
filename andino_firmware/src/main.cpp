@@ -33,12 +33,12 @@
 ///
 /// @return Execution final status (never reached).
 int main(void) {
-  // MCU configuration.
-  andino::setup();
+  // Application configuration.
+  andino::App::setup();
 
-  // Main run loop.
+  // Application main run loop.
   while (1) {
-    andino::loop();
+    andino::App::loop();
   }
 
   return 0;
