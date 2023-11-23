@@ -1,6 +1,6 @@
 # Nav2 with Andino robot
-*Note*: Nav2 is only configured to work with the simulation for the moment.
- Support to real robot is forthcoming.
+> *Note*: Nav2 is only configured to work with the simulation for the moment.
+> Support to real robot is forthcoming. (We're working on this)
 
 ## Build
 
@@ -45,3 +45,17 @@ To test the navigation inside rviz:
 You test adding obstacles inside the Gazebo simulation or use the rviz button Waypoint/ nav through Poses mode to select sequential targets.
 
 This package has been tested with the Andino robot with `diff drive plugin` in gazebo. If you change the world you should change the map but also it is recommended to tune navigation [parameters](params/nav2_params.yaml).
+
+## Andino with nav2 in real robot
+
+Launch inside andino
+
+```
+ros2 launch andino_navigation andino_robot_navigation.launch.py
+```
+
+Then run in your workstation:
+
+```
+ros2 launch nav2_bringup rviz_launch.py
+```
