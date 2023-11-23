@@ -128,11 +128,6 @@ std::vector<hardware_interface::StateInterface> DiffDriveAndino::export_state_in
   state_interfaces.emplace_back(
         hardware_interface::StateInterface(config_.imu_sensor_name, config_.imu_sensor_name + "/10", &right_wheel_.pos_));
 
-  for (const auto &name : imu_sensor.get_state_interface_names()) {
-    state_interfaces.emplace_back(
-      hardware_interface::StateInterface(config_.imu_sensor_name, name, &right_wheel_.pos_));
-  }
-
   return state_interfaces;
 }
 
