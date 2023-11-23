@@ -41,6 +41,7 @@ hardware_interface::CallbackReturn DiffDriveAndino::on_init(const hardware_inter
 
   RCLCPP_INFO(logger_, "On init...");
 
+  config_.imu_sensor_name = info_.hardware_parameters[kImuSensorName];
   config_.left_wheel_name = info_.hardware_parameters[kLeftWheelNameParam];
   RCLCPP_DEBUG(logger_, (kLeftWheelNameParam + static_cast<std::string>(": ") + config_.left_wheel_name).c_str());
   config_.right_wheel_name = info_.hardware_parameters[kRightWheelNameParam];
@@ -81,7 +82,7 @@ hardware_interface::CallbackReturn DiffDriveAndino::on_init(const hardware_inter
   return hardware_interface::CallbackReturn::SUCCESS;
 }
 
-hardware_interface::CallbackReturn DiffDriveAndino::on_configure(const rclcpp_lifecycle::State& /*previous_state*/) {
+hardware_interface::CallbackReturn DiffDriveAinterface_names_ndino::on_configure(const rclcpp_lifecycle::State& /*previous_state*/) {
   RCLCPP_INFO(logger_, "On configure...");
 
   // Set up communication with motor driver controller.
@@ -106,6 +107,31 @@ std::vector<hardware_interface::StateInterface> DiffDriveAndino::export_state_in
       hardware_interface::StateInterface(right_wheel_.name_, hardware_interface::HW_IF_VELOCITY, &right_wheel_.vel_));
   state_interfaces.emplace_back(
       hardware_interface::StateInterface(right_wheel_.name_, hardware_interface::HW_IF_POSITION, &right_wheel_.pos_));
+  state_interfaces.emplace_back(
+        hardware_interface::StateInterface(config_.imu_sensor_name, config_.imu_sensor_name + "/1", &right_wheel_.pos_));
+  state_interfaces.emplace_back(
+        hardware_interface::StateInterface(config_.imu_sensor_name, config_.imu_sensor_name + "/2", &right_wheel_.pos_));
+  state_interfaces.emplace_back(
+        hardware_interface::StateInterface(config_.imu_sensor_name, config_.imu_sensor_name + "/3", &right_wheel_.pos_));
+  state_interfaces.emplace_back(
+        hardware_interface::StateInterface(config_.imu_sensor_name, config_.imu_sensor_name + "/4", &right_wheel_.pos_));
+  state_interfaces.emplace_back(
+        hardware_interface::StateInterface(config_.imu_sensor_name, config_.imu_sensor_name + "/5", &right_wheel_.pos_));
+  state_interfaces.emplace_back(
+        hardware_interface::StateInterface(config_.imu_sensor_name, config_.imu_sensor_name + "/6", &right_wheel_.pos_));
+  state_interfaces.emplace_back(
+        hardware_interface::StateInterface(config_.imu_sensor_name, config_.imu_sensor_name + "/7", &right_wheel_.pos_));
+  state_interfaces.emplace_back(
+        hardware_interface::StateInterface(config_.imu_sensor_name, config_.imu_sensor_name + "/8", &right_wheel_.pos_));
+  state_interfaces.emplace_back(
+        hardware_interface::StateInterface(config_.imu_sensor_name, config_.imu_sensor_name + "/9", &right_wheel_.pos_));
+  state_interfaces.emplace_back(
+        hardware_interface::StateInterface(config_.imu_sensor_name, config_.imu_sensor_name + "/10", &right_wheel_.pos_));
+
+  for (const auto &name : imu_sensor.get_state_interface_names()) {
+    state_interfaces.emplace_back(
+      hardware_interface::StateInterface(config_.imu_sensor_name, name, &right_wheel_.pos_));
+  }
 
   return state_interfaces;
 }

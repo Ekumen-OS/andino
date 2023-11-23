@@ -29,6 +29,18 @@
       <state_interface name="velocity"/>
       <state_interface name="position"/>
     </joint>
+    <sensor name="imu_sensor">
+      <state_interface name="imu_sensor/1"/>
+      <state_interface name="imu_sensor/2"/>
+      <state_interface name="imu_sensor/3"/>
+      <state_interface name="imu_sensor/4"/>
+      <state_interface name="imu_sensor/5"/>
+      <state_interface name="imu_sensor/6"/>
+      <state_interface name="imu_sensor/7"/>
+      <state_interface name="imu_sensor/8"/>
+      <state_interface name="imu_sensor/9"/>
+      <state_interface name="imu_sensor/10"/>
+    </joint>
   </ros2_control>
 
 </robot>
