@@ -40,7 +40,7 @@
       <state_interface name="imu_sensor/8"/>
       <state_interface name="imu_sensor/9"/>
       <state_interface name="imu_sensor/10"/>
-    </joint>
+    </sensor>
   </ros2_control>
 
 </robot>
