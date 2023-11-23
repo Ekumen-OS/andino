@@ -64,7 +64,7 @@ def generate_launch_description():
         launch_arguments={
             'slam': 'True',
             'params_file': params_file,
-        }
+        }.items(),
     )
 
     include_andino_bringup = IncludeLaunchDescription(
@@ -79,3 +79,5 @@ def generate_launch_description():
 
     ld.add_action(bringup_cmd)
     ld.add_action(include_andino_bringup)
+    
+    return ld
