@@ -47,6 +47,7 @@ def generate_launch_description():
     # Get the launch directory
     andino_navigation_dir = get_package_share_directory('andino_navigation')
     nav2_launch_dir = os.path.join(get_package_share_directory('nav2_bringup'), 'launch')
+    andino_slam_dir = os.path.join(get_package_share_directory('andino_slam'), 'launch')
 
     # Create the launch configuration variables
     namespace = LaunchConfiguration('namespace')
@@ -55,6 +56,7 @@ def generate_launch_description():
     map_yaml_file = LaunchConfiguration('map')
     use_sim_time = LaunchConfiguration('use_sim_time')
     params_file = LaunchConfiguration('params_file')
+    slam_params_file = LaunchConfiguration('slam_params_file')
     autostart = LaunchConfiguration('autostart')
     use_composition = LaunchConfiguration('use_composition')
     use_respawn = LaunchConfiguration('use_respawn')
@@ -110,6 +112,11 @@ def generate_launch_description():
         default_value=os.path.join(andino_navigation_dir, 'params', 'nav2_params.yaml'),
         description='Full path to the ROS 2 parameters file to use for all launched nodes')
 
+    declare_slam_params_file_cmd = DeclareLaunchArgument(
+        'slam_params_file',
+        default_value=os.path.join(andino_slam_dir, 'params', 'slam_toolbox_online_async.yaml'),
+        description='')
+
     declare_autostart_cmd = DeclareLaunchArgument(
         'autostart', default_value='true',
         description='Automatically startup the nav2 stack')
@@ -143,13 +150,9 @@ def generate_launch_description():
             output='screen'),
         # TODO(olmerg) change to andino slam launch
         IncludeLaunchDescription(
-            PythonLaunchDescriptionSource(os.path.join(nav2_launch_dir, 'slam_launch.py')),
+            PythonLaunchDescriptionSource(os.path.join(andino_slam_dir, 'slam_toolbox_online_async.launch.py')),
             condition=IfCondition(slam),
-            launch_arguments={'namespace': namespace,
-                              'use_sim_time': use_sim_time,
-                              'autostart': autostart,
-                              'use_respawn': use_respawn,
-                              'params_file': params_file}.items()),
+            launch_arguments={'slam_params_file': slam_params_file}.items()),
         # TODO(olmerg)create andino localization launch
         IncludeLaunchDescription(
             PythonLaunchDescriptionSource(os.path.join(nav2_launch_dir,
@@ -188,6 +191,7 @@ def generate_launch_description():
     ld.add_action(declare_map_yaml_cmd)
     ld.add_action(declare_use_sim_time_cmd)
     ld.add_action(declare_params_file_cmd)
+    ld.add_action(declare_slam_params_file_cmd)
     ld.add_action(declare_autostart_cmd)
     ld.add_action(declare_use_composition_cmd)
     ld.add_action(declare_use_respawn_cmd)
