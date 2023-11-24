@@ -39,13 +39,18 @@
   </xacro:base>
 
   <!-- Second story link -->
-  <xacro:base link_name="second_base_link" base_prop="${second_base_props}" mesh="${second_base_props['base']['mesh']}" >
+  <xacro:base link_name="base_link" base_prop="${second_base_props}" mesh="${second_base_props['base']['mesh']}" >
     <origin xyz="0 0 0.05" rpy="0 0 0" />
   </xacro:base>
   <!-- Joint to connect second_story with base_link -->
   <joint name="second_base_joint" type="fixed">
+<<<<<<< HEAD
     <parent link="base_link"/>
     <child link="second_base_link" />
+=======
+    <parent link="oriented_base_link"/>
+    <child link="base_link" />
+>>>>>>> 737a061 (andino urdf)
     <origin xyz="0 0 0" rpy="0 0 0" />
   </joint>
 
@@ -79,13 +84,16 @@
   </xacro:motor>
 
   <!-- Sensors -->
-  <xacro:laser prefix="rplidar" parent_link="second_base_link"
+  <xacro:laser prefix="rplidar" parent_link="base_link"
                    sensor_prop="${sensor_prop}">
   </xacro:laser>
 
   <xacro:camera_sensor parent_link="base_link" sensor_prop="${sensor_prop}">
   </xacro:camera_sensor>
 
+  <xacro:imu_sensor parent_link="base_link" sensor_prop="${sensor_prop}">
+  </xacro:imu_sensor>
+  
   <!-- ros2_control -->
   <xacro:if value="$(arg use_real_ros_control)">
     <xacro:include filename="$(find ${package_name})/urdf/include/andino_control.urdf.xacro" />
