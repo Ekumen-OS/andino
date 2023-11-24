@@ -33,6 +33,7 @@
 #include "motor.h"
 #include "pid.h"
 #include "shell.h"
+#include <Adafruit_BNO055.h>
 
 namespace andino {
 
@@ -61,6 +62,12 @@ class App {
   /// Callback method for the `Commands::kReadEncoders` command.
   static void cmd_read_encoders_cb(int argc, char** argv);
 
+  /// Callback method for the `Commands::kReadHasImu` command.
+  static void cmd_read_has_imu_cb(int argc, char** argv);
+  
+  /// Callback method for the `Commands::kReadEncodersAndImu` command.
+  static void cmd_read_encoders_and_imu_cb(int argc, char** argv);
+
   /// Callback method for the `Commands::kResetEncoders` command.
   static void cmd_reset_encoders_cb(int argc, char** argv);
 
@@ -87,6 +94,8 @@ class App {
   /// PID controllers (one per wheel).
   static PID left_pid_controller_;
   static PID right_pid_controller_;
+
+  static Adafruit_BNO055 bno_;
 };
 
 }  // namespace andino

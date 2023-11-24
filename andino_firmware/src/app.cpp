@@ -105,6 +105,8 @@ PID App::left_pid_controller_(Constants::kPidKp, Constants::kPidKd, Constants::k
 PID App::right_pid_controller_(Constants::kPidKp, Constants::kPidKd, Constants::kPidKi,
                                Constants::kPidKo, -Constants::kPwmMax, Constants::kPwmMax);
 
+Adafruit_BNO055 App::bno_{55, BNO055_ADDRESS_A, &Wire};
+
 void App::setup() {
   // Required by Arduino libraries to work.
   init();
@@ -132,13 +134,13 @@ void App::setup() {
   shell_.register_command(Commands::kSetMotorsPwm, cmd_set_motors_pwm_cb);
   shell_.register_command(Commands::kSetPidsTuningGains, cmd_set_pid_tuning_gains_cb);
   /* Initialise the IMU sensor */
-  if(!bno.begin())
+  if(!bno_.begin())
   {
     /* There was a problem detecting the BNO055 ... check your connections */
     Serial.print("Ooops, no BNO055 detected ... Check your wiring or I2C ADDR!");
     HAS_IMU = false;
   }
-  bno.setExtCrystalUse(true);
+  bno_.setExtCrystalUse(true);
 }
 
 void App::loop() {
@@ -195,6 +197,48 @@ void App::cmd_read_encoders_cb(int, char**) {
   Serial.print(left_encoder_.read());
   Serial.print(" ");
   Serial.println(right_encoder_.read());
+}
+
+void App::cmd_read_has_imu_cb(int argc, char** argv) {
+  Serial.println(HAS_IMU);
+}
+  
+void App::cmd_read_encoders_and_imu_cb(int argc, char** argv) {
+  Serial.print(left_encoder_.read());
+  Serial.print(" ");
+  Serial.print(right_encoder_.read());
+  Serial.print(" ");
+  
+  // Quaternion data
+  imu::Quaternion quat = bno_.getQuat();
+  Serial.print(quat.x(), 4);
+  Serial.print(" ");
+  Serial.print(quat.y(), 4);
+  Serial.print(" ");
+  Serial.print(quat.z(), 4);
+  Serial.print(" ");
+  Serial.print(quat.w(), 4);
+  Serial.print(" ");
+
+  /* Display the floating point data */
+  imu::Vector<3> euler_angvel = bno_.getVector(Adafruit_BNO055::VECTOR_GYROSCOPE);
+  Serial.print(euler_angvel.x());
+  Serial.print(" ");
+  Serial.print(euler_angvel.y());
+  Serial.print(" ");
+  Serial.print(euler_angvel.z());
+  Serial.print(" ");
+
+  /* Display the floating point data */
+  imu::Vector<3> euler_linearaccel = bno_.getVector(Adafruit_BNO055::VECTOR_LINEARACCEL);
+  Serial.print(euler_linearaccel.x());
+  Serial.print(" ");
+  Serial.print(euler_linearaccel.y());
+  Serial.print(" ");
+  Serial.print(euler_linearaccel.z());
+  Serial.print("\t\t");
+
+  Serial.println("OK");
 }
 
 void App::cmd_reset_encoders_cb(int, char**) {
