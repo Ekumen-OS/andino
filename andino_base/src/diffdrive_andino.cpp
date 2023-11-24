@@ -107,16 +107,6 @@ std::vector<hardware_interface::StateInterface> DiffDriveAndino::export_state_in
       hardware_interface::StateInterface(right_wheel_.name_, hardware_interface::HW_IF_VELOCITY, &right_wheel_.vel_));
   state_interfaces.emplace_back(
       hardware_interface::StateInterface(right_wheel_.name_, hardware_interface::HW_IF_POSITION, &right_wheel_.pos_));
-  double orientation_x = 0.;
-  double orientation_y = 0.;
-  double orientation_z = 0.;
-  double orientation_w = 0.;
-  double angular_velocity_x_ = 0;
-  double angular_velocity_y_ = 0;
-  double angular_velocity_z_ = 0;
-  double linear_acceleration_x_ = 0;
-  double linear_acceleration_y_ = 0;
-  double linear_acceleration_z_ = 0;
   state_interfaces.emplace_back(
         hardware_interface::StateInterface(config_.imu_sensor_name, config_.imu_sensor_name + "/1", &imu_.orientation_x));
   state_interfaces.emplace_back(
