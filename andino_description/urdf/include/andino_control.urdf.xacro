@@ -12,6 +12,7 @@
       <param name="baud_rate">57600</param>
       <param name="timeout">1000</param>
       <param name="enc_ticks_per_rev">585</param>
+      <param name="imu_sensor_name">imu_sensor</param>
     </hardware>
     <joint name="left_wheel_joint">
       <command_interface name="velocity">
