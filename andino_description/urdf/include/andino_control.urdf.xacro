@@ -31,16 +31,16 @@
       <state_interface name="position"/>
     </joint>
     <sensor name="imu_sensor">
-      <state_interface name="imu_sensor/1"/>
-      <state_interface name="imu_sensor/2"/>
-      <state_interface name="imu_sensor/3"/>
-      <state_interface name="imu_sensor/4"/>
-      <state_interface name="imu_sensor/5"/>
-      <state_interface name="imu_sensor/6"/>
-      <state_interface name="imu_sensor/7"/>
-      <state_interface name="imu_sensor/8"/>
-      <state_interface name="imu_sensor/9"/>
-      <state_interface name="imu_sensor/10"/>
+      <state_interface name="orientation.x"/>
+      <state_interface name="orientation.y"/>
+      <state_interface name="orientation.z"/>
+      <state_interface name="orientation.w"/>
+      <state_interface name="angular_velocity.x"/>
+      <state_interface name="angular_velocity.y"/>
+      <state_interface name="angular_velocity.z"/>
+      <state_interface name="linear_acceleration.x"/>
+      <state_interface name="linear_acceleration.y"/>
+      <state_interface name="linear_acceleration.z"/>
     </sensor>
   </ros2_control>
 
