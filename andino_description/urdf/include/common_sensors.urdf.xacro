@@ -92,6 +92,38 @@
     <axis xyz="0 1 0" />
   </joint>
 
+</xacro:macro>
+
+
+<xacro:macro name="imu_sensor" params="parent_link sensor_prop">
+  <link name="imu_link">
+    <visual>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <geometry>
+        <box size="${sensor_prop['imu']['box_size']} ${sensor_prop['imu']['box_size']} ${sensor_prop['imu']['box_size_height']}"/>
+      </geometry>
+      <material name="black"/>
+    </visual>
+    <collision>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <geometry>
+        <box size="${sensor_prop['imu']['box_size']} ${sensor_prop['imu']['box_size']} ${sensor_prop['imu']['box_size_height']}"/>
+      </geometry>
+    </collision>
+    <xacro:box_inertia m="${sensor_prop['imu']['mass']}"
+                            x="${sensor_prop['imu']['box_size']}"
+                            y="${sensor_prop['imu']['box_size']}"
+                            z="${sensor_prop['imu']['box_size_height']}"
+                            o_xyz="0 0 0"
+                            o_rpy="0 0 0" />
+  </link>
+
+  <joint name="imu_joint" type="fixed">
+    <parent link="${parent_link}"/>
+    <child link="imu_link"/>
+    <origin xyz="${sensor_prop['imu']['dx']} ${sensor_prop['imu']['dy']} ${sensor_prop['imu']['dz']}" rpy="0 0 0"/>
+    <axis xyz="0 1 0" />
+  </joint>
 
 </xacro:macro>
 
