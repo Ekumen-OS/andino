@@ -99,13 +99,13 @@ long arg2;
 
 namespace andino {
 
-Motor App::left_motor_(LEFT_MOTOR_ENABLE_GPIO_PIN, LEFT_MOTOR_FORWARD_GPIO_PIN,
-                       LEFT_MOTOR_BACKWARD_GPIO_PIN);
-Motor App::right_motor_(RIGHT_MOTOR_ENABLE_GPIO_PIN, RIGHT_MOTOR_FORWARD_GPIO_PIN,
-                        RIGHT_MOTOR_BACKWARD_GPIO_PIN);
+Motor App::left_motor_(Hw::kLeftMotorEnableGpioPin, Hw::kLeftMotorForwardGpioPin,
+                       Hw::kLeftMotorBackwardGpioPin);
+Motor App::right_motor_(Hw::kRightMotorEnableGpioPin, Hw::kRightMotorForwardGpioPin,
+                        Hw::kRightMotorBackwardGpioPin);
 
-Encoder App::left_encoder_(LEFT_ENCODER_A_GPIO_PIN, LEFT_ENCODER_B_GPIO_PIN);
-Encoder App::right_encoder_(RIGHT_ENCODER_A_GPIO_PIN, RIGHT_ENCODER_B_GPIO_PIN);
+Encoder App::left_encoder_(Hw::kLeftEncoderChannelAGpioPin, Hw::kLeftEncoderChannelBGpioPin);
+Encoder App::right_encoder_(Hw::kRightEncoderChannelAGpioPin, Hw::kRightEncoderChannelBGpioPin);
 
 PID App::left_pid_controller_(Constants::kPidKp, Constants::kPidKd, Constants::kPidKi,
                               Constants::kPidKo, -Constants::kPwmMax, Constants::kPwmMax);
