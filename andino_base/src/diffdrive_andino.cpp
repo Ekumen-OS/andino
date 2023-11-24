@@ -107,26 +107,36 @@ std::vector<hardware_interface::StateInterface> DiffDriveAndino::export_state_in
       hardware_interface::StateInterface(right_wheel_.name_, hardware_interface::HW_IF_VELOCITY, &right_wheel_.vel_));
   state_interfaces.emplace_back(
       hardware_interface::StateInterface(right_wheel_.name_, hardware_interface::HW_IF_POSITION, &right_wheel_.pos_));
+  double orientation_x = 0.;
+  double orientation_y = 0.;
+  double orientation_z = 0.;
+  double orientation_w = 0.;
+  double angular_velocity_x_ = 0;
+  double angular_velocity_y_ = 0;
+  double angular_velocity_z_ = 0;
+  double linear_acceleration_x_ = 0;
+  double linear_acceleration_y_ = 0;
+  double linear_acceleration_z_ = 0;
   state_interfaces.emplace_back(
-        hardware_interface::StateInterface(config_.imu_sensor_name, config_.imu_sensor_name + "/1", &right_wheel_.pos_));
+        hardware_interface::StateInterface(config_.imu_sensor_name, config_.imu_sensor_name + "/1", &imu_.orientation_x));
   state_interfaces.emplace_back(
-        hardware_interface::StateInterface(config_.imu_sensor_name, config_.imu_sensor_name + "/2", &right_wheel_.pos_));
+        hardware_interface::StateInterface(config_.imu_sensor_name, config_.imu_sensor_name + "/2", &imu_.orientation_y));
   state_interfaces.emplace_back(
-        hardware_interface::StateInterface(config_.imu_sensor_name, config_.imu_sensor_name + "/3", &right_wheel_.pos_));
+        hardware_interface::StateInterface(config_.imu_sensor_name, config_.imu_sensor_name + "/3", &imu_.orientation_z));
   state_interfaces.emplace_back(
-        hardware_interface::StateInterface(config_.imu_sensor_name, config_.imu_sensor_name + "/4", &right_wheel_.pos_));
+        hardware_interface::StateInterface(config_.imu_sensor_name, config_.imu_sensor_name + "/4", &imu_.orientation_w));
   state_interfaces.emplace_back(
-        hardware_interface::StateInterface(config_.imu_sensor_name, config_.imu_sensor_name + "/5", &right_wheel_.pos_));
+        hardware_interface::StateInterface(config_.imu_sensor_name, config_.imu_sensor_name + "/5", &imu_.angular_velocity_x_));
   state_interfaces.emplace_back(
-        hardware_interface::StateInterface(config_.imu_sensor_name, config_.imu_sensor_name + "/6", &right_wheel_.pos_));
+        hardware_interface::StateInterface(config_.imu_sensor_name, config_.imu_sensor_name + "/6", &imu_.angular_velocity_y_));
   state_interfaces.emplace_back(
-        hardware_interface::StateInterface(config_.imu_sensor_name, config_.imu_sensor_name + "/7", &right_wheel_.pos_));
+        hardware_interface::StateInterface(config_.imu_sensor_name, config_.imu_sensor_name + "/7", &imu_.angular_velocity_z_));
   state_interfaces.emplace_back(
-        hardware_interface::StateInterface(config_.imu_sensor_name, config_.imu_sensor_name + "/8", &right_wheel_.pos_));
+        hardware_interface::StateInterface(config_.imu_sensor_name, config_.imu_sensor_name + "/8", &imu_.linear_acceleration_x_));
   state_interfaces.emplace_back(
-        hardware_interface::StateInterface(config_.imu_sensor_name, config_.imu_sensor_name + "/9", &right_wheel_.pos_));
+        hardware_interface::StateInterface(config_.imu_sensor_name, config_.imu_sensor_name + "/9", &imu_.linear_acceleration_y_));
   state_interfaces.emplace_back(
-        hardware_interface::StateInterface(config_.imu_sensor_name, config_.imu_sensor_name + "/10", &right_wheel_.pos_));
+        hardware_interface::StateInterface(config_.imu_sensor_name, config_.imu_sensor_name + "/10", &imu_.linear_acceleration_z_));
 
   return state_interfaces;
 }
