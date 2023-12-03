@@ -56,6 +56,38 @@ class App {
   // TODO(jballoffet): Move this method to a different module.
   static void run_command();
 
+  /// Callback method for an unknown command (default).
+  // TODO(jballoffet): Parse arguments within callback method.
+  static void cmd_unknown(const char* arg1, const char* arg2);
+
+  /// Callback method for the `Commands::kreadAnalogGpio` command.
+  // TODO(jballoffet): Parse arguments within callback method.
+  static void cmd_read_analog_gpio(const char* arg1, const char* arg2);
+
+  /// Callback method for the `Commands::kreadDigitalGpio` command.
+  // TODO(jballoffet): Parse arguments within callback method.
+  static void cmd_read_digital_gpio(const char* arg1, const char* arg2);
+
+  /// Callback method for the `Commands::kreadEncoders` command.
+  // TODO(jballoffet): Parse arguments within callback method.
+  static void cmd_read_encoders(const char* arg1, const char* arg2);
+
+  /// Callback method for the `Commands::kresetEncoders` command.
+  // TODO(jballoffet): Parse arguments within callback method.
+  static void cmd_reset_encoders(const char* arg1, const char* arg2);
+
+  /// Callback method for the `Commands::ksetMotorsSpeed` command.
+  // TODO(jballoffet): Parse arguments within callback method.
+  static void cmd_set_motors_speed(const char* arg1, const char* arg2);
+
+  /// Callback method for the `Commands::ksetMotorsPwm` command.
+  // TODO(jballoffet): Parse arguments within callback method.
+  static void cmd_set_motors_pwm(const char* arg1, const char* arg2);
+
+  /// Callback method for the `Commands::ksetPidsTuningGains` command.
+  // TODO(jballoffet): Parse arguments within callback method.
+  static void cmd_set_pid_tuning_gains(const char* arg1, const char* arg2);
+
   /// Motors (one per wheel).
   static Motor left_motor_;
   static Motor right_motor_;
