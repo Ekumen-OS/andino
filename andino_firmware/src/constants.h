@@ -31,35 +31,33 @@
 
 namespace andino {
 
-/// @brief Hardware configuration.
-struct Hw {
-  /// @brief Left encoder channel A pin. Connected to PD2 (digital pin 2).
-  static constexpr int kLeftEncoderChannelAGpioPin{2};
-  /// @brief Left encoder channel B pin. Connected to PD3 (digital pin 3).
-  static constexpr int kLeftEncoderChannelBGpioPin{3};
+/// @brief Common constants.
+struct Constants {
+  /// @brief Serial port baud rate.
+  static constexpr long kBaudrate{57600};
 
-  /// @brief Right encoder channel A pin. Connected to PC4 (digital pin 18, analog pin A4).
-  static constexpr int kRightEncoderChannelAGpioPin{18};
-  /// @brief Right encoder channel B pin. Connected to PC5 (digital pin 19, analog pin A5).
-  static constexpr int kRightEncoderChannelBGpioPin{19};
+  /// @brief Time window to automatically stop the robot if no command has been received [ms].
+  static constexpr long kAutoStopWindow{3000};
 
-  /// @brief Left motor driver backward pin. Connected to PD6 (digital pin 6).
-  static constexpr int kLeftMotorBackwardGpioPin{6};
-  /// @brief Left motor driver forward pin. Connected to PB2 (digital pin 10).
-  static constexpr int kLeftMotorForwardGpioPin{10};
-  /// @brief Left motor driver enable pin. Connected to PB5 (digital pin 13).
-  /// @note The enable input of the L298N motor driver may be directly jumped to 5V if the board has
-  /// a jumper to do so.
-  static constexpr int kLeftMotorEnableGpioPin{13};
+  /// @brief Minimum PWM wave duty cycle (0%) (see
+  /// https://www.arduino.cc/reference/en/language/functions/analog-io/analogwrite/).
+  static constexpr int kPwmMin{0};
+  /// @brief Maximum PWM wave duty cycle (100%) (see
+  /// https://www.arduino.cc/reference/en/language/functions/analog-io/analogwrite/).
+  static constexpr int kPwmMax{255};
 
-  /// @brief Right motor driver backward pin. Connected to PD5 (digital pin 5).
-  static constexpr int kRightMotorBackwardGpioPin{5};
-  /// @brief Right motor driver forward pin. Connected to PB1 (digital pin 9).
-  static constexpr int kRightMotorForwardGpioPin{9};
-  /// @brief Right motor driver enable pin. Connected to PB4 (digital pin 12).
-  /// @note The enable input of the L298N motor driver may be directly jumped to 5V if the board has
-  /// a jumper to do so.
-  static constexpr int kRightMotorEnableGpioPin{12};
+  /// @brief PID computation rate [Hz].
+  static constexpr int kPidRate{30};
+  /// @brief PID computation period [ms].
+  static constexpr double kPidPeriod{1000 / kPidRate};
+  /// @brief PID default tuning proportional gain.
+  static constexpr int kPidKp{30};
+  /// @brief PID default tuning derivative gain.
+  static constexpr int kPidKd{10};
+  /// @brief PID default tuning integral gain.
+  static constexpr int kPidKi{0};
+  /// @brief PID default tuning output gain.
+  static constexpr int kPidKo{10};
 };
 
 }  // namespace andino
