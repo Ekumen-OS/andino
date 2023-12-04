@@ -34,6 +34,8 @@ RUN mkdir -p /home/$USER/ws/src
 RUN echo "source /opt/ros/humble/setup.bash" >> /home/$USER/.bashrc
 # Adds colcon autocomplete
 RUN echo "source /usr/share/colcon_argcomplete/hook/colcon-argcomplete.bash" >> /home/$USER/.bashrc
+# Adds gazebo sourcing.
+RUN echo "source /usr/share/gazebo/setup.bash" >> /home/$USER/.bashrc
 
 # Updates
 RUN sudo apt upgrade -y && sudo apt update && rosdep update
