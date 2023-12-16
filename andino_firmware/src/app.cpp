@@ -201,25 +201,25 @@ void App::reset_command() {
 
 void App::run_command() {
   switch (cmd) {
-    case Commands::kreadAnalogGpio:
+    case Commands::kReadAnalogGpio:
       cmd_read_analog_gpio(argv1, argv2);
       break;
-    case Commands::kreadDigitalGpio:
+    case Commands::kReadDigitalGpio:
       cmd_read_digital_gpio(argv1, argv2);
       break;
-    case Commands::kreadEncoders:
+    case Commands::kReadEncoders:
       cmd_read_encoders(argv1, argv2);
       break;
-    case Commands::kresetEncoders:
+    case Commands::kResetEncoders:
       cmd_reset_encoders(argv1, argv2);
       break;
-    case Commands::ksetMotorsSpeed:
+    case Commands::kSetMotorsSpeed:
       cmd_set_motors_speed(argv1, argv2);
       break;
-    case Commands::ksetMotorsPwm:
+    case Commands::kSetMotorsPwm:
       cmd_set_motors_pwm(argv1, argv2);
       break;
-    case Commands::ksetPidsTuningGains:
+    case Commands::kSetPidsTuningGains:
       cmd_set_pid_tuning_gains(argv1, argv2);
       break;
     default:
@@ -228,35 +228,25 @@ void App::run_command() {
   }
 }
 
-void App::cmd_unknown(const char* arg1, const char* arg2) {
-  (void)arg1;
-  (void)arg2;
-  Serial.println("Unknown command.");
-}
+void App::cmd_unknown(const char*, const char*) { Serial.println("Unknown command."); }
 
-void App::cmd_read_analog_gpio(const char* arg1, const char* arg2) {
-  (void)arg2;
-  int pin = atoi(arg1);
+void App::cmd_read_analog_gpio(const char* arg1, const char*) {
+  const int pin = atoi(arg1);
   Serial.println(analogRead(pin));
 }
 
-void App::cmd_read_digital_gpio(const char* arg1, const char* arg2) {
-  (void)arg2;
-  int pin = atoi(arg1);
+void App::cmd_read_digital_gpio(const char* arg1, const char*) {
+  const int pin = atoi(arg1);
   Serial.println(digitalRead(pin));
 }
 
-void App::cmd_read_encoders(const char* arg1, const char* arg2) {
-  (void)arg1;
-  (void)arg2;
+void App::cmd_read_encoders(const char*, const char*) {
   Serial.print(left_encoder_.read());
   Serial.print(" ");
   Serial.println(right_encoder_.read());
 }
 
-void App::cmd_reset_encoders(const char* arg1, const char* arg2) {
-  (void)arg1;
-  (void)arg2;
+void App::cmd_reset_encoders(const char*, const char*) {
   left_encoder_.reset();
   right_encoder_.reset();
   left_pid_controller_.reset(left_encoder_.read());
@@ -265,8 +255,8 @@ void App::cmd_reset_encoders(const char* arg1, const char* arg2) {
 }
 
 void App::cmd_set_motors_speed(const char* arg1, const char* arg2) {
-  int left_motor_speed = atoi(arg1);
-  int right_motor_speed = atoi(arg2);
+  const int left_motor_speed = atoi(arg1);
+  const int right_motor_speed = atoi(arg2);
 
   // Reset the auto stop timer.
   lastMotorCommand = millis();
@@ -290,8 +280,8 @@ void App::cmd_set_motors_speed(const char* arg1, const char* arg2) {
 }
 
 void App::cmd_set_motors_pwm(const char* arg1, const char* arg2) {
-  int left_motor_pwm = atoi(arg1);
-  int right_motor_pwm = atoi(arg2);
+  const int left_motor_pwm = atoi(arg1);
+  const int right_motor_pwm = atoi(arg2);
 
   // Reset the auto stop timer.
   lastMotorCommand = millis();
@@ -305,9 +295,7 @@ void App::cmd_set_motors_pwm(const char* arg1, const char* arg2) {
   Serial.println("OK");
 }
 
-void App::cmd_set_pid_tuning_gains(const char* arg1, const char* arg2) {
-  (void)arg2;
-
+void App::cmd_set_pid_tuning_gains(const char* arg1, const char*) {
   int i = 0;
   char arg[20];
   char* str;

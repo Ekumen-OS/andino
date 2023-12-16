@@ -60,31 +60,31 @@ class App {
   // TODO(jballoffet): Parse arguments within callback method.
   static void cmd_unknown(const char* arg1, const char* arg2);
 
-  /// Callback method for the `Commands::kreadAnalogGpio` command.
+  /// Callback method for the `Commands::kReadAnalogGpio` command.
   // TODO(jballoffet): Parse arguments within callback method.
   static void cmd_read_analog_gpio(const char* arg1, const char* arg2);
 
-  /// Callback method for the `Commands::kreadDigitalGpio` command.
+  /// Callback method for the `Commands::kReadDigitalGpio` command.
   // TODO(jballoffet): Parse arguments within callback method.
   static void cmd_read_digital_gpio(const char* arg1, const char* arg2);
 
-  /// Callback method for the `Commands::kreadEncoders` command.
+  /// Callback method for the `Commands::kReadEncoders` command.
   // TODO(jballoffet): Parse arguments within callback method.
   static void cmd_read_encoders(const char* arg1, const char* arg2);
 
-  /// Callback method for the `Commands::kresetEncoders` command.
+  /// Callback method for the `Commands::kResetEncoders` command.
   // TODO(jballoffet): Parse arguments within callback method.
   static void cmd_reset_encoders(const char* arg1, const char* arg2);
 
-  /// Callback method for the `Commands::ksetMotorsSpeed` command.
+  /// Callback method for the `Commands::kSetMotorsSpeed` command.
   // TODO(jballoffet): Parse arguments within callback method.
   static void cmd_set_motors_speed(const char* arg1, const char* arg2);
 
-  /// Callback method for the `Commands::ksetMotorsPwm` command.
+  /// Callback method for the `Commands::kSetMotorsPwm` command.
   // TODO(jballoffet): Parse arguments within callback method.
   static void cmd_set_motors_pwm(const char* arg1, const char* arg2);
 
-  /// Callback method for the `Commands::ksetPidsTuningGains` command.
+  /// Callback method for the `Commands::kSetPidsTuningGains` command.
   // TODO(jballoffet): Parse arguments within callback method.
   static void cmd_set_pid_tuning_gains(const char* arg1, const char* arg2);
 

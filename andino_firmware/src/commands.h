@@ -69,19 +69,19 @@ namespace andino {
 /// @brief CLI commands.
 struct Commands {
   /// @brief Reads an analog GPIO.
-  static constexpr char kreadAnalogGpio{'a'};
+  static constexpr char kReadAnalogGpio{'a'};
   /// @brief Reads a digital GPIO.
-  static constexpr char kreadDigitalGpio{'d'};
+  static constexpr char kReadDigitalGpio{'d'};
   /// @brief Reads the encoders tick count values.
-  static constexpr char kreadEncoders{'e'};
+  static constexpr char kReadEncoders{'e'};
   /// @brief Sets the encoders ticks count to zero.
-  static constexpr char kresetEncoders{'r'};
+  static constexpr char kResetEncoders{'r'};
   /// @brief Sets the motors speed [ticks/s].
-  static constexpr char ksetMotorsSpeed{'m'};
+  static constexpr char kSetMotorsSpeed{'m'};
   /// @brief Sets the motors PWM value [duty range: 0-255].
-  static constexpr char ksetMotorsPwm{'o'};
+  static constexpr char kSetMotorsPwm{'o'};
   /// @brief Sets the PIDs tuning gains [format: "kp:kd:ki:ko"].
-  static constexpr char ksetPidsTuningGains{'u'};
+  static constexpr char kSetPidsTuningGains{'u'};
 };
 
 }  // namespace andino
