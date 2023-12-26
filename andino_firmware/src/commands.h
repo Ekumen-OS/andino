@@ -62,24 +62,26 @@
 // CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
 // OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+#pragma once
 
-/* Define single-letter commands that will be sent by the PC over the
-   serial link.
-*/
+namespace andino {
 
-#ifndef COMMANDS_H
-#define COMMANDS_H
+/// @brief CLI commands.
+struct Commands {
+  /// @brief Reads an analog GPIO.
+  static constexpr char kReadAnalogGpio{'a'};
+  /// @brief Reads a digital GPIO.
+  static constexpr char kReadDigitalGpio{'d'};
+  /// @brief Reads the encoders tick count values.
+  static constexpr char kReadEncoders{'e'};
+  /// @brief Sets the encoders ticks count to zero.
+  static constexpr char kResetEncoders{'r'};
+  /// @brief Sets the motors speed [ticks/s].
+  static constexpr char kSetMotorsSpeed{'m'};
+  /// @brief Sets the motors PWM value [duty range: 0-255].
+  static constexpr char kSetMotorsPwm{'o'};
+  /// @brief Sets the PIDs tuning gains [format: "kp:kd:ki:ko"].
+  static constexpr char kSetPidsTuningGains{'u'};
+};
 
-#define ANALOG_READ    'a'
-#define GET_BAUDRATE   'b'
-#define PIN_MODE       'c'
-#define DIGITAL_READ   'd'
-#define READ_ENCODERS  'e'
-#define MOTOR_SPEEDS   'm'
-#define MOTOR_RAW_PWM  'o'
-#define RESET_ENCODERS 'r'
-#define UPDATE_PID     'u'
-#define DIGITAL_WRITE  'w'
-#define ANALOG_WRITE   'x'
-
-#endif
+}  // namespace andino

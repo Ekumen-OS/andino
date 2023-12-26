@@ -93,10 +93,6 @@ char cmd;
 char argv1[16];
 char argv2[16];
 
-// The arguments converted to integers
-long arg1;
-long arg2;
-
 namespace andino {
 
 Motor App::left_motor_(Hw::kLeftMotorEnableGpioPin, Hw::kLeftMotorForwardGpioPin,
@@ -199,114 +195,130 @@ void App::reset_command() {
   cmd = 0;
   memset(argv1, 0, sizeof(argv1));
   memset(argv2, 0, sizeof(argv2));
-  arg1 = 0;
-  arg2 = 0;
   arg = 0;
   index = 0;
 }
 
 void App::run_command() {
-  int i = 0;
-  char* p = argv1;
-  char* str;
-  int pid_args[4];
-  arg1 = atoi(argv1);
-  arg2 = atoi(argv2);
-
   switch (cmd) {
-    case GET_BAUDRATE:
-      Serial.println(Constants::kBaudrate);
+    case Commands::kReadAnalogGpio:
+      cmd_read_analog_gpio(argv1, argv2);
       break;
-    case ANALOG_READ:
-      Serial.println(analogRead(arg1));
+    case Commands::kReadDigitalGpio:
+      cmd_read_digital_gpio(argv1, argv2);
       break;
-    case DIGITAL_READ:
-      Serial.println(digitalRead(arg1));
+    case Commands::kReadEncoders:
+      cmd_read_encoders(argv1, argv2);
       break;
-    case ANALOG_WRITE:
-      analogWrite(arg1, arg2);
-      Serial.println("OK");
+    case Commands::kResetEncoders:
+      cmd_reset_encoders(argv1, argv2);
       break;
-    case DIGITAL_WRITE:
-      if (arg2 == 0)
-        digitalWrite(arg1, LOW);
-      else if (arg2 == 1)
-        digitalWrite(arg1, HIGH);
-      Serial.println("OK");
+    case Commands::kSetMotorsSpeed:
+      cmd_set_motors_speed(argv1, argv2);
       break;
-    case PIN_MODE:
-      if (arg2 == 0)
-        pinMode(arg1, INPUT);
-      else if (arg2 == 1)
-        pinMode(arg1, OUTPUT);
-      Serial.println("OK");
+    case Commands::kSetMotorsPwm:
+      cmd_set_motors_pwm(argv1, argv2);
       break;
-    case READ_ENCODERS:
-      Serial.print(left_encoder_.read());
-      Serial.print(" ");
-      Serial.println(right_encoder_.read());
-      break;
-    case RESET_ENCODERS:
-      left_encoder_.reset();
-      right_encoder_.reset();
-      left_pid_controller_.reset(left_encoder_.read());
-      right_pid_controller_.reset(right_encoder_.read());
-      Serial.println("OK");
-      break;
-    case MOTOR_SPEEDS:
-      /* Reset the auto stop timer */
-      lastMotorCommand = millis();
-      if (arg1 == 0 && arg2 == 0) {
-        left_motor_.set_speed(0);
-        right_motor_.set_speed(0);
-        left_pid_controller_.reset(left_encoder_.read());
-        right_pid_controller_.reset(right_encoder_.read());
-        left_pid_controller_.enable(false);
-        right_pid_controller_.enable(false);
-      } else {
-        left_pid_controller_.enable(true);
-        right_pid_controller_.enable(true);
-      }
-      // The target speeds are in ticks per second, so we need to convert them
-      // to ticks per PID_INTERVAL
-      left_pid_controller_.set_setpoint(arg1 / Constants::kPidRate);
-      right_pid_controller_.set_setpoint(arg2 / Constants::kPidRate);
-      Serial.println("OK");
-      break;
-    case MOTOR_RAW_PWM:
-      /* Reset the auto stop timer */
-      lastMotorCommand = millis();
-      left_pid_controller_.reset(left_encoder_.read());
-      right_pid_controller_.reset(right_encoder_.read());
-      // Sneaky way to temporarily disable the PID
-      left_pid_controller_.enable(false);
-      right_pid_controller_.enable(false);
-      left_motor_.set_speed(arg1);
-      right_motor_.set_speed(arg2);
-      Serial.println("OK");
-      break;
-    case UPDATE_PID:
-      /* Example: "u 30:20:10:50" */
-      while ((str = strtok_r(p, ":", &p)) != NULL) {
-        pid_args[i] = atoi(str);
-        i++;
-      }
-      left_pid_controller_.set_tunings(pid_args[0], pid_args[1], pid_args[2], pid_args[3]);
-      right_pid_controller_.set_tunings(pid_args[0], pid_args[1], pid_args[2], pid_args[3]);
-      Serial.print("PID Updated: ");
-      Serial.print(pid_args[0]);
-      Serial.print(" ");
-      Serial.print(pid_args[1]);
-      Serial.print(" ");
-      Serial.print(pid_args[2]);
-      Serial.print(" ");
-      Serial.println(pid_args[3]);
-      Serial.println("OK");
+    case Commands::kSetPidsTuningGains:
+      cmd_set_pid_tuning_gains(argv1, argv2);
       break;
     default:
-      Serial.println("Invalid Command");
+      cmd_unknown(argv1, argv2);
       break;
   }
+}
+
+void App::cmd_unknown(const char*, const char*) { Serial.println("Unknown command."); }
+
+void App::cmd_read_analog_gpio(const char* arg1, const char*) {
+  const int pin = atoi(arg1);
+  Serial.println(analogRead(pin));
+}
+
+void App::cmd_read_digital_gpio(const char* arg1, const char*) {
+  const int pin = atoi(arg1);
+  Serial.println(digitalRead(pin));
+}
+
+void App::cmd_read_encoders(const char*, const char*) {
+  Serial.print(left_encoder_.read());
+  Serial.print(" ");
+  Serial.println(right_encoder_.read());
+}
+
+void App::cmd_reset_encoders(const char*, const char*) {
+  left_encoder_.reset();
+  right_encoder_.reset();
+  left_pid_controller_.reset(left_encoder_.read());
+  right_pid_controller_.reset(right_encoder_.read());
+  Serial.println("OK");
+}
+
+void App::cmd_set_motors_speed(const char* arg1, const char* arg2) {
+  const int left_motor_speed = atoi(arg1);
+  const int right_motor_speed = atoi(arg2);
+
+  // Reset the auto stop timer.
+  lastMotorCommand = millis();
+  if (left_motor_speed == 0 && right_motor_speed == 0) {
+    left_motor_.set_speed(0);
+    right_motor_.set_speed(0);
+    left_pid_controller_.reset(left_encoder_.read());
+    right_pid_controller_.reset(right_encoder_.read());
+    left_pid_controller_.enable(false);
+    right_pid_controller_.enable(false);
+  } else {
+    left_pid_controller_.enable(true);
+    right_pid_controller_.enable(true);
+  }
+
+  // The target speeds are in ticks per second, so we need to convert them to ticks per
+  // Constants::kPidRate.
+  left_pid_controller_.set_setpoint(left_motor_speed / Constants::kPidRate);
+  right_pid_controller_.set_setpoint(right_motor_speed / Constants::kPidRate);
+  Serial.println("OK");
+}
+
+void App::cmd_set_motors_pwm(const char* arg1, const char* arg2) {
+  const int left_motor_pwm = atoi(arg1);
+  const int right_motor_pwm = atoi(arg2);
+
+  // Reset the auto stop timer.
+  lastMotorCommand = millis();
+  left_pid_controller_.reset(left_encoder_.read());
+  right_pid_controller_.reset(right_encoder_.read());
+  // Sneaky way to temporarily disable the PID.
+  left_pid_controller_.enable(false);
+  right_pid_controller_.enable(false);
+  left_motor_.set_speed(left_motor_pwm);
+  right_motor_.set_speed(right_motor_pwm);
+  Serial.println("OK");
+}
+
+void App::cmd_set_pid_tuning_gains(const char* arg1, const char*) {
+  int i = 0;
+  char arg[20];
+  char* str;
+  int pid_args[4];
+
+  // Example: "u 30:20:10:50".
+  strcpy(arg, arg1);
+  char* p = arg;
+  while ((str = strtok_r(p, ":", &p)) != NULL) {
+    pid_args[i] = atoi(str);
+    i++;
+  }
+  left_pid_controller_.set_tunings(pid_args[0], pid_args[1], pid_args[2], pid_args[3]);
+  right_pid_controller_.set_tunings(pid_args[0], pid_args[1], pid_args[2], pid_args[3]);
+  Serial.print("PID Updated: ");
+  Serial.print(pid_args[0]);
+  Serial.print(" ");
+  Serial.print(pid_args[1]);
+  Serial.print(" ");
+  Serial.print(pid_args[2]);
+  Serial.print(" ");
+  Serial.println(pid_args[3]);
+  Serial.println("OK");
 }
 
 }  // namespace andino
