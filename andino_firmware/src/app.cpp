@@ -126,8 +126,8 @@ void App::setup() {
 }
 
 void App::loop() {
-  // Process command shell.
-  shell_.process();
+  // Process command prompt input.
+  shell_.process_input();
 
   // Run a PID calculation at the appropriate intervals
   if (millis() > nextPID) {
@@ -155,25 +155,33 @@ void App::loop() {
   }
 }
 
-void App::cmd_unknown_cb(const char*, const char*) { Serial.println("Unknown command."); }
+void App::cmd_unknown_cb(int, char**) { Serial.println("Unknown command."); }
 
-void App::cmd_read_analog_gpio_cb(const char* arg1, const char*) {
-  const int pin = atoi(arg1);
+void App::cmd_read_analog_gpio_cb(int argc, char** argv) {
+  if (argc < 2) {
+    return;
+  }
+
+  const int pin = atoi(argv[1]);
   Serial.println(analogRead(pin));
 }
 
-void App::cmd_read_digital_gpio_cb(const char* arg1, const char*) {
-  const int pin = atoi(arg1);
+void App::cmd_read_digital_gpio_cb(int argc, char** argv) {
+  if (argc < 2) {
+    return;
+  }
+
+  const int pin = atoi(argv[1]);
   Serial.println(digitalRead(pin));
 }
 
-void App::cmd_read_encoders_cb(const char*, const char*) {
+void App::cmd_read_encoders_cb(int, char**) {
   Serial.print(left_encoder_.read());
   Serial.print(" ");
   Serial.println(right_encoder_.read());
 }
 
-void App::cmd_reset_encoders_cb(const char*, const char*) {
+void App::cmd_reset_encoders_cb(int, char**) {
   left_encoder_.reset();
   right_encoder_.reset();
   left_pid_controller_.reset(left_encoder_.read());
@@ -181,9 +189,13 @@ void App::cmd_reset_encoders_cb(const char*, const char*) {
   Serial.println("OK");
 }
 
-void App::cmd_set_motors_speed_cb(const char* arg1, const char* arg2) {
-  const int left_motor_speed = atoi(arg1);
-  const int right_motor_speed = atoi(arg2);
+void App::cmd_set_motors_speed_cb(int argc, char** argv) {
+  if (argc < 3) {
+    return;
+  }
+
+  const int left_motor_speed = atoi(argv[1]);
+  const int right_motor_speed = atoi(argv[2]);
 
   // Reset the auto stop timer.
   lastMotorCommand = millis();
@@ -206,9 +218,13 @@ void App::cmd_set_motors_speed_cb(const char* arg1, const char* arg2) {
   Serial.println("OK");
 }
 
-void App::cmd_set_motors_pwm_cb(const char* arg1, const char* arg2) {
-  const int left_motor_pwm = atoi(arg1);
-  const int right_motor_pwm = atoi(arg2);
+void App::cmd_set_motors_pwm_cb(int argc, char** argv) {
+  if (argc < 3) {
+    return;
+  }
+
+  const int left_motor_pwm = atoi(argv[1]);
+  const int right_motor_pwm = atoi(argv[2]);
 
   // Reset the auto stop timer.
   lastMotorCommand = millis();
@@ -222,7 +238,12 @@ void App::cmd_set_motors_pwm_cb(const char* arg1, const char* arg2) {
   Serial.println("OK");
 }
 
-void App::cmd_set_pid_tuning_gains_cb(const char* arg1, const char*) {
+void App::cmd_set_pid_tuning_gains_cb(int argc, char** argv) {
+  // TODO(jballoffet): Refactor to expect command multiple arguments.
+  if (argc < 2) {
+    return;
+  }
+
   static constexpr int kSizePidArgs{4};
   int i = 0;
   char arg[20];
@@ -230,7 +251,7 @@ void App::cmd_set_pid_tuning_gains_cb(const char* arg1, const char*) {
   int pid_args[kSizePidArgs]{0, 0, 0, 0};
 
   // Example: "u 30:20:10:50".
-  strcpy(arg, arg1);
+  strcpy(arg, argv[1]);
   char* p = arg;
   while ((str = strtok_r(p, ":", &p)) != NULL && i < kSizePidArgs) {
     pid_args[i] = atoi(str);

@@ -39,7 +39,7 @@ namespace andino {
 class Shell {
  public:
   /// @brief Command callback type.
-  typedef void (*CommandCallback)(const char*, const char*);
+  typedef void (*CommandCallback)(int argc, char** argv);
 
   /// @brief Initializes the shell.
   ///
@@ -59,17 +59,11 @@ class Shell {
 
   /// @brief Processes the available input at the command prompt (if any). Meant to be called
   /// continously.
-  void process();
+  void process_input();
 
  private:
-  /// Maximum number of commands that can be registered.
-  static constexpr int kCommandsMax{10};
-
   /// Maximum command name length.
-  static constexpr int kCommandNameLengthMax{16};
-
-  /// Maximum command argument length.
-  static constexpr int kCommandArgLengthMax{16};
+  static constexpr int kCommandNameLengthMax{8};
 
   /// Command registry entry definition.
   struct Command {
@@ -79,11 +73,20 @@ class Shell {
     CommandCallback callback;
   };
 
-  /// Resets the command prompt processing variables.
-  void reset();
+  /// Maximum number of commands that can be registered.
+  static constexpr int kCommandsMax{16};
+
+  /// Maximum number of command arguments that can be processed.
+  static constexpr int kCommandArgMax{16};
+
+  /// Maximum command prompt message length.
+  static constexpr int kCommandPromptLengthMax{64};
+
+  /// Parses the command prompt message.
+  void parse_message();
 
   /// Executes the corresponding command callback function.
-  void execute_callback();
+  void execute_callback(int argc, char** argv);
 
   /// Data stream.
   Stream* stream_{nullptr};
@@ -97,20 +100,11 @@ class Shell {
   /// Number of registered commands.
   size_t commands_count_{0};
 
-  /// Holds the received command.
-  char command_;
+  /// Command prompt message.
+  char message_buffer_[kCommandPromptLengthMax];
 
-  /// Holds the first received command argument.
-  char arg1_[kCommandArgLengthMax];
-
-  /// Holds the second received command argument.
-  char arg2_[kCommandArgLengthMax];
-
-  /// Argument array index.
-  int arg_index_{0};
-
-  /// Number of received command arguments.
-  int args_count_{0};
+  /// Command prompt message index.
+  int message_index_{0};
 };
 
 }  // namespace andino
