@@ -48,8 +48,7 @@ class PID {
         ki_(ki),
         ko_(ko),
         output_min_(output_min),
-        output_max_(output_max),
-        enabled_(false) {}
+        output_max_(output_max) {}
 
   /// @brief Resets the PID controller.
   ///
@@ -82,32 +81,32 @@ class PID {
 
  private:
   /// Tuning proportional gain.
-  int kp_;
+  int kp_{0};
   /// Tuning derivative gain.
-  int kd_;
+  int kd_{0};
   /// Tuning integral gain.
-  int ki_;
+  int ki_{0};
   /// Tuning output gain.
-  int ko_;
+  int ko_{0};
 
   /// Output minimum limit.
-  int output_min_;
+  int output_min_{0};
   /// Output maximum limit.
-  int output_max_;
+  int output_max_{0};
 
   /// True if the PID is enabled, false otherwise.
-  bool enabled_;
+  bool enabled_{false};
 
   /// Setpoint value.
-  int setpoint_;
+  int setpoint_{0};
   /// Accumulated integral term.
-  int integral_term_;
+  int integral_term_{0};
   /// Last received encoder value.
-  long last_encoder_count_;
+  long last_encoder_count_{0};
   /// Last computed input value.
-  int last_input_;
+  int last_input_{0};
   /// Last computed output value.
-  long last_output_;
+  long last_output_{0};
 };
 
 }  // namespace andino
