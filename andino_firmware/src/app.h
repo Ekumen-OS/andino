@@ -49,6 +49,12 @@ class App {
   static void loop();
 
  private:
+  /// Computes the PID output and updates the motors speed accordingly.
+  static void adjust_motors_speed();
+
+  /// Stops the motors and disables the PID.
+  static void stop_motors();
+
   /// Callback method for an unknown command (default).
   static void cmd_unknown_cb(int argc, char** argv);
 
@@ -87,6 +93,12 @@ class App {
   /// PID controllers (one per wheel).
   static PID left_pid_controller_;
   static PID right_pid_controller_;
+
+  /// Tracks the last time the PID computation was made.
+  static unsigned long last_pid_computation_;
+
+  /// Tracks the last time a `Commands::kSetMotorsSpeed` command was received.
+  static unsigned long last_set_motors_speed_cmd_;
 };
 
 }  // namespace andino
