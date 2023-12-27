@@ -296,15 +296,16 @@ void App::cmd_set_motors_pwm(const char* arg1, const char* arg2) {
 }
 
 void App::cmd_set_pid_tuning_gains(const char* arg1, const char*) {
+  static constexpr int kSizePidArgs{4};
   int i = 0;
   char arg[20];
   char* str;
-  int pid_args[4];
+  int pid_args[kSizePidArgs]{0, 0, 0, 0};
 
   // Example: "u 30:20:10:50".
   strcpy(arg, arg1);
   char* p = arg;
-  while ((str = strtok_r(p, ":", &p)) != NULL) {
+  while ((str = strtok_r(p, ":", &p)) != NULL && i < kSizePidArgs) {
     pid_args[i] = atoi(str);
     i++;
   }

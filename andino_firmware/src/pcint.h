@@ -49,6 +49,8 @@ class PCInt {
   static void attach_interrupt(uint8_t pin, InterruptCallback callback);
 
  private:
+  PCInt() = delete;
+
   /// Map between ports and Pin Change Mask registers.
   static constexpr volatile uint8_t* kPortToPCMask[]{&PCMSK0, &PCMSK1, &PCMSK2};
 };

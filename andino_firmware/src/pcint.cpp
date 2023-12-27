@@ -70,7 +70,7 @@ void PCInt::attach_interrupt(uint8_t pin, InterruptCallback callback) {
   *(kPortToPCMask[port]) |= bit_mask;
 
   // Set corresponding bit in the Pin Change Interrupt Control register.
-  PCICR |= 0x01 << port;
+  PCICR |= static_cast<uint8_t>(0x01 << port);
 
   // Set callback function.
   g_callbacks[port] = callback;
