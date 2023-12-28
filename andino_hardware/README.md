@@ -260,12 +260,27 @@ Install dependencies via rosdep:
 ```
 cd ~/robot_ws
 ```
+When it is the first time you run `rosdep`:
 ```
-rosdep install --from-paths src -i -y
+rosdep update
 ```
-Let's build the packages.
+Make sure to export the `ROS_DISTRO` environment variable:
 ```
-colcon build
+export ROS_DISTRO=humble
+```
+And then proceed to install the workspace dependencies:
+```
+rosdep install --from-paths src -i -y -r
+```
+Note that option `-r` has been added. For ARM based processors, there are missing packages, e.g. those related to simulation. We would not try to run the simulation in the compute platform of andino, however for convenience it is added here.
+
+Let' source the ROS Humble installation:
+```
+source /opt/ros/humble/setup.bash
+```
+Let's build the packages (`andino_gz_classic` and `andino_navigation` work only in simulation):
+```
+colcon build --packages-skip andino_gz_classic andino_navigation
 ```
 After building is completed:
 ```
