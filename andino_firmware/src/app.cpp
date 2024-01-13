@@ -64,7 +64,8 @@
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "app.h"
 
-#include "Arduino.h"
+#include <Arduino.h>
+
 #include "commands.h"
 #include "constants.h"
 #include "encoder.h"

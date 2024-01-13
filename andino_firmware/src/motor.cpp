@@ -64,7 +64,7 @@
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "motor.h"
 
-#include "Arduino.h"
+#include <Arduino.h>
 
 namespace andino {
 

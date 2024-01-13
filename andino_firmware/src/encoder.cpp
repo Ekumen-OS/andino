@@ -66,7 +66,8 @@
 
 #include <stdint.h>
 
-#include "Arduino.h"
+#include <Arduino.h>
+
 #include "pcint.h"
 
 namespace andino {

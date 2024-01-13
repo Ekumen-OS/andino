@@ -29,7 +29,7 @@
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "pcint.h"
 
-#include "Arduino.h"
+#include <Arduino.h>
 
 static andino::PCInt::InterruptCallback g_callbacks[3] = {nullptr};
 
