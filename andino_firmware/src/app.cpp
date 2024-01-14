@@ -68,20 +68,29 @@
 
 #include "commands.h"
 #include "constants.h"
+#include "digital_out_arduino.h"
 #include "encoder.h"
 #include "hw.h"
 #include "motor.h"
 #include "pid.h"
+#include "pwm_out_arduino.h"
 #include "shell.h"
 
 namespace andino {
 
 Shell App::shell_;
 
-Motor App::left_motor_(Hw::kLeftMotorEnableGpioPin, Hw::kLeftMotorForwardGpioPin,
-                       Hw::kLeftMotorBackwardGpioPin);
-Motor App::right_motor_(Hw::kRightMotorEnableGpioPin, Hw::kRightMotorForwardGpioPin,
-                        Hw::kRightMotorBackwardGpioPin);
+DigitalOutArduino App::left_motor_enable_digital_out_(Hw::kLeftMotorEnableGpioPin);
+PwmOutArduino App::left_motor_forward_pwm_out_(Hw::kLeftMotorForwardGpioPin);
+PwmOutArduino App::left_motor_backward_pwm_out_(Hw::kLeftMotorBackwardGpioPin);
+Motor App::left_motor_(&left_motor_enable_digital_out_, &left_motor_forward_pwm_out_,
+                       &left_motor_backward_pwm_out_);
+
+DigitalOutArduino App::right_motor_enable_digital_out_(Hw::kRightMotorEnableGpioPin);
+PwmOutArduino App::right_motor_forward_pwm_out_(Hw::kRightMotorForwardGpioPin);
+PwmOutArduino App::right_motor_backward_pwm_out_(Hw::kRightMotorBackwardGpioPin);
+Motor App::right_motor_(&right_motor_enable_digital_out_, &right_motor_forward_pwm_out_,
+                        &right_motor_backward_pwm_out_);
 
 Encoder App::left_encoder_(Hw::kLeftEncoderChannelAGpioPin, Hw::kLeftEncoderChannelBGpioPin);
 Encoder App::right_encoder_(Hw::kRightEncoderChannelAGpioPin, Hw::kRightEncoderChannelBGpioPin);
@@ -104,9 +113,10 @@ void App::setup() {
   left_encoder_.init();
   right_encoder_.init();
 
-  // Enable motors.
-  left_motor_.set_state(true);
-  right_motor_.set_state(true);
+  left_motor_.begin();
+  left_motor_.enable(true);
+  right_motor_.begin();
+  right_motor_.enable(true);
 
   left_pid_controller_.reset(left_encoder_.read());
   right_pid_controller_.reset(right_encoder_.read());
