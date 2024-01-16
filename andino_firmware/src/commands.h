@@ -75,7 +75,7 @@ struct Commands {
   /// @brief Reads the encoders tick count values.
   static constexpr const char* kReadEncoders{"e"};
   /// @brief Reads if there is an IMU connected.
-  static constexpr const char* kHasImu{"h"};
+  static constexpr const char* kReadHasImu{"h"};
   /// @brief Reads the encoders tick count values and IMU data.
   static constexpr const char* kReadEncodersAndImu{"i"};
   /// @brief Sets the encoders ticks count to zero.
