@@ -129,6 +129,8 @@ void App::setup() {
   shell_.register_command(Commands::kReadAnalogGpio, cmd_read_analog_gpio_cb);
   shell_.register_command(Commands::kReadDigitalGpio, cmd_read_digital_gpio_cb);
   shell_.register_command(Commands::kReadEncoders, cmd_read_encoders_cb);
+  shell_.register_command(Commands::kReadHasImu, cmd_read_has_imu_cb);
+  shell_.register_command(Commands::kReadEncodersAndImu, cmd_read_encoders_and_imu_cb);
   shell_.register_command(Commands::kResetEncoders, cmd_reset_encoders_cb);
   shell_.register_command(Commands::kSetMotorsSpeed, cmd_set_motors_speed_cb);
   shell_.register_command(Commands::kSetMotorsPwm, cmd_set_motors_pwm_cb);
