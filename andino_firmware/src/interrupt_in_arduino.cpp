@@ -1,6 +1,6 @@
 // BSD 3-Clause License
 //
-// Copyright (c) 2023, Ekumen Inc.
+// Copyright (c) 2024, Ekumen Inc.
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -27,32 +27,62 @@
 // CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
 // OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-#pragma once
-
-#include <stdint.h>
+#include "interrupt_in_arduino.h"
 
 #include <Arduino.h>
 
+/// Holds the attached callbacks.
+static andino::InterruptIn::InterruptCallback g_callbacks[3] = {nullptr};
+
+/// Pin change interrupt request 0 interrupt service routine.
+ISR(PCINT0_vect) {
+  if (g_callbacks[0] != nullptr) {
+    g_callbacks[0]();
+  }
+}
+
+/// Pin change interrupt request 1 interrupt service routine.
+ISR(PCINT1_vect) {
+  if (g_callbacks[1] != nullptr) {
+    g_callbacks[1]();
+  }
+}
+
+/// Pin change interrupt request 2 interrupt service routine.
+ISR(PCINT2_vect) {
+  if (g_callbacks[2] != nullptr) {
+    g_callbacks[2]();
+  }
+}
+
 namespace andino {
 
-/// @brief This class provides a simple way to set and use Pin Change Interrupts.
-class PCInt {
- public:
-  /// @brief Interrupt callback type.
-  typedef void (*InterruptCallback)();
+/// Map between ports and Pin Change Mask registers.
+static constexpr volatile uint8_t* kPortToPCMask[]{&PCMSK0, &PCMSK1, &PCMSK2};
 
-  /// @brief Attaches an interrupt callback.
-  /// @note Only one callback per port is supported.
-  ///
-  /// @param pin Pin of interest.
-  /// @param callback Callback function.
-  static void attach_interrupt(uint8_t pin, InterruptCallback callback);
+void InterruptInArduino::begin() const { pinMode(gpio_pin_, INPUT_PULLUP); }
 
- private:
-  PCInt() = delete;
+int InterruptInArduino::read() const { return digitalRead(gpio_pin_); }
 
-  /// Map between ports and Pin Change Mask registers.
-  static constexpr volatile uint8_t* kPortToPCMask[]{&PCMSK0, &PCMSK1, &PCMSK2};
-};
+void InterruptInArduino::attach(InterruptCallback callback) const {
+  uint8_t bit_mask = digitalPinToBitMask(gpio_pin_);
+  uint8_t port = digitalPinToPort(gpio_pin_);
+
+  if (port == NOT_A_PORT) {
+    return;
+  }
+
+  // Ports B, C and D values are 2, 3 and 4 correspondingly.
+  port -= 2;
+
+  // Set corresponding bit in the appropriate Pin Change Mask register.
+  *(kPortToPCMask[port]) |= bit_mask;
+
+  // Set corresponding bit in the Pin Change Interrupt Control register.
+  PCICR |= static_cast<uint8_t>(0x01 << port);
+
+  // Set callback function.
+  g_callbacks[port] = callback;
+}
 
 }  // namespace andino

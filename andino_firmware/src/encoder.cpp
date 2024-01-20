@@ -66,15 +66,13 @@
 
 #include <stdint.h>
 
-#include <Arduino.h>
-
-#include "pcint.h"
+#include "interrupt_in_arduino.h"
 
 namespace andino {
 
 constexpr int8_t Encoder::kTicksDelta[];
 
-const PCInt::InterruptCallback Encoder::kCallbacks[kInstancesMax] = {callback_0, callback_1};
+const InterruptIn::InterruptCallback Encoder::kCallbacks[kInstancesMax] = {callback_0, callback_1};
 
 void Encoder::callback_0() {
   if (Encoder::instances_[0] != nullptr) {
@@ -98,10 +96,10 @@ void Encoder::init() {
     return;
   }
 
-  pinMode(a_gpio_pin_, INPUT_PULLUP);
-  pinMode(b_gpio_pin_, INPUT_PULLUP);
-  andino::PCInt::attach_interrupt(a_gpio_pin_, kCallbacks[instance_count_]);
-  andino::PCInt::attach_interrupt(b_gpio_pin_, kCallbacks[instance_count_]);
+  channel_a_interrupt_in_.begin();
+  channel_a_interrupt_in_.attach(kCallbacks[instance_count_]);
+  channel_b_interrupt_in_.begin();
+  channel_b_interrupt_in_.attach(kCallbacks[instance_count_]);
 
   instances_[instance_count_] = this;
   instance_count_++;
@@ -114,7 +112,7 @@ void Encoder::reset() { count_ = 0L; }
 void Encoder::callback() {
   // Read the current channels state into the lowest 2 bits of the encoder state.
   state_ <<= 2;
-  state_ |= (digitalRead(b_gpio_pin_) << 1) | digitalRead(a_gpio_pin_);
+  state_ |= (channel_b_interrupt_in_.read() << 1) | channel_a_interrupt_in_.read();
 
   // Update the encoder count accordingly.
   count_ += kTicksDelta[(state_ & 0x0F)];

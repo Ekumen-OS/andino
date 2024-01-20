@@ -1,6 +1,6 @@
 // BSD 3-Clause License
 //
-// Copyright (c) 2023, Ekumen Inc.
+// Copyright (c) 2024, Ekumen Inc.
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -27,53 +27,25 @@
 // CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
 // OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-#include "pcint.h"
+#pragma once
 
-#include <Arduino.h>
-
-static andino::PCInt::InterruptCallback g_callbacks[3] = {nullptr};
-
-ISR(PCINT0_vect) {
-  if (g_callbacks[0] != nullptr) {
-    g_callbacks[0]();
-  }
-}
-
-ISR(PCINT1_vect) {
-  if (g_callbacks[1] != nullptr) {
-    g_callbacks[1]();
-  }
-}
-
-ISR(PCINT2_vect) {
-  if (g_callbacks[2] != nullptr) {
-    g_callbacks[2]();
-  }
-}
+#include "interrupt_in.h"
 
 namespace andino {
 
-constexpr volatile uint8_t* PCInt::kPortToPCMask[];
+/// @brief This class provides an Arduino implementation of the digital interrupt input interface.
+class InterruptInArduino : public InterruptIn {
+ public:
+  /// @brief Constructs a InterruptInArduino using the specified GPIO pin.
+  ///
+  /// @param gpio_pin GPIO pin.
+  explicit InterruptInArduino(const int gpio_pin) : InterruptIn(gpio_pin) {}
 
-void PCInt::attach_interrupt(uint8_t pin, InterruptCallback callback) {
-  uint8_t bit_mask = digitalPinToBitMask(pin);
-  uint8_t port = digitalPinToPort(pin);
+  void begin() const override;
 
-  if (port == NOT_A_PORT) {
-    return;
-  }
+  int read() const override;
 
-  // Ports B, C and D values are 2, 3 and 4 correspondingly.
-  port -= 2;
-
-  // Set corresponding bit in the appropriate Pin Change Mask register.
-  *(kPortToPCMask[port]) |= bit_mask;
-
-  // Set corresponding bit in the Pin Change Interrupt Control register.
-  PCICR |= static_cast<uint8_t>(0x01 << port);
-
-  // Set callback function.
-  g_callbacks[port] = callback;
-}
+  void attach(InterruptCallback callback) const override;
+};
 
 }  // namespace andino
