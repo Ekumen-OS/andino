@@ -32,6 +32,8 @@
 #include "encoder.h"
 #include "motor.h"
 #include "pid.h"
+#include "shell.h"
+#include <Adafruit_BNO055.h>
 
 namespace andino {
 
@@ -48,45 +50,38 @@ class App {
   static void loop();
 
  private:
-  /// Clears the current command parameters.
-  // TODO(jballoffet): Move this method to a different module.
-  static void reset_command();
-
-  /// Runs a command.
-  // TODO(jballoffet): Move this method to a different module.
-  static void run_command();
-
   /// Callback method for an unknown command (default).
-  // TODO(jballoffet): Parse arguments within callback method.
-  static void cmd_unknown(const char* arg1, const char* arg2);
+  static void cmd_unknown_cb(int argc, char** argv);
 
   /// Callback method for the `Commands::kReadAnalogGpio` command.
-  // TODO(jballoffet): Parse arguments within callback method.
-  static void cmd_read_analog_gpio(const char* arg1, const char* arg2);
+  static void cmd_read_analog_gpio_cb(int argc, char** argv);
 
   /// Callback method for the `Commands::kReadDigitalGpio` command.
-  // TODO(jballoffet): Parse arguments within callback method.
-  static void cmd_read_digital_gpio(const char* arg1, const char* arg2);
+  static void cmd_read_digital_gpio_cb(int argc, char** argv);
 
   /// Callback method for the `Commands::kReadEncoders` command.
-  // TODO(jballoffet): Parse arguments within callback method.
-  static void cmd_read_encoders(const char* arg1, const char* arg2);
+  static void cmd_read_encoders_cb(int argc, char** argv);
+
+  /// Callback method for the `Commands::kReadHasImu` command.
+  static void cmd_read_has_imu_cb(int argc, char** argv);
+  
+  /// Callback method for the `Commands::kReadEncodersAndImu` command.
+  static void cmd_read_encoders_and_imu_cb(int argc, char** argv);
 
   /// Callback method for the `Commands::kResetEncoders` command.
-  // TODO(jballoffet): Parse arguments within callback method.
-  static void cmd_reset_encoders(const char* arg1, const char* arg2);
+  static void cmd_reset_encoders_cb(int argc, char** argv);
 
   /// Callback method for the `Commands::kSetMotorsSpeed` command.
-  // TODO(jballoffet): Parse arguments within callback method.
-  static void cmd_set_motors_speed(const char* arg1, const char* arg2);
+  static void cmd_set_motors_speed_cb(int argc, char** argv);
 
   /// Callback method for the `Commands::kSetMotorsPwm` command.
-  // TODO(jballoffet): Parse arguments within callback method.
-  static void cmd_set_motors_pwm(const char* arg1, const char* arg2);
+  static void cmd_set_motors_pwm_cb(int argc, char** argv);
 
   /// Callback method for the `Commands::kSetPidsTuningGains` command.
-  // TODO(jballoffet): Parse arguments within callback method.
-  static void cmd_set_pid_tuning_gains(const char* arg1, const char* arg2);
+  static void cmd_set_pid_tuning_gains_cb(int argc, char** argv);
+
+  /// Application command shell.
+  static Shell shell_;
 
   /// Motors (one per wheel).
   static Motor left_motor_;
@@ -99,6 +94,8 @@ class App {
   /// PID controllers (one per wheel).
   static PID left_pid_controller_;
   static PID right_pid_controller_;
+
+  static Adafruit_BNO055 bno_;
 };
 
 }  // namespace andino

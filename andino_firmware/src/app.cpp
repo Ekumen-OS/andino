@@ -71,6 +71,13 @@
 #include "hw.h"
 #include "motor.h"
 #include "pid.h"
+#include "shell.h"
+
+/*BNO055 Imu  */
+#include <Wire.h>
+#include <Adafruit_Sensor.h>
+#include <Adafruit_BNO055.h>
+#include <utility/imumaths.h>
 
 // TODO(jballoffet): Move this variables to a different module.
 
@@ -79,21 +86,11 @@ unsigned long nextPID = andino::Constants::kPidPeriod;
 
 long lastMotorCommand = andino::Constants::kAutoStopWindow;
 
-// A pair of varibles to help parse serial commands
-int arg = 0;
-int index = 0;
-
-// Variable to hold an input character
-char chr;
-
-// Variable to hold the current single-character command
-char cmd;
-
-// Character arrays to hold the first and second arguments
-char argv1[16];
-char argv2[16];
+bool HAS_IMU = true;
 
 namespace andino {
+
+Shell App::shell_;
 
 Motor App::left_motor_(Hw::kLeftMotorEnableGpioPin, Hw::kLeftMotorForwardGpioPin,
                        Hw::kLeftMotorBackwardGpioPin);
@@ -107,6 +104,8 @@ PID App::left_pid_controller_(Constants::kPidKp, Constants::kPidKd, Constants::k
                               Constants::kPidKo, -Constants::kPwmMax, Constants::kPwmMax);
 PID App::right_pid_controller_(Constants::kPidKp, Constants::kPidKd, Constants::kPidKi,
                                Constants::kPidKo, -Constants::kPwmMax, Constants::kPwmMax);
+
+Adafruit_BNO055 App::bno_{55, BNO055_ADDRESS_A, &Wire};
 
 void App::setup() {
   // Required by Arduino libraries to work.
@@ -123,47 +122,32 @@ void App::setup() {
 
   left_pid_controller_.reset(left_encoder_.read());
   right_pid_controller_.reset(right_encoder_.read());
+
+  // Initialize command shell.
+  shell_.init(Serial);
+  shell_.set_default_callback(cmd_unknown_cb);
+  shell_.register_command(Commands::kReadAnalogGpio, cmd_read_analog_gpio_cb);
+  shell_.register_command(Commands::kReadDigitalGpio, cmd_read_digital_gpio_cb);
+  shell_.register_command(Commands::kReadEncoders, cmd_read_encoders_cb);
+  shell_.register_command(Commands::kReadHasImu, cmd_read_has_imu_cb);
+  shell_.register_command(Commands::kReadEncodersAndImu, cmd_read_encoders_and_imu_cb);
+  shell_.register_command(Commands::kResetEncoders, cmd_reset_encoders_cb);
+  shell_.register_command(Commands::kSetMotorsSpeed, cmd_set_motors_speed_cb);
+  shell_.register_command(Commands::kSetMotorsPwm, cmd_set_motors_pwm_cb);
+  shell_.register_command(Commands::kSetPidsTuningGains, cmd_set_pid_tuning_gains_cb);
+  /* Initialise the IMU sensor */
+  if(!bno_.begin())
+  {
+    /* There was a problem detecting the BNO055 ... check your connections */
+    Serial.print("Ooops, no BNO055 detected ... Check your wiring or I2C ADDR!");
+    HAS_IMU = false;
+  }
+  bno_.setExtCrystalUse(true);
 }
 
 void App::loop() {
-  while (Serial.available() > 0) {
-    // Read the next character
-    chr = Serial.read();
-
-    // Terminate a command with a CR
-    if (chr == 13) {
-      if (arg == 1)
-        argv1[index] = 0;
-      else if (arg == 2)
-        argv2[index] = 0;
-      run_command();
-      reset_command();
-    }
-    // Use spaces to delimit parts of the command
-    else if (chr == ' ') {
-      // Step through the arguments
-      if (arg == 0)
-        arg = 1;
-      else if (arg == 1) {
-        argv1[index] = 0;
-        arg = 2;
-        index = 0;
-      }
-      continue;
-    } else {
-      if (arg == 0) {
-        // The first arg is the single-letter command
-        cmd = chr;
-      } else if (arg == 1) {
-        // Subsequent arguments can be more than one character
-        argv1[index] = chr;
-        index++;
-      } else if (arg == 2) {
-        argv2[index] = chr;
-        index++;
-      }
-    }
-  }
+  // Process command prompt input.
+  shell_.process_input();
 
   // Run a PID calculation at the appropriate intervals
   if (millis() > nextPID) {
@@ -191,62 +175,75 @@ void App::loop() {
   }
 }
 
-void App::reset_command() {
-  cmd = 0;
-  memset(argv1, 0, sizeof(argv1));
-  memset(argv2, 0, sizeof(argv2));
-  arg = 0;
-  index = 0;
-}
+void App::cmd_unknown_cb(int, char**) { Serial.println("Unknown command."); }
 
-void App::run_command() {
-  switch (cmd) {
-    case Commands::kReadAnalogGpio:
-      cmd_read_analog_gpio(argv1, argv2);
-      break;
-    case Commands::kReadDigitalGpio:
-      cmd_read_digital_gpio(argv1, argv2);
-      break;
-    case Commands::kReadEncoders:
-      cmd_read_encoders(argv1, argv2);
-      break;
-    case Commands::kResetEncoders:
-      cmd_reset_encoders(argv1, argv2);
-      break;
-    case Commands::kSetMotorsSpeed:
-      cmd_set_motors_speed(argv1, argv2);
-      break;
-    case Commands::kSetMotorsPwm:
-      cmd_set_motors_pwm(argv1, argv2);
-      break;
-    case Commands::kSetPidsTuningGains:
-      cmd_set_pid_tuning_gains(argv1, argv2);
-      break;
-    default:
-      cmd_unknown(argv1, argv2);
-      break;
+void App::cmd_read_analog_gpio_cb(int argc, char** argv) {
+  if (argc < 2) {
+    return;
   }
-}
 
-void App::cmd_unknown(const char*, const char*) { Serial.println("Unknown command."); }
-
-void App::cmd_read_analog_gpio(const char* arg1, const char*) {
-  const int pin = atoi(arg1);
+  const int pin = atoi(argv[1]);
   Serial.println(analogRead(pin));
 }
 
-void App::cmd_read_digital_gpio(const char* arg1, const char*) {
-  const int pin = atoi(arg1);
+void App::cmd_read_digital_gpio_cb(int argc, char** argv) {
+  if (argc < 2) {
+    return;
+  }
+
+  const int pin = atoi(argv[1]);
   Serial.println(digitalRead(pin));
 }
 
-void App::cmd_read_encoders(const char*, const char*) {
+void App::cmd_read_encoders_cb(int, char**) {
   Serial.print(left_encoder_.read());
   Serial.print(" ");
   Serial.println(right_encoder_.read());
 }
 
-void App::cmd_reset_encoders(const char*, const char*) {
+void App::cmd_read_has_imu_cb(int argc, char** argv) {
+  Serial.println(HAS_IMU);
+}
+  
+void App::cmd_read_encoders_and_imu_cb(int argc, char** argv) {
+  Serial.print(left_encoder_.read());
+  Serial.print(" ");
+  Serial.print(right_encoder_.read());
+  Serial.print(" ");
+  
+  // Quaternion data
+  imu::Quaternion quat = bno_.getQuat();
+  Serial.print(quat.x(), 4);
+  Serial.print(" ");
+  Serial.print(quat.y(), 4);
+  Serial.print(" ");
+  Serial.print(quat.z(), 4);
+  Serial.print(" ");
+  Serial.print(quat.w(), 4);
+  Serial.print(" ");
+
+  /* Display the floating point data */
+  imu::Vector<3> euler_angvel = bno_.getVector(Adafruit_BNO055::VECTOR_GYROSCOPE);
+  Serial.print(euler_angvel.x());
+  Serial.print(" ");
+  Serial.print(euler_angvel.y());
+  Serial.print(" ");
+  Serial.print(euler_angvel.z());
+  Serial.print(" ");
+
+  /* Display the floating point data */
+  imu::Vector<3> euler_linearaccel = bno_.getVector(Adafruit_BNO055::VECTOR_LINEARACCEL);
+  Serial.print(euler_linearaccel.x());
+  Serial.print(" ");
+  Serial.print(euler_linearaccel.y());
+  Serial.print(" ");
+  Serial.print(euler_linearaccel.z());
+  Serial.print("\t\t");
+
+  Serial.println("OK");
+}
+
+void App::cmd_reset_encoders_cb(int, char**) {
   left_encoder_.reset();
   right_encoder_.reset();
   left_pid_controller_.reset(left_encoder_.read());
@@ -254,9 +251,13 @@ void App::cmd_reset_encoders(const char*, const char*) {
   Serial.println("OK");
 }
 
-void App::cmd_set_motors_speed(const char* arg1, const char* arg2) {
-  const int left_motor_speed = atoi(arg1);
-  const int right_motor_speed = atoi(arg2);
+void App::cmd_set_motors_speed_cb(int argc, char** argv) {
+  if (argc < 3) {
+    return;
+  }
+
+  const int left_motor_speed = atoi(argv[1]);
+  const int right_motor_speed = atoi(argv[2]);
 
   // Reset the auto stop timer.
   lastMotorCommand = millis();
@@ -279,9 +280,13 @@ void App::cmd_set_motors_speed(const char* arg1, const char* arg2) {
   Serial.println("OK");
 }
 
-void App::cmd_set_motors_pwm(const char* arg1, const char* arg2) {
-  const int left_motor_pwm = atoi(arg1);
-  const int right_motor_pwm = atoi(arg2);
+void App::cmd_set_motors_pwm_cb(int argc, char** argv) {
+  if (argc < 3) {
+    return;
+  }
+
+  const int left_motor_pwm = atoi(argv[1]);
+  const int right_motor_pwm = atoi(argv[2]);
 
   // Reset the auto stop timer.
   lastMotorCommand = millis();
@@ -295,7 +300,12 @@ void App::cmd_set_motors_pwm(const char* arg1, const char* arg2) {
   Serial.println("OK");
 }
 
-void App::cmd_set_pid_tuning_gains(const char* arg1, const char*) {
+void App::cmd_set_pid_tuning_gains_cb(int argc, char** argv) {
+  // TODO(jballoffet): Refactor to expect command multiple arguments.
+  if (argc < 2) {
+    return;
+  }
+
   static constexpr int kSizePidArgs{4};
   int i = 0;
   char arg[20];
@@ -303,7 +313,7 @@ void App::cmd_set_pid_tuning_gains(const char* arg1, const char*) {
   int pid_args[kSizePidArgs]{0, 0, 0, 0};
 
   // Example: "u 30:20:10:50".
-  strcpy(arg, arg1);
+  strcpy(arg, argv[1]);
   char* p = arg;
   while ((str = strtok_r(p, ":", &p)) != NULL && i < kSizePidArgs) {
     pid_args[i] = atoi(str);
