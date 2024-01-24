@@ -29,6 +29,8 @@
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #pragma once
 
+#include <Adafruit_BNO055.h>
+
 #include "digital_out_arduino.h"
 #include "encoder.h"
 #include "interrupt_in_arduino.h"
@@ -70,6 +72,12 @@ class App {
 
   /// Callback method for the `Commands::kReadEncoders` command.
   static void cmd_read_encoders_cb(int argc, char** argv);
+
+  /// Callback method for the `Commands::kReadHasImu` command.
+  static void cmd_read_has_imu_cb(int argc, char** argv);
+
+  /// Callback method for the `Commands::kReadEncodersAndImu` command.
+  static void cmd_read_encoders_and_imu_cb(int argc, char** argv);
 
   /// Callback method for the `Commands::kResetEncoders` command.
   static void cmd_reset_encoders_cb(int argc, char** argv);
@@ -120,6 +128,8 @@ class App {
 
   /// Tracks the last time a `Commands::kSetMotorsSpeed` command was received.
   static unsigned long last_set_motors_speed_cmd_;
+
+  static Adafruit_BNO055 bno_;
 };
 
 }  // namespace andino
