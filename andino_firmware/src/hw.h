@@ -39,9 +39,9 @@ struct Hw {
   static constexpr int kLeftEncoderChannelBGpioPin{3};
 
   /// @brief Right encoder channel A pin. Connected to PC4 (digital pin 18, analog pin A4).
-  static constexpr int kRightEncoderChannelAGpioPin{14};
+  static constexpr int kRightEncoderChannelAGpioPin{18};
   /// @brief Right encoder channel B pin. Connected to PC5 (digital pin 19, analog pin A5).
-  static constexpr int kRightEncoderChannelBGpioPin{15};
+  static constexpr int kRightEncoderChannelBGpioPin{19};
 
   /// @brief Left motor driver backward pin. Connected to PD6 (digital pin 6).
   static constexpr int kLeftMotorBackwardGpioPin{6};
