@@ -73,13 +73,6 @@
 #include "pid.h"
 #include "shell.h"
 
-// TODO(jballoffet): Move this variables to a different module.
-
-/* Track the next time we make a PID calculation */
-unsigned long nextPID = andino::Constants::kPidPeriod;
-
-long lastMotorCommand = andino::Constants::kAutoStopWindow;
-
 namespace andino {
 
 Shell App::shell_;
@@ -96,6 +89,10 @@ PID App::left_pid_controller_(Constants::kPidKp, Constants::kPidKd, Constants::k
                               Constants::kPidKo, -Constants::kPwmMax, Constants::kPwmMax);
 PID App::right_pid_controller_(Constants::kPidKp, Constants::kPidKd, Constants::kPidKi,
                                Constants::kPidKo, -Constants::kPwmMax, Constants::kPwmMax);
+
+unsigned long App::last_pid_computation_{0};
+
+unsigned long App::last_set_motors_speed_cmd_{0};
 
 void App::setup() {
   // Required by Arduino libraries to work.
@@ -129,30 +126,38 @@ void App::loop() {
   // Process command prompt input.
   shell_.process_input();
 
-  // Run a PID calculation at the appropriate intervals
-  if (millis() > nextPID) {
-    int left_motor_speed = 0;
-    int right_motor_speed = 0;
-    left_pid_controller_.compute(left_encoder_.read(), left_motor_speed);
-    right_pid_controller_.compute(right_encoder_.read(), right_motor_speed);
-    left_motor_.set_speed(left_motor_speed);
-    right_motor_.set_speed(right_motor_speed);
-    nextPID += Constants::kPidPeriod;
+  // Compute PID output at the configured rate.
+  if ((millis() - last_pid_computation_) > Constants::kPidPeriod) {
+    last_pid_computation_ = millis();
+    adjust_motors_speed();
   }
 
-  // Check to see if we have exceeded the auto-stop interval
-  if ((millis() - lastMotorCommand) > Constants::kAutoStopWindow) {
-    lastMotorCommand = millis();
-    left_motor_.set_speed(0);
-    right_motor_.set_speed(0);
-    left_pid_controller_.enable(false);
-    right_pid_controller_.enable(false);
+  // Stop the motors if auto-stop interval has been reached.
+  if ((millis() - last_set_motors_speed_cmd_) > Constants::kAutoStopWindow) {
+    last_set_motors_speed_cmd_ = millis();
+    stop_motors();
   }
 
   // Required by Arduino libraries to work.
   if (serialEventRun) {
     serialEventRun();
   }
+}
+
+void App::adjust_motors_speed() {
+  int left_motor_speed = 0;
+  int right_motor_speed = 0;
+  left_pid_controller_.compute(left_encoder_.read(), left_motor_speed);
+  right_pid_controller_.compute(right_encoder_.read(), right_motor_speed);
+  left_motor_.set_speed(left_motor_speed);
+  right_motor_.set_speed(right_motor_speed);
+}
+
+void App::stop_motors() {
+  left_motor_.set_speed(0);
+  right_motor_.set_speed(0);
+  left_pid_controller_.enable(false);
+  right_pid_controller_.enable(false);
 }
 
 void App::cmd_unknown_cb(int, char**) { Serial.println("Unknown command."); }
@@ -198,7 +203,7 @@ void App::cmd_set_motors_speed_cb(int argc, char** argv) {
   const int right_motor_speed = atoi(argv[2]);
 
   // Reset the auto stop timer.
-  lastMotorCommand = millis();
+  last_set_motors_speed_cmd_ = millis();
   if (left_motor_speed == 0 && right_motor_speed == 0) {
     left_motor_.set_speed(0);
     right_motor_.set_speed(0);
@@ -226,8 +231,6 @@ void App::cmd_set_motors_pwm_cb(int argc, char** argv) {
   const int left_motor_pwm = atoi(argv[1]);
   const int right_motor_pwm = atoi(argv[2]);
 
-  // Reset the auto stop timer.
-  lastMotorCommand = millis();
   left_pid_controller_.reset(left_encoder_.read());
   right_pid_controller_.reset(right_encoder_.read());
   // Sneaky way to temporarily disable the PID.
