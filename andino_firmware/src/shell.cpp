@@ -48,69 +48,57 @@ void Shell::register_command(const char* name, CommandCallback callback) {
   commands_[commands_count_++] = command;
 }
 
-// TODO(jballoffet): Modify parsing method to allow command name to be a string.
-void Shell::process() {
+void Shell::process_input() {
   while (stream_->available() > 0) {
-    // Read the next character
-    char chr = stream_->read();
+    const char input = stream_->read();
 
-    // Terminate a command with a CR
-    if (chr == 13) {
-      if (args_count_ == 1) {
-        arg1_[arg_index_] = 0;
-      } else if (args_count_ == 2) {
-        arg2_[arg_index_] = 0;
-      }
-      execute_callback();
-      reset();
-    }
-    // Use spaces to delimit parts of the command
-    else if (chr == ' ') {
-      // Step through the arguments
-      if (args_count_ == 0) {
-        args_count_ = 1;
-      } else if (args_count_ == 1) {
-        arg1_[arg_index_] = 0;
-        args_count_ = 2;
-        arg_index_ = 0;
-      }
-      continue;
-    } else {
-      if (args_count_ == 0) {
-        // The first arg is the single-letter command
-        command_ = chr;
-      } else if (args_count_ == 1) {
-        // Subsequent arguments can be more than one character
-        arg1_[arg_index_] = chr;
-        arg_index_++;
-      } else if (args_count_ == 2) {
-        arg2_[arg_index_] = chr;
-        arg_index_++;
-      }
+    switch (input) {
+      case '\r':
+        // Terminate command prompt message and parse it.
+        message_buffer_[message_index_++] = '\0';
+        parse_message();
+        // Reset message buffer.
+        message_index_ = 0;
+        break;
+
+      case '\n':
+        // Ignore newline characters.
+        break;
+
+      default:
+        message_buffer_[message_index_++] = input;
+        // Prevent buffer overflow.
+        if (message_index_ >= kCommandPromptLengthMax) {
+          message_index_ = 0;
+        }
+        break;
     }
   }
 }
 
-void Shell::reset() {
-  command_ = 0;
-  memset(arg1_, 0, sizeof(arg1_));
-  memset(arg2_, 0, sizeof(arg2_));
-  args_count_ = 0;
-  arg_index_ = 0;
+void Shell::parse_message() {
+  char* argv[kCommandArgMax];
+  int argc = 0;
+
+  argv[argc] = strtok(message_buffer_, " ");
+  while (argv[argc] != NULL && argc < (kCommandArgMax - 1)) {
+    argv[++argc] = strtok(NULL, " ");
+  }
+
+  execute_callback(argc, argv);
 }
 
-// TODO(jballoffet): Modify parsing method to allow command name to be a string.
-void Shell::execute_callback() {
+void Shell::execute_callback(int argc, char** argv) {
   for (size_t i = 0; i < commands_count_; i++) {
-    if (command_ == commands_[i].name[0]) {
-      commands_[i].callback(arg1_, arg2_);
+    if (!strcmp(argv[0], commands_[i].name)) {
+      commands_[i].callback(argc, argv);
       return;
     }
   }
 
   // Unknown command received, executing default callback.
   if (default_callback_ != nullptr) {
-    default_callback_(arg1_, arg2_);
+    default_callback_(argc, argv);
   }
 }
 
