@@ -28,7 +28,7 @@ _Note: For videos go to [Media](#selfie-media) section._
 - :hammer_and_pick: [`andino_firmware`](./andino_firmware): Contains the code be run in the microcontroller for interfacing low level hardware with the SBC.
 - :gear: [`andino_base`](./andino_base): [ROS Control hardware interface](https://control.ros.org/master/doc/ros2_control/hardware_interface/doc/writing_new_hardware_interface.html) is implemented.
 - :control_knobs: [`andino_control`](./andino_control/): It launches the [`controller_manager`](https://control.ros.org/humble/doc/ros2_control/controller_manager/doc/userdoc.html) along with the [ros2 controllers](https://control.ros.org/master/doc/ros2_controllers/doc/controllers_index.html): [diff_drive_controller](https://control.ros.org/master/doc/ros2_controllers/diff_drive_controller/doc/userdoc.html) and the [joint_state_broadcaster](https://control.ros.org/master/doc/ros2_controllers/joint_state_broadcaster/doc/userdoc.html).
-- :computer: [`andino_gz_classic`](./andino_gz_classic/): Gazebo simulation of the `andino` robot.
+- :computer: [`andino_gz_classic`](./andino_gz_classic/): [Gazebo Classic](https://classic.gazebosim.org/) simulation of the `andino` robot.
 - :world_map: [`andino_slam`](./andino_slam/): Provides support for SLAM with your `andino` robot.
 - :compass: [`andino_navigation`](./andino_navigation/): Navigation stack based on `nav2`.
 
@@ -36,8 +36,9 @@ _Note: For videos go to [Media](#selfie-media) section._
 
 Other projects built upon Andino! :rocket:
 
-- :test_tube: [`andino_integration_tests`](https://github.com/Ekumen-OS/andino_integration_tests): Extension to the Andino robot showing how to build integration tests.
+- :computer: [`andino_gz`](https://github.com/Ekumen-OS/andino_gz): [Gazebo](https://gazebosim.org/home)(non-classic) simulation of the `andino` robot.
 - :lady_beetle: [`andino_webots`](https://github.com/Ekumen-OS/andino_webots): [Webots](https://github.com/cyberbotics/webots) simulation of the Andino robot fully integrated with ROS 2.
+- :test_tube: [`andino_integration_tests`](https://github.com/Ekumen-OS/andino_integration_tests): Extension to the Andino robot showing how to build integration tests.
 
 ## :pick: Robot Assembly
 
