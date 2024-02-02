@@ -66,7 +66,7 @@
 
 #include <stdint.h>
 
-#include "pcint.h"
+#include "interrupt_in_arduino.h"
 
 namespace andino {
 
@@ -79,7 +79,8 @@ class Encoder {
   ///
   /// @param a_gpio_pin Encoder channel A GPIO pin.
   /// @param b_gpio_pin Encoder channel B GPIO pin.
-  Encoder(int a_gpio_pin, int b_gpio_pin) : a_gpio_pin_(a_gpio_pin), b_gpio_pin_(b_gpio_pin) {}
+  Encoder(int a_gpio_pin, int b_gpio_pin)
+      : channel_a_interrupt_in_(a_gpio_pin), channel_b_interrupt_in_(b_gpio_pin) {}
 
   /// @brief Initializes the encoder.
   void init();
@@ -121,7 +122,7 @@ class Encoder {
   static constexpr int kInstancesMax{2};
 
   /// Static wrappers that redirect to instance callback methods.
-  static const PCInt::InterruptCallback kCallbacks[kInstancesMax];
+  static const InterruptIn::InterruptCallback kCallbacks[kInstancesMax];
 
   /// Static wrapper that redirects to the first instance callback method.
   static void callback_0();
@@ -138,11 +139,11 @@ class Encoder {
   /// Number of constructed Encoder instances.
   static int instance_count_;
 
-  /// Channel A GPIO pin.
-  int a_gpio_pin_;
+  /// Interrupt input connected to encoder channel A pin.
+  InterruptInArduino channel_a_interrupt_in_;
 
-  /// Channel B GPIO pin.
-  int b_gpio_pin_;
+  /// Interrupt input connected to encoder channel B pin.
+  InterruptInArduino channel_b_interrupt_in_;
 
   /// Encoder state. It contains both the current and previous channels state readings:
   ///   +------+-----+-----+-----+-----+-----+-----+-----+-----+
