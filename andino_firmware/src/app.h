@@ -29,10 +29,12 @@
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #pragma once
 
+#include "digital_out_arduino.h"
 #include "encoder.h"
 #include "interrupt_in_arduino.h"
 #include "motor.h"
 #include "pid.h"
+#include "pwm_out_arduino.h"
 #include "shell.h"
 
 namespace andino {
@@ -83,8 +85,16 @@ class App {
   /// Application command shell.
   static Shell shell_;
 
-  /// Motors (one per wheel).
+  /// Left wheel motor.
+  static DigitalOutArduino left_motor_enable_digital_out_;
+  static PwmOutArduino left_motor_forward_pwm_out_;
+  static PwmOutArduino left_motor_backward_pwm_out_;
   static Motor left_motor_;
+
+  /// Right wheel motor.
+  static DigitalOutArduino right_motor_enable_digital_out_;
+  static PwmOutArduino right_motor_forward_pwm_out_;
+  static PwmOutArduino right_motor_backward_pwm_out_;
   static Motor right_motor_;
 
   /// Left wheel encoder.

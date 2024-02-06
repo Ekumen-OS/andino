@@ -64,6 +64,9 @@
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #pragma once
 
+#include "digital_out.h"
+#include "pwm_out.h"
+
 namespace andino {
 
 /// @brief This class allows to control a DC motor by enabling it and setting its speed. The
@@ -73,18 +76,22 @@ class Motor {
  public:
   /// @brief Constructs a new Motor object.
   ///
-  /// @param enable_gpio_pin Motor enable GPIO pin.
-  /// @param forward_gpio_pin Motor forward GPIO pin.
-  /// @param backward_gpio_pin Motor backward GPIO pin.
-  Motor(int enable_gpio_pin, int forward_gpio_pin, int backward_gpio_pin)
-      : enable_gpio_pin_(enable_gpio_pin),
-        forward_gpio_pin_(forward_gpio_pin),
-        backward_gpio_pin_(backward_gpio_pin) {}
+  /// @param enable_digital_out Digital output connected to motor enable pin.
+  /// @param forward_pwm_out PWM output connected to motor forward pin.
+  /// @param backward_pwm_out PWM output connected to motor backward pin.
+  Motor(const DigitalOut* enable_digital_out, const PwmOut* forward_pwm_out,
+        const PwmOut* backward_pwm_out)
+      : enable_digital_out_(enable_digital_out),
+        forward_pwm_out_(forward_pwm_out),
+        backward_pwm_out_(backward_pwm_out) {}
 
-  /// @brief Sets the motor state.
+  /// @brief Initializes the motor.
+  void begin();
+
+  /// @brief Enables the motor.
   ///
-  /// @param enabled Motor state.
-  void set_state(bool enabled);
+  /// @param enabled True to enable the motor, false otherwise.
+  void enable(bool enabled);
 
   /// @brief Sets the motor speed.
   ///
@@ -98,14 +105,14 @@ class Motor {
   /// Maximum speed value.
   static constexpr int kMaxSpeed{255};
 
-  /// Motor enable GPIO pin.
-  int enable_gpio_pin_;
+  /// Digital output connected to motor enable pin.
+  const DigitalOut* enable_digital_out_;
 
-  /// Motor forward GPIO pin.
-  int forward_gpio_pin_;
+  /// PWM output connected to motor forward pin.
+  const PwmOut* forward_pwm_out_;
 
-  /// Motor backward GPIO pin.
-  int backward_gpio_pin_;
+  /// PWM output connected to motor backward pin.
+  const PwmOut* backward_pwm_out_;
 };
 
 }  // namespace andino

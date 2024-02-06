@@ -64,17 +64,18 @@
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "motor.h"
 
-#include <Arduino.h>
+#include "digital_out.h"
+#include "pwm_out.h"
 
 namespace andino {
 
-void Motor::set_state(bool enabled) {
-  if (enabled) {
-    digitalWrite(enable_gpio_pin_, HIGH);
-  } else {
-    digitalWrite(enable_gpio_pin_, LOW);
-  }
+void Motor::begin() {
+  enable_digital_out_->begin();
+  forward_pwm_out_->begin();
+  backward_pwm_out_->begin();
 }
+
+void Motor::enable(bool enabled) { enable_digital_out_->write(enabled ? 1 : 0); }
 
 void Motor::set_speed(int speed) {
   bool forward = true;
@@ -89,11 +90,11 @@ void Motor::set_speed(int speed) {
 
   // The motor speed is controlled by sending a PWM wave to the corresponding pin.
   if (forward) {
-    analogWrite(forward_gpio_pin_, speed);
-    analogWrite(backward_gpio_pin_, 0);
+    forward_pwm_out_->write(speed);
+    backward_pwm_out_->write(0);
   } else {
-    analogWrite(backward_gpio_pin_, speed);
-    analogWrite(forward_gpio_pin_, 0);
+    backward_pwm_out_->write(speed);
+    forward_pwm_out_->write(0);
   }
 }
 
