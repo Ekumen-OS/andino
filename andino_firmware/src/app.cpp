@@ -71,6 +71,7 @@
 #include "digital_out_arduino.h"
 #include "encoder.h"
 #include "hw.h"
+#include "interrupt_in_arduino.h"
 #include "motor.h"
 #include "pid.h"
 #include "pwm_out_arduino.h"
@@ -92,8 +93,15 @@ PwmOutArduino App::right_motor_backward_pwm_out_(Hw::kRightMotorBackwardGpioPin)
 Motor App::right_motor_(&right_motor_enable_digital_out_, &right_motor_forward_pwm_out_,
                         &right_motor_backward_pwm_out_);
 
-Encoder App::left_encoder_(Hw::kLeftEncoderChannelAGpioPin, Hw::kLeftEncoderChannelBGpioPin);
-Encoder App::right_encoder_(Hw::kRightEncoderChannelAGpioPin, Hw::kRightEncoderChannelBGpioPin);
+InterruptInArduino App::left_encoder_channel_a_interrupt_in_(Hw::kLeftEncoderChannelAGpioPin);
+InterruptInArduino App::left_encoder_channel_b_interrupt_in_(Hw::kLeftEncoderChannelBGpioPin);
+Encoder App::left_encoder_(&left_encoder_channel_a_interrupt_in_,
+                           &left_encoder_channel_b_interrupt_in_);
+
+InterruptInArduino App::right_encoder_channel_a_interrupt_in_(Hw::kRightEncoderChannelAGpioPin);
+InterruptInArduino App::right_encoder_channel_b_interrupt_in_(Hw::kRightEncoderChannelBGpioPin);
+Encoder App::right_encoder_(&right_encoder_channel_a_interrupt_in_,
+                            &right_encoder_channel_b_interrupt_in_);
 
 PID App::left_pid_controller_(Constants::kPidKp, Constants::kPidKd, Constants::kPidKi,
                               Constants::kPidKo, -Constants::kPwmMax, Constants::kPwmMax);
@@ -110,8 +118,8 @@ void App::setup() {
 
   Serial.begin(Constants::kBaudrate);
 
-  left_encoder_.init();
-  right_encoder_.init();
+  left_encoder_.begin();
+  right_encoder_.begin();
 
   left_motor_.begin();
   left_motor_.enable(true);
