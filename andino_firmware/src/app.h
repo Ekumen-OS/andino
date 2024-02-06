@@ -31,6 +31,7 @@
 
 #include "digital_out_arduino.h"
 #include "encoder.h"
+#include "interrupt_in_arduino.h"
 #include "motor.h"
 #include "pid.h"
 #include "pwm_out_arduino.h"
@@ -96,8 +97,14 @@ class App {
   static PwmOutArduino right_motor_backward_pwm_out_;
   static Motor right_motor_;
 
-  /// Encoders (one per wheel).
+  /// Left wheel encoder.
+  static InterruptInArduino left_encoder_channel_a_interrupt_in_;
+  static InterruptInArduino left_encoder_channel_b_interrupt_in_;
   static Encoder left_encoder_;
+
+  /// Right wheel encoder.
+  static InterruptInArduino right_encoder_channel_a_interrupt_in_;
+  static InterruptInArduino right_encoder_channel_b_interrupt_in_;
   static Encoder right_encoder_;
 
   /// PID controllers (one per wheel).

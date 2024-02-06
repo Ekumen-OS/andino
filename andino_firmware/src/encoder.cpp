@@ -66,7 +66,7 @@
 
 #include <stdint.h>
 
-#include "interrupt_in_arduino.h"
+#include "interrupt_in.h"
 
 namespace andino {
 
@@ -89,17 +89,17 @@ void Encoder::callback_1() {
 Encoder* Encoder::instances_[kInstancesMax] = {nullptr, nullptr};
 int Encoder::instance_count_ = 0;
 
-void Encoder::init() {
+void Encoder::begin() {
   // The current implementation only supports two instances of this class to be constructed. This
   // prevents reaching a buffer overflow.
   if (instance_count_ == kInstancesMax) {
     return;
   }
 
-  channel_a_interrupt_in_.begin();
-  channel_a_interrupt_in_.attach(kCallbacks[instance_count_]);
-  channel_b_interrupt_in_.begin();
-  channel_b_interrupt_in_.attach(kCallbacks[instance_count_]);
+  channel_a_interrupt_in_->begin();
+  channel_a_interrupt_in_->attach(kCallbacks[instance_count_]);
+  channel_b_interrupt_in_->begin();
+  channel_b_interrupt_in_->attach(kCallbacks[instance_count_]);
 
   instances_[instance_count_] = this;
   instance_count_++;
@@ -112,7 +112,7 @@ void Encoder::reset() { count_ = 0L; }
 void Encoder::callback() {
   // Read the current channels state into the lowest 2 bits of the encoder state.
   state_ <<= 2;
-  state_ |= (channel_b_interrupt_in_.read() << 1) | channel_a_interrupt_in_.read();
+  state_ |= (channel_b_interrupt_in_->read() << 1) | channel_a_interrupt_in_->read();
 
   // Update the encoder count accordingly.
   count_ += kTicksDelta[(state_ & 0x0F)];

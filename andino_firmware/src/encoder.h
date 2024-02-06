@@ -66,7 +66,7 @@
 
 #include <stdint.h>
 
-#include "interrupt_in_arduino.h"
+#include "interrupt_in.h"
 
 namespace andino {
 
@@ -77,15 +77,16 @@ class Encoder {
  public:
   /// @brief Constructs a new Encoder object.
   ///
-  /// @param a_gpio_pin Encoder channel A GPIO pin.
-  /// @param b_gpio_pin Encoder channel B GPIO pin.
-  Encoder(int a_gpio_pin, int b_gpio_pin)
-      : channel_a_interrupt_in_(a_gpio_pin), channel_b_interrupt_in_(b_gpio_pin) {}
+  /// @param channel_a_interrupt_in Digital interrupt input connected to encoder channel A pin.
+  /// @param channel_b_interrupt_in Digital interrupt input connected to encoder channel B pin.
+  Encoder(const InterruptIn* channel_a_interrupt_in, const InterruptIn* channel_b_interrupt_in)
+      : channel_a_interrupt_in_(channel_a_interrupt_in),
+        channel_b_interrupt_in_(channel_b_interrupt_in) {}
 
   /// @brief Initializes the encoder.
-  void init();
+  void begin();
 
-  /// @brief Returns the ticks count value.
+  /// @brief Gets the ticks count value.
   ///
   /// @return Ticks count value.
   long read();
@@ -130,7 +131,7 @@ class Encoder {
   /// Static wrapper that redirects to the second instance callback method.
   static void callback_1();
 
-  /// Channels GPIO interrupt callback.
+  /// Channels interrupt callback.
   void callback();
 
   /// Holds references to the constructed Encoder instances.
@@ -139,11 +140,11 @@ class Encoder {
   /// Number of constructed Encoder instances.
   static int instance_count_;
 
-  /// Interrupt input connected to encoder channel A pin.
-  InterruptInArduino channel_a_interrupt_in_;
+  /// Digital interrupt input connected to encoder channel A pin.
+  const InterruptIn* channel_a_interrupt_in_;
 
-  /// Interrupt input connected to encoder channel B pin.
-  InterruptInArduino channel_b_interrupt_in_;
+  /// Digital interrupt input connected to encoder channel B pin.
+  const InterruptIn* channel_b_interrupt_in_;
 
   /// Encoder state. It contains both the current and previous channels state readings:
   ///   +------+-----+-----+-----+-----+-----+-----+-----+-----+
