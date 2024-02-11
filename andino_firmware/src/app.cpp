@@ -130,7 +130,7 @@ void App::setup() {
   right_pid_controller_.reset(right_encoder_.read());
 
   // Initialize command shell.
-  shell_.init(Serial);
+  shell_.begin(Serial);
   shell_.set_default_callback(cmd_unknown_cb);
   shell_.register_command(Commands::kReadAnalogGpio, cmd_read_analog_gpio_cb);
   shell_.register_command(Commands::kReadDigitalGpio, cmd_read_digital_gpio_cb);

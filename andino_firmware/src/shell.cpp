@@ -33,7 +33,7 @@
 
 namespace andino {
 
-void Shell::init(Stream& stream) { stream_ = &stream; }
+void Shell::begin(Stream& stream) { stream_ = &stream; }
 
 void Shell::set_default_callback(CommandCallback callback) { default_callback_ = callback; }
 
