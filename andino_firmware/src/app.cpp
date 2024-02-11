@@ -75,9 +75,12 @@
 #include "motor.h"
 #include "pid.h"
 #include "pwm_out_arduino.h"
+#include "serial_stream_arduino.h"
 #include "shell.h"
 
 namespace andino {
+
+SerialStreamArduino App::serial_stream_;
 
 Shell App::shell_;
 
@@ -116,7 +119,7 @@ void App::setup() {
   // Required by Arduino libraries to work.
   init();
 
-  Serial.begin(Constants::kBaudrate);
+  serial_stream_.begin(Constants::kBaudrate);
 
   left_encoder_.begin();
   right_encoder_.begin();
@@ -130,7 +133,7 @@ void App::setup() {
   right_pid_controller_.reset(right_encoder_.read());
 
   // Initialize command shell.
-  shell_.begin(Serial);
+  shell_.set_serial_stream(&serial_stream_);
   shell_.set_default_callback(cmd_unknown_cb);
   shell_.register_command(Commands::kReadAnalogGpio, cmd_read_analog_gpio_cb);
   shell_.register_command(Commands::kReadDigitalGpio, cmd_read_digital_gpio_cb);
