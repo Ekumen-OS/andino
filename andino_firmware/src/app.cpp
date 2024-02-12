@@ -168,15 +168,19 @@ void App::adjust_motors_speed() {
   int right_motor_speed = 0;
   left_pid_controller_.compute(left_encoder_.read(), left_motor_speed);
   right_pid_controller_.compute(right_encoder_.read(), right_motor_speed);
-  left_motor_.set_speed(left_motor_speed);
-  right_motor_.set_speed(right_motor_speed);
+  if (left_pid_controller_.enabled()){
+    left_motor_.set_speed(left_motor_speed);
+  }
+  if (right_pid_controller_.enabled()){
+    right_motor_.set_speed(right_motor_speed);
+  }
 }
 
 void App::stop_motors() {
   left_motor_.set_speed(0);
   right_motor_.set_speed(0);
-  left_pid_controller_.enable(false);
-  right_pid_controller_.enable(false);
+  left_pid_controller_.disable();
+  right_pid_controller_.disable();
 }
 
 void App::cmd_unknown_cb(int, char**) { Serial.println("Unknown command."); }
@@ -228,11 +232,11 @@ void App::cmd_set_motors_speed_cb(int argc, char** argv) {
     right_motor_.set_speed(0);
     left_pid_controller_.reset(left_encoder_.read());
     right_pid_controller_.reset(right_encoder_.read());
-    left_pid_controller_.enable(false);
-    right_pid_controller_.enable(false);
+    left_pid_controller_.disable();
+    right_pid_controller_.disable();
   } else {
-    left_pid_controller_.enable(true);
-    right_pid_controller_.enable(true);
+    left_pid_controller_.enable();
+    right_pid_controller_.enable();
   }
 
   // The target speeds are in ticks per second, so we need to convert them to ticks per
@@ -253,8 +257,8 @@ void App::cmd_set_motors_pwm_cb(int argc, char** argv) {
   left_pid_controller_.reset(left_encoder_.read());
   right_pid_controller_.reset(right_encoder_.read());
   // Sneaky way to temporarily disable the PID.
-  left_pid_controller_.enable(false);
-  right_pid_controller_.enable(false);
+  left_pid_controller_.disable();
+  right_pid_controller_.disable();
   left_motor_.set_speed(left_motor_pwm);
   right_motor_.set_speed(right_motor_pwm);
   Serial.println("OK");

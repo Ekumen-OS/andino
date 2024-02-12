@@ -81,7 +81,14 @@ void PID::reset(int encoder_count) {
   last_output_ = 0;
 }
 
-void PID::enable(bool enabled) { enabled_ = enabled; }
+/// @brief Enable PID
+void PID::enable() { enabled_ = true; }
+
+/// @brief Is the PID controller enabled?
+bool PID::enabled() { return enabled_; }
+
+/// @brief Disable PID
+void PID::disable() { enabled_ = false; }
 
 void PID::compute(int encoder_count, int& computed_output) {
   if (!enabled_) {

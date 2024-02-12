@@ -55,10 +55,14 @@ class PID {
   /// @param encoder_count Current encoder value.
   void reset(int encoder_count);
 
+  /// @brief Returns if the PID controller is enabled or not.
+  bool enabled();
+
   /// @brief Enables the PID controller.
-  ///
-  /// @param enabled True to enable the PID, false otherwise.
-  void enable(bool enabled);
+  void enable();
+
+  /// @brief Disables the PID controller.
+  void disable();
 
   /// @brief Computes a new output.
   ///
