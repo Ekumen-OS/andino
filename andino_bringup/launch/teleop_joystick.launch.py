@@ -42,7 +42,7 @@ def generate_launch_description():
 
     cmd_vel_topic_arg = DeclareLaunchArgument(
             'cmd_vel_topic',
-            default_value='/cmd_vel_joy',
+            default_value='/cmd_vel',
             description='Indicates the cmd_vel topic.')
     cmd_vel_topic =  LaunchConfiguration('cmd_vel_topic')
 

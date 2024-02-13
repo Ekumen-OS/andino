@@ -123,17 +123,38 @@ By default sensors like the camera and the lidar are initialized. This can be di
 - include_rplidar: `true` as default.
 - include_camera: `true` as default.
 
-After the robot is launched, use `ROS 2 CLI` for inspecting environment. E.g: By doing `ros2 topic list` the available topics can be displayed.
+After the robot is launched, use `ROS 2 CLI` for inspecting environment.
+For example, by doing `ros2 topic list` the available topics can be displayed:
+
+    /camera_info
+    /cmd_vel
+    /image_raw
+    /odom
+    /robot_description
+    /scan
+    /tf
+    /tf_static
+
+   _Note: Showing just some of them_
 
 ### Teleoperation
 
 Launch files for using the keyboard or a joystick for teleoperating the robot are provided.
 
-[`twist_mux`](http://wiki.ros.org/twist_mux) is used to at the same time accept command velocities from different topics using certain priority for each one of them (See [twist_mux config](andino_bringup/config/twist_mux.yaml)). Available topics are (ordering by priority):
+#### Keyboard
 
-- cmd_vel
-- cmd_vel_keyboard
-- cmd_vel_joy
+```
+ros2 launch andino_bringup teleop_keyboard.launch.py
+```
+This is similarly to just call `ros2 run teleop_twist_keyboard teleop_twist_keyboard`
+
+#### Joystick
+
+Using a joystick for teleoperating is notably better.
+You need the joystick configured as explained [here](andino_hardware/README.md#Using-joystick-for-teleoperation).
+```
+ros2 launch andino_bringup teleop_joystick.launch.py
+```
 
 ### RViz
 
