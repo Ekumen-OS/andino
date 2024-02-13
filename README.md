@@ -146,7 +146,7 @@ Launch files for using the keyboard or a joystick for teleoperating the robot ar
 ```
 ros2 launch andino_bringup teleop_keyboard.launch.py
 ```
-This is similarly to just call `ros2 run teleop_twist_keyboard teleop_twist_keyboard`
+This is similarly to just executing `ros2 run teleop_twist_keyboard teleop_twist_keyboard`.
 
 #### Joystick
 
