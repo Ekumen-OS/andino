@@ -32,7 +32,7 @@
 namespace andino {
 
 /// @brief This class provides a simple PID controller implementation.
-class PID {
+class Pid {
  public:
   /// @brief Constructs a new PID object.
   ///
@@ -42,13 +42,8 @@ class PID {
   /// @param ko Tuning output gain.
   /// @param output_min Output minimum limit.
   /// @param output_max Output maximum limit.
-  PID(int kp, int kd, int ki, int ko, int output_min, int output_max)
-      : kp_(kp),
-        kd_(kd),
-        ki_(ki),
-        ko_(ko),
-        output_min_(output_min),
-        output_max_(output_max) {}
+  Pid(int kp, int kd, int ki, int ko, int output_min, int output_max)
+      : kp_(kp), kd_(kd), ki_(ki), ko_(ko), output_min_(output_min), output_max_(output_max) {}
 
   /// @brief Resets the PID controller.
   ///

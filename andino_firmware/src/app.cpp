@@ -103,9 +103,9 @@ InterruptInArduino App::right_encoder_channel_b_interrupt_in_(Hw::kRightEncoderC
 Encoder App::right_encoder_(&right_encoder_channel_a_interrupt_in_,
                             &right_encoder_channel_b_interrupt_in_);
 
-PID App::left_pid_controller_(Constants::kPidKp, Constants::kPidKd, Constants::kPidKi,
+Pid App::left_pid_controller_(Constants::kPidKp, Constants::kPidKd, Constants::kPidKi,
                               Constants::kPidKo, -Constants::kPwmMax, Constants::kPwmMax);
-PID App::right_pid_controller_(Constants::kPidKp, Constants::kPidKd, Constants::kPidKi,
+Pid App::right_pid_controller_(Constants::kPidKp, Constants::kPidKd, Constants::kPidKi,
                                Constants::kPidKo, -Constants::kPwmMax, Constants::kPwmMax);
 
 unsigned long App::last_pid_computation_{0};

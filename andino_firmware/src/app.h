@@ -108,8 +108,8 @@ class App {
   static Encoder right_encoder_;
 
   /// PID controllers (one per wheel).
-  static PID left_pid_controller_;
-  static PID right_pid_controller_;
+  static Pid left_pid_controller_;
+  static Pid right_pid_controller_;
 
   /// Tracks the last time the PID computation was made.
   static unsigned long last_pid_computation_;
