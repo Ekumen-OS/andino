@@ -44,7 +44,7 @@ class Shell {
   /// @brief Initializes the shell.
   ///
   /// @param stream Data stream.
-  void init(Stream& stream);
+  void begin(Stream& stream);
 
   /// @brief Sets the default callback for unknown commands.
   ///
