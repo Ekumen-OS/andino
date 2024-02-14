@@ -17,9 +17,8 @@ before and after the PR.-->
 ## Checklist
 - [ ] Signed all commits for DCO
 - [ ] Added tests
+- [ ] Added example and/or tutorial
 - [ ] Updated documentation (as needed)
-- [ ] Updated migration guide (as needed)
-- [ ] Consider updating Python bindings (if it affects the public API)
 
 **Note to maintainers**: Remember to use **Squash-Merge** and edit the commit message to match the pull request summary while retaining `Signed-off-by` messages.
 
@@ -41,7 +40,5 @@ context (e.g., screenshots, gifs) if appropriate.-->
 - [ ] Added tests
 - [ ] Added example and/or tutorial
 - [ ] Updated documentation (as needed)
-- [ ] Updated migration guide (as needed)
-- [ ] Consider updating Python bindings (if it affects the public API)
 
 **Note to maintainers**: Remember to use **Squash-Merge** and edit the commit message to match the pull request summary while retaining `Signed-off-by` messages.
