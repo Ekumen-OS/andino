@@ -31,11 +31,107 @@
 
 #include <gtest/gtest.h>
 
-// TODO(jballoffet): Add unit tests.
-TEST(PidTest, ConstructOk) {
-  andino::PID pid_controller(0, 0, 0, 0, 0, 0);
-  EXPECT_EQ(1, 1);
+namespace andino {
+namespace test {
+namespace {
+
+TEST(PidTest, Initialize) {
+  andino::PID pid_controller(1, 0, 0, 1, -100, 100);
+  int output = 0;
+
+  // Controller is disabled by default, so output variable should remain unchanged.
+  pid_controller.compute(5, output);
+  EXPECT_EQ(output, 0);
 }
+
+TEST(PidTest, ComputeOutputProportionalGain) {
+  andino::PID pid_controller(3, 0, 0, 1, -100, 100);
+  int output = 0;
+  pid_controller.set_setpoint(15);
+  pid_controller.enable();
+
+  pid_controller.compute(5, output);
+  EXPECT_EQ(output, 30);
+
+  pid_controller.compute(10, output);
+  EXPECT_EQ(output, 60);
+}
+
+TEST(PidTest, ComputeOutputProportionalAndDerivativeGain) {
+  andino::PID pid_controller(3, 2, 0, 1, -100, 100);
+  int output = 0;
+  pid_controller.set_setpoint(15);
+  pid_controller.enable();
+
+  pid_controller.compute(5, output);
+  EXPECT_EQ(output, 20);
+
+  pid_controller.compute(10, output);
+  EXPECT_EQ(output, 50);
+}
+
+TEST(PidTest, ComputeOutputProportionalAndIntegralGain) {
+  andino::PID pid_controller(3, 0, 1, 1, -100, 100);
+  int output = 0;
+  pid_controller.set_setpoint(15);
+  pid_controller.enable();
+
+  pid_controller.compute(5, output);
+  EXPECT_EQ(output, 30);
+
+  pid_controller.compute(10, output);
+  EXPECT_EQ(output, 70);
+}
+
+TEST(PidTest, ComputeOutputProportionalDerivativeAndIntegralGain) {
+  andino::PID pid_controller(3, 2, 1, 1, -100, 100);
+  int output = 0;
+  pid_controller.set_setpoint(15);
+  pid_controller.enable();
+
+  pid_controller.compute(5, output);
+  EXPECT_EQ(output, 20);
+
+  pid_controller.compute(10, output);
+  EXPECT_EQ(output, 60);
+}
+
+TEST(PidTest, Reset) {
+  andino::PID pid_controller(3, 0, 0, 1, -100, 100);
+  int output = 0;
+  pid_controller.set_setpoint(15);
+  pid_controller.enable();
+
+  pid_controller.compute(5, output);
+  EXPECT_EQ(output, 30);
+
+  // Controller reset, obtained output should be the same as before.
+  pid_controller.reset(0);
+  pid_controller.set_setpoint(15);
+  pid_controller.compute(5, output);
+  EXPECT_EQ(output, 30);
+}
+
+TEST(PidTest, SetTunings) {
+  andino::PID pid_controller(3, 0, 0, 1, -100, 100);
+  int output = 0;
+  pid_controller.set_setpoint(15);
+  pid_controller.enable();
+
+  pid_controller.compute(5, output);
+  EXPECT_EQ(output, 30);
+
+  // Proportional gain doubled, obtained output should be doubled.
+  pid_controller.reset(0);
+  pid_controller.set_setpoint(15);
+  pid_controller.set_tunings(6, 0, 0, 1);
+  pid_controller.compute(5, output);
+  EXPECT_EQ(output, 60);
+}
+
+}  // namespace
+}  // namespace test
+}  // namespace andino
 
 int main(int argc, char** argv) {
   ::testing::InitGoogleTest(&argc, argv);
