@@ -1,39 +1,39 @@
-# Nav2 with Andino robot
-*Note*: Nav2 is only configured to work with the simulation for the moment.
- Support to real robot is forthcoming.
+# Andino Navigation
 
-## Build
+We rely on [Nav2](https://github.com/ros-planning/navigation2) stack in order to navigate Andino.
 
-Install package dependencies:
+# Usage
+
+## Real Robot
+
+### Prerequisites
+
+1. Andino robot needs to be up and running:
+  ```sh
+  ros2 launch andino_bringup andino_robot.launch.py
+  ```
+
+2. We need a previously recorded map in order to navigate on.
+   Refer to [andino_slam](../andino_slam/README.md) to learn how to record a map with Andino.
+
+### Run nav stack
+
+```sh
+ros2 launch andino_navigation bringup.launch.py map:=<path-to-my-map-yaml-file>
+```
+
+By default, [config file](params/nav2_params.yaml) is used. For using a custom param file use:
+```sh
+ros2 launch andino_navigation bringup.launch.py map:=<path-to-my-map-yaml-file> params_file:=<path-to-my-param-file>
+```
+
+## Simulation
+
+A launch file for running the andino_gz_classic simulation and the nav2 stack is provided.
+It uses the [turtlebot3_world](https://github.com/ROBOTIS-GIT/turtlebot3_simulations/tree/master) world (_Apache 2 license_) by default.
 
 ```
-rosdep install --from-paths src -i -y
-```
-
-Build the package:
-
-```
-colcon build
-```
-
-Note: `--symlink-install` can be added if needed.
-
-Finally, source the install folder
-```
-. install/setup.bash
-```
-
-# Usage 
-
-This package has the next option to be executed.
-
-## Andino with nav2 in Gazebo Simulation
-
-This launch file use the [turtlebot3_world](https://github.com/ROBOTIS-GIT/turtlebot3_simulations/tree/master) like world example which has an Apache 2 license.
-
-```
- . /usr/share/gazebo/setup.bash
- ros2 launch andino_navigation andino_simulation_navigation.launch.py 
+ ros2 launch andino_navigation andino_simulation_navigation.launch.py
 ```
 
 To test the navigation inside rviz:
