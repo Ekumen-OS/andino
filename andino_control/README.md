@@ -23,8 +23,8 @@ flowchart TD
     M(Controller Manager) -..-> |manages lifecycle| C
     M(Controller Manager) -..-> |activates hw component| B
 
-    D["/diff_controller/cmd_vel"] -->|subs| A
-    A -->|pubs| O["/diff_controller/odom"]
+    D["/cmd_vel"] -->|subs| A
+    A -->|pubs| O["/odom"]
     A -->|pubs| T["/tf"]
     C -->|pubs| J["/joint_states"]
 

@@ -54,7 +54,12 @@ def generate_launch_description():
         executable="ros2_control_node",
         parameters=[{'robot_description': ParameterValue(robot_description, value_type=str)},
                     controller_params_file],
-
+        remappings=[
+            ('/diff_controller/cmd_vel', '/cmd_vel'), # Used if use_stamped_vel param is true
+            ('/diff_controller/cmd_vel_unstamped', '/cmd_vel'), # Used if use_stamped_vel param is false
+            ('/diff_controller/cmd_vel_out', '/cmd_vel_out'), # Used if publish_limited_velocity param is true
+            ('/diff_controller/odom', '/odom'),
+        ],
         output="both",
     )
 
