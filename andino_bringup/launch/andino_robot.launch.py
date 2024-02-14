@@ -103,14 +103,6 @@ def generate_launch_description():
     rplidar_timer = TimerAction(period=3.0, actions=[include_rplidar])
     camera_timer = TimerAction(period=3.0, actions=[include_camera])
 
-    twist_mux_params = os.path.join(pkg_andino_bringup,'config','twist_mux.yaml')
-    twist_mux = Node(
-            package="twist_mux",
-            executable="twist_mux",
-            parameters=[twist_mux_params],
-            remappings=[('/cmd_vel_out','/diff_controller/cmd_vel_unstamped')]
-        )
-
     return LaunchDescription([
         include_andino_description,
         andino_control_timer,
@@ -118,5 +110,4 @@ def generate_launch_description():
         camera_timer,
         rplidar_arg,
         rplidar_timer,
-        twist_mux,
     ])

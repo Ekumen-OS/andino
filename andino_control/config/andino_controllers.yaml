@@ -10,6 +10,7 @@ controller_manager:
 
 diff_controller:
   ros__parameters:
+    # See https://github.com/ros-controls/ros2_controllers/blob/humble/diff_drive_controller/src/diff_drive_controller_parameter.yaml
     publish_rate: 50.0
     left_wheel_names: ['left_wheel_joint']
     right_wheel_names: ['right_wheel_joint']
