@@ -166,20 +166,19 @@ ros2 launch andino_bringup rviz.launch.py
 
 For starting `rviz2` visualization with a provided configuration.
 
-## :computer: Simulation
-
-The [`andino_gz_classic`](./andino_gz_classic/README.MD) package provides a Gazebo simulation fo the Andino robot.
-
-<img src="./andino_gz_classic/docs/andino_gz_classic.png" width=400/>
-
 ## :compass: Navigation
 
 The [`andino_navigation`](./andino_navigation/README.md) package provides a navigation stack based on the great [Nav2](https://github.com/ros-planning/navigation2) package.
 
 https://github.com/Ekumen-OS/andino/assets/53065142/29951e74-e604-4a6e-80fc-421c0c6d8fee
 
-_Important!: At the moment this package is only working with the simulation. The support for the real robot is forthcoming._
+Follow the [`andino_navigation`'s README](./andino_navigation/README.md) instructions for bringing up the Navigation stack in the real robot or in the simulation.
 
+## :computer: Simulation
+
+The [`andino_gz_classic`](./andino_gz_classic/README.MD) package provides a Gazebo simulation for the Andino robot.
+
+<img src="./andino_gz_classic/docs/andino_gz_classic.png" width=400/>
 
 ## :selfie: Media
 
