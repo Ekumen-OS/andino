@@ -8,7 +8,24 @@ Check `encoder_driver.h` and `motor_driver.h` files to check the expected pins f
 
 ## Installation
 
+### Arduino
 Verify and Upload `andino_firmware.ino` to your arduino board.
+
+### PlatformIO
+1. Install dependencies `sudo apt-get install python3.10-venv`
+2. Install platformio
+```
+curl -fsSL -o /tmp/get-platformio.py https://raw.githubusercontent.com/platformio/platformio-core-installer/master/get-platformio.py
+python3 /tmp/get-platformio.py
+```
+3. Add platformio to your $PATH:
+```
+echo "PATH=\"\$PATH:\$HOME/.platformio/penv/bin\"" >> $HOME/.bashrc
+source $HOME/.bashrc
+```
+4. Build and upload the firmware
+   - If you're using an arduino uno `pio run --target upload -e uno`
+   - If you're using an arduino nano `pio run --target upload -e nanoatmega328`
 
 ## Description
 
