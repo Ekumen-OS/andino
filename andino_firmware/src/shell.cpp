@@ -33,7 +33,7 @@
 
 namespace andino {
 
-void Shell::begin(Stream& stream) { stream_ = &stream; }
+void Shell::set_serial_stream(const SerialStream* serial_stream) { serial_stream_ = serial_stream; }
 
 void Shell::set_default_callback(CommandCallback callback) { default_callback_ = callback; }
 
@@ -49,8 +49,8 @@ void Shell::register_command(const char* name, CommandCallback callback) {
 }
 
 void Shell::process_input() {
-  while (stream_->available() > 0) {
-    const char input = stream_->read();
+  while (serial_stream_->available() > 0) {
+    const char input = serial_stream_->read();
 
     switch (input) {
       case '\r':

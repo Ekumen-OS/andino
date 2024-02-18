@@ -31,7 +31,7 @@
 
 #include <stddef.h>
 
-#include "Arduino.h"
+#include "serial_stream.h"
 
 namespace andino {
 
@@ -41,10 +41,10 @@ class Shell {
   /// @brief Command callback type.
   typedef void (*CommandCallback)(int argc, char** argv);
 
-  /// @brief Initializes the shell.
+  /// @brief Sets the serial stream to use.
   ///
-  /// @param stream Data stream.
-  void begin(Stream& stream);
+  /// @param serial_stream Serial stream.
+  void set_serial_stream(const SerialStream* serial_stream);
 
   /// @brief Sets the default callback for unknown commands.
   ///
@@ -88,8 +88,8 @@ class Shell {
   /// Executes the corresponding command callback function.
   void execute_callback(int argc, char** argv);
 
-  /// Data stream.
-  Stream* stream_{nullptr};
+  /// Serial stream.
+  const SerialStream* serial_stream_{nullptr};
 
   /// Default callback for unknown commands.
   CommandCallback default_callback_{nullptr};
