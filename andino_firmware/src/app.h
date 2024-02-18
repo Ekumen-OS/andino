@@ -35,6 +35,7 @@
 #include "motor.h"
 #include "pid.h"
 #include "pwm_out_arduino.h"
+#include "serial_stream_arduino.h"
 #include "shell.h"
 
 namespace andino {
@@ -81,6 +82,9 @@ class App {
 
   /// Callback method for the `Commands::kSetPidsTuningGains` command.
   static void cmd_set_pid_tuning_gains_cb(int argc, char** argv);
+
+  /// Serial stream.
+  static SerialStreamArduino serial_stream_;
 
   /// Application command shell.
   static Shell shell_;
