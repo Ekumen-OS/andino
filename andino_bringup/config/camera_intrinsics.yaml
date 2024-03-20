@@ -1,0 +1,5 @@
+v4l2_camera_node:
+  ros__parameters:
+    image_size: [640,480]
+    camera_frame_id: "camera_link"
+# Other info for this Raspberry Pi Camera Module V2 can be found here: https://elinux.org/Rpi_Camera_Module#Technical_Parameters_.28v.2_board.29
