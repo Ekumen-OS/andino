@@ -38,6 +38,8 @@ Other projects built upon Andino! :rocket:
 
 - :computer: [`andino_gz`](https://github.com/Ekumen-OS/andino_gz): [Gazebo](https://gazebosim.org/home)(non-classic) simulation of the `andino` robot.
 - :lady_beetle: [`andino_webots`](https://github.com/Ekumen-OS/andino_webots): [Webots](https://github.com/cyberbotics/webots) simulation of the Andino robot fully integrated with ROS 2.
+- :joystick: [`andino_o3de`](https://github.com/Ekumen-OS/andino_o3de): [O3DE](https://o3de.org/) simulation of the Andino robot.
+- :green_circle: [`andino_isaac`](https://github.com/Ekumen-OS/andino_isaac): [Isaac Sim](https://docs.omniverse.nvidia.com/isaacsim/latest/index.html) simulation of the Andino robot.
 - :test_tube: [`andino_integration_tests`](https://github.com/Ekumen-OS/andino_integration_tests): Extension to the Andino robot showing how to build integration tests.
 
 ## :pick: Robot Assembly
