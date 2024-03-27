@@ -30,17 +30,27 @@
 
 from launch import LaunchDescription
 from launch_ros.actions import Node
+from launch.actions import DeclareLaunchArgument
+from launch.substitutions import LaunchConfiguration
+from ament_index_python.packages import get_package_share_directory
+from os.path import join
+
+pkg_andino_bringup = get_package_share_directory('andino_bringup')
 
 def generate_launch_description():
-    return LaunchDescription([
+    # Declare launch argument for the path to the camera intrinsics YAML file
+    camera_intrinsics_file = DeclareLaunchArgument(
+        'camera_intrinsics_file',
+        default_value=join(pkg_andino_bringup, 'config', 'camera_intrinsics.yaml'),
+        description='Path to camera intrinsics YAML file'
+    )
 
+    return LaunchDescription([
+        camera_intrinsics_file,
         Node(
             package='v4l2_camera',
             executable='v4l2_camera_node',
             output='screen',
-            parameters=[{
-                'image_size': [640,480],
-                'camera_frame_id': 'camera_link'
-                }]
+            parameters=[LaunchConfiguration('camera_intrinsics_file')],
     )
     ])
