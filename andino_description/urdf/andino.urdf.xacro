@@ -79,13 +79,16 @@
   </xacro:motor>
 
   <!-- Sensors -->
-  <xacro:laser prefix="rplidar" parent_link="second_base_link"
+  <xacro:laser prefix="rplidar" parent_link="base_link"
                    sensor_prop="${sensor_prop}">
   </xacro:laser>
 
   <xacro:camera_sensor parent_link="base_link" sensor_prop="${sensor_prop}">
   </xacro:camera_sensor>
 
+  <xacro:imu_sensor parent_link="base_link" sensor_prop="${sensor_prop}">
+  </xacro:imu_sensor>
+  
   <!-- ros2_control -->
   <xacro:if value="$(arg use_real_ros_control)">
     <xacro:include filename="$(find ${package_name})/urdf/include/andino_control.urdf.xacro" />

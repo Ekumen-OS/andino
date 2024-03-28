@@ -45,6 +45,12 @@ class MotorDriver {
  public:
   /// @brief Type to store the encoder values.
   using Encoders = std::array<int, 2>;
+  using Imu = std::array<double, 10>;
+
+  struct EncodersAndImu {
+    Encoders encoders;
+    Imu imu;
+  };
 
   /// @brief Default constructor.
   MotorDriver() = default;
@@ -57,6 +63,17 @@ class MotorDriver {
   /// @brief Send an empty message to the motor driver. The use of this function is to
   ///       ensure that the motor driver is ready to receive a new command.
   void SendEmptyMsg();
+
+  /// @brief Checks if there is an Imu.
+  /// @returns True if Imu is present.
+  bool HasImu();
+
+  /// @brief Read the encoder and Imu values from the motor driver.
+  ///       First value is the left encoder, second value is the right encoder, next values
+  ///       are IMU orientation (qx, qy, qz, qw), angular velocity (x, y, z), 
+  ///       linear acceleration (x, y, z)
+  /// @returns The encoder values.
+  EncodersAndImu ReadEncoderAndImuValues();
 
   /// @brief Read the encoder values from the motor driver.
   ///       First value is the left encoder, second value is the right encoder.

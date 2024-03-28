@@ -75,11 +75,17 @@ def generate_launch_description():
         arguments=["diff_controller", "--controller-manager", "/controller_manager"],
     )
 
+    imu_sensor_broadcaster_spawner = Node(
+        package="controller_manager",
+        executable="spawner",
+        arguments=["imu_sensor_broadcaster", "--controller-manager", "/controller_manager"],
+    )
+
     # Delay start of diff_drive_controller_spawner after `joint_state_broadcaster`
     delay_diff_drive_controller_spawner_after_joint_state_broadcaster_spawner = RegisterEventHandler(
         event_handler=OnProcessExit(
             target_action=joint_state_broadcaster_spawner,
-            on_exit=[diff_drive_controller_spawner],
+            on_exit=[diff_drive_controller_spawner, imu_sensor_broadcaster_spawner],
         )
     )
 

@@ -148,6 +148,62 @@
         </sensor>
   </gazebo>
 
+  <gazebo reference="imu_link">
+      <sensor name="imu" type="imu">
+          <always_on>true</always_on>
+          <update_rate>100</update_rate>
+          <imu>
+            <angular_velocity>
+              <x>
+                <noise type="gaussian">
+                  <mean>0.0</mean>
+                  <stddev>2e-4</stddev>
+                </noise>
+              </x>
+              <y>
+                <noise type="gaussian">
+                  <mean>0.0</mean>
+                  <stddev>2e-4</stddev>
+                </noise>
+              </y>
+              <z>
+                <noise type="gaussian">
+                  <mean>0.0</mean>
+                  <stddev>2e-4</stddev>
+                </noise>
+              </z>
+            </angular_velocity>
+            <linear_acceleration>
+              <x>
+                <noise type="gaussian">
+                  <mean>0.0</mean>
+                  <stddev>1.7e-2</stddev>
+                </noise>
+              </x>
+              <y>
+                <noise type="gaussian">
+                  <mean>0.0</mean>
+                  <stddev>1.7e-2</stddev>
+                </noise>
+              </y>
+              <z>
+                <noise type="gaussian">
+                  <mean>0.0</mean>
+                  <stddev>1.7e-2</stddev>
+                </noise>
+              </z>
+            </linear_acceleration>
+          </imu>
+          <plugin name="imu_plugin" filename="libgazebo_ros_imu_sensor.so">
+              <ros>
+                  <namespace>imu</namespace>
+                  <remapping>~/out:=data</remapping>
+              </ros>
+              <initial_orientation_as_reference>false</initial_orientation_as_reference>
+          </plugin>
+      </sensor>
+  </gazebo>
+
   <xacro:include filename="$(find andino_gz_classic)/urdf/include/andino_materials.xacro"/>
 
 </robot>
