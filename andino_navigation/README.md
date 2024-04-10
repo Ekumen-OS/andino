@@ -16,7 +16,7 @@ We rely on [Nav2](https://github.com/ros-planning/navigation2) stack in order to
 2. We need a previously recorded map in order to navigate on.
    Refer to [andino_slam](../andino_slam/README.md) to learn how to record a map with Andino.
 
-3. Run Nav Stack (see instructions in [Run nav stack](#run-nav-stack)).
+3. Run Nav 2 Stack (see instructions in [Run nav stack](#run-nav-stack)).
 
 ## Simulation
 
@@ -30,7 +30,7 @@ We rely on [Nav2](https://github.com/ros-planning/navigation2) stack in order to
 2. We need a previously recorded map in order to navigate on.
    Refer to [andino_slam](../andino_slam/README.md) to learn how to record a map with Andino.
 
-3. Run Nav Stack (see instructions in [Run nav stack](#run-nav-stack)).
+3. Run Nav 2 Stack (see instructions in [Run nav stack](#run-nav-stack)).
 
 <a name="runnavstack"></a>
 ## Run Nav Stack
