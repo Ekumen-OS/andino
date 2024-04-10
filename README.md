@@ -107,6 +107,12 @@ source install/setup.bash
 
 `Note`: Whether your are installing the packages in your dev machine or in your robot the procedure is the same.
 
+### Install the binaries
+
+The packages have been also released via ROS package manager system for the 'humble' distro. You can check them [here](https://repo.ros2.org/status_page/ros_humble_default.html?q=andino).
+
+These packages can be installed using `apt` (e.g: `sudo apt install ros-humble-andino-description`) or using `rosdep`.
+
 ## :rocket: Usage
 
 ### Robot bringup
@@ -215,7 +221,7 @@ This section is dedicated to recognizing and expressing gratitude to the open-so
 
 ## :raised_hands: Contributing
 
-Issues or PRs are always welcome! Please refer to [CONTRIBUTING](CONTRIBUTING.md) doc. 
+Issues or PRs are always welcome! Please refer to [CONTRIBUTING](CONTRIBUTING.md) doc.
 
 ## Code development
 
