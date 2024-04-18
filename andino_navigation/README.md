@@ -5,7 +5,7 @@ We rely on [Nav2](https://github.com/ros-planning/navigation2) stack in order to
 # Usage
 
 ## Prerequisites
-  1. Run the mobility stack in a real Andino robot  or a simulated one:
+  1. Run the mobility stack in a real Andino robot or a simulated one:
 
 _Real robot_
 ```
@@ -17,7 +17,7 @@ _Example with Gazebo Classic_
 ros2 launch andino_gz_classic andino_one_robot.launch.py
 ```
 
-  2. Provide a recorded map. Refer to [andino_slam](https://github.com/JesusSilvaUtrera/andino/blob/jesus/%23228_simulation_dependency/andino_slam/README.md) to learn how to record a map with Andino.
+  1. Provide a recorded map. Refer to [andino_slam](../andino_slam/README.md) to learn how to record a map with Andino.
 
 ## Run Nav Stack
 
