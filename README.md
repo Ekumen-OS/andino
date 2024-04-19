@@ -31,6 +31,7 @@ _Note: For videos go to [Media](#selfie-media) section._
 - :computer: [`andino_gz_classic`](./andino_gz_classic/): [Gazebo Classic](https://classic.gazebosim.org/) simulation of the `andino` robot.
 - :world_map: [`andino_slam`](./andino_slam/): Provides support for SLAM with your `andino` robot.
 - :compass: [`andino_navigation`](./andino_navigation/): Navigation stack based on `nav2`.
+- :exclamation: [`andino_apps`](./andino_apps/): Integrated applications with the `andino` robot.
 
 ## :paperclips: Related projects
 
