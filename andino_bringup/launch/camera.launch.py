@@ -52,5 +52,5 @@ def generate_launch_description():
             executable='v4l2_camera_node',
             output='screen',
             parameters=[LaunchConfiguration('camera_intrinsics_file')],
-    )
+        )
     ])
