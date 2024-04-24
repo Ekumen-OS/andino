@@ -1,0 +1,20 @@
+image_width: 640
+image_height: 480
+camera_name: hd_webcam:_hd_webcam # imposed by the hardware, there is no easy way to change this name
+camera_matrix:
+  rows: 3
+  cols: 3
+  data: [752.509200, 0.000000, 301.733582, 0.000000, 715.922468, 269.603484, 0.000000, 0.000000, 1.000000]
+distortion_model: plumb_bob
+distortion_coefficients:
+  rows: 1
+  cols: 5
+  data: [-0.143335, 0.127413, -0.017265, 0.003433, 0.000000]
+rectification_matrix:
+  rows: 3
+  cols: 3
+  data: [1.000000, 0.000000, 0.000000, 0.000000, 1.000000, 0.000000, 0.000000, 0.000000, 1.000000]
+projection_matrix:
+  rows: 3
+  cols: 4
+  data: [737.296875, 0.000000, 302.288860, 0.000000, 0.000000, 706.384155, 265.509636, 0.000000, 0.000000, 0.000000, 1.000000, 0.000000]

@@ -38,19 +38,20 @@ from os.path import join
 pkg_andino_bringup = get_package_share_directory('andino_bringup')
 
 def generate_launch_description():
-    # Declare launch argument for the path to the camera intrinsics YAML file
-    camera_intrinsics_file = DeclareLaunchArgument(
-        'camera_intrinsics_file',
-        default_value=join(pkg_andino_bringup, 'config', 'camera_intrinsics.yaml'),
+    # Declare launch argument for the path to the camera params YAML file
+    camera_params_file = DeclareLaunchArgument(
+        'camera_params_file',
+        default_value=join(pkg_andino_bringup, 'config', 'camera_params.yaml'),
         description='Path to camera intrinsics YAML file'
     )
 
     return LaunchDescription([
-        camera_intrinsics_file,
+        camera_params_file,
         Node(
             package='v4l2_camera',
             executable='v4l2_camera_node',
+            name='v4l2_camera_node',
             output='screen',
-            parameters=[LaunchConfiguration('camera_intrinsics_file')],
+            parameters=[LaunchConfiguration('camera_params_file')],
         )
     ])
