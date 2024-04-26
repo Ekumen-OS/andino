@@ -4,12 +4,14 @@ This package aims to provide the necessary information to the correct assembly o
 
 ## Bill of Materials
 
+<!-- TODO <JesusSilvaUtrera> Update this bill of materials using the spreadsheet -->
+
 | Module | Part                    | Variant | Comments |
 |:--|:------------------------|:---------------------|:-------------------------------------------------------:|
 | SBC | Raspberry Pi 4 B (4 Gb) | - | - |
-| Chassis |  2 x [Print 3d Chassis](./printing_model/chassis/) + [Wheels](https://www.sparkfun.com/products/13259) | [Robot Smart Car Kit](https://www.amazon.com/perseids-Chassis-Encoder-Wheels-Battery/dp/B07DNYQ3PX/ref=sr_1_1?crid=9WUXNUN54JBG&keywords=Smart%2BCar%2BChassis%2BKit&qid=1685739917&sprefix=smart%2Bcar%2Bchassis%2Bkit%2Caps%2C348&sr=8-1&th=1) | - | 
+| Chassis |  2 x [Print 3d Chassis](./printing_model/chassis/) + [Wheels](https://www.sparkfun.com/products/13259) | [Robot Smart Car Kit](https://www.amazon.com/perseids-Chassis-Encoder-Wheels-Battery/dp/B07DNYQ3PX/ref=sr_1_1?crid=9WUXNUN54JBG&keywords=Smart%2BCar%2BChassis%2BKit&qid=1685739917&sprefix=smart%2Bcar%2Bchassis%2Bkit%2Caps%2C348&sr=8-1&th=1) | - |
 | Motors | 2 x [Hobby Motor with Encoder - Metal Gear (DG01D-E)](https://www.sparkfun.com/products/16413) |  [Robot Smart Car Kit](https://www.amazon.com/perseids-Chassis-Encoder-Wheels-Battery/dp/B07DNYQ3PX/ref=sr_1_1?crid=9WUXNUN54JBG&keywords=Smart%2BCar%2BChassis%2BKit&qid=1685739917&sprefix=smart%2Bcar%2Bchassis%2Bkit%2Caps%2C348&sr=8-1&th=1)'s motors + sensor hall encoder | Embbebed encoders are recommended for better accuracy |
-| Microcontroller | Arduino Nano | Arduino Uno | Nano is easier to mount given its size | 
+| Microcontroller | Arduino Nano | Arduino Uno | Nano is easier to mount given its size |
 | Motor Driver | [L298N Dual H Bridge](https://www.amazon.com/Bridge-Stepper-Driver-Module-Controller/dp/B09T6K9RFZ/ref=sr_1_4?crid=37YY7JO6C3WVE&keywords=l298&qid=1685740618&sprefix=l29%2Caps%2C277&sr=8-4) | - | - |
 | Laser Scanner | [RPLidar A1M8](https://www.robotshop.com/products/rplidar-a1m8-360-degree-laser-scanner-development-kit?_pos=3&_sid=b0aefcea1&_ss=r) | [RPLidar A2M8](https://www.robotshop.com/products/rplidar-a2m8-360-laser-scanner) | - |
 | Camera | [Raspi Camera Module V2, 8 MP](https://www.robotshop.com/products/raspberry-pi-camera-module-v2) | - | - |
@@ -17,8 +19,55 @@ This package aims to provide the necessary information to the correct assembly o
 | (Optional) Power Step up | [DC - DC boost converter](https://www.amazon.com/0-9-Step-Regulator-DC-Converter/dp/B0C6QTJMFN/ref=sr_1_25?crid=G0FHM4SS5TWX&keywords=dc+step+up+converter&qid=1685741155&sprefix=dc+step+up+conver%2Caps%2C371&sr=8-25) | - | If motors support higher voltage than 5V a step-up(e.g: to 9V) can be added between powerbank(5V) and motor driver |
 | Fixing & Mount | M3 bolts/fasteners - M3 Spacers - M2.5/2.0 bolts/fasteners for SBC | - | - |
 
+## Assembly Process
 
+Following you can see a photo with all the parts:
+
+<img src="docs/Parts.jpg">
+
+The steps to reproduce the mounting of the Andino are:
+
+  1. Screw the Motor Driver and the idler wheel to the lower chassis.
+
+  <img src="docs/Caster_wheel_H_bridge.jpg">
+
+  Here you have a front image of how the idler wheel are mounted to the chassis:
+
+  <img src="docs/Caster_wheel.jpg">
+
+  2. Screw the 3D printed parts for the Raspi Camera Module:
+
+  <img src="docs/Printed_camera_parts.jpg">
+
+  3. Add the Arduino Nano to the back of the lower part of the chassis. It should look like this:
+
+  <img src="docs/Lower_back.jpg">
+
+  4. Screw the Raspberry Pi to the front of the lower part of the chassis:
+
+  <!-- TODO -->
+  <img src="docs/Lower_front.jpg">
+
+  5. Fix the powerbank to the back of the upper part of the chassis:
+
+  <img src="docs/Powerbank.JPG">
+
+  6. Add the RPLidar to the front of the upper part of the chassis:
+
+  <!-- TODO -->
+  <img src="docs/upper_chassis.jpg">
+
+  7. Perform all the wiring following the [Connections Diagram](#connection-diagram) of both the upper and lower chassis.
+
+  8. Join both chassis together, and complete the remaining wiring to have your robot ready:
+
+  <!-- TODO -->
+  <img src="">
+
+<a name="connection-diagram"></a>
 ## Connection Diagram
+
+<!-- TODO <JesusSilvaUtrera> improve this connection diagram, including all the parts -->
 
 ### Motor-Arduino
 
@@ -295,7 +344,7 @@ Refer to [`usage`](../README.md#usage) section.
 #### Network
 Via terminal the wifi connection can be switched by doing:
 
-List available wifi networks: 
+List available wifi networks:
 ```
 sudo nmcli dev wifi list
 ```
