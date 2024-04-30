@@ -4,8 +4,6 @@ This package aims to provide the necessary information to the correct assembly o
 
 ## Bill of Materials
 
-<!-- TODO (https://github.com/Ekumen-OS/andino/issues/240) Update this bill of materials -->
-
 | Module | Part                    | Variant | Comments |
 |:--|:------------------------|:---------------------|:-------------------------------------------------------:|
 | SBC | Raspberry Pi 4 B (4 Gb) | - | - |
@@ -21,36 +19,37 @@ This package aims to provide the necessary information to the correct assembly o
 
 ## Assembly Process
 
-Following you can see a photo with all the parts:
-
-<img src="docs/Parts.jpg">
-
 The steps to reproduce the mounting of the Andino are:
 
-  1. Screw the Motor Driver and the idler wheel to the lower chassis.
+  1. Gather all the parts. NOTE: the printed encoder wheels are no longer necessary, since the motors are equipped with an embedded encoder.
 
-  <img src="docs/Caster_wheel_H_bridge.jpg">
+  <img src="docs/parts.jpg">
 
-  Here you have a front image of how the idler wheel are mounted to the chassis:
 
-  <img src="docs/Caster_wheel.jpg">
+  2. Screw the Motor Driver and the idler wheel to the lower chassis.
+
+  <img src="docs/caster_wheel_h_bridge.jpg">
+
+  Here you have a front image of how the caster wheel are mounted to the chassis:
+
+  <img src="docs/caster_wheel.jpg">
 
   2. Screw the 3D printed parts for the Raspi Camera Module:
 
-  <img src="docs/Printed_camera_parts.jpg">
+  <img src="docs/printed_camera_parts.jpg">
 
   3. Add the Arduino Nano to the back of the lower part of the chassis. It should look like this:
 
-  <img src="docs/Lower_back.jpg">
+  <img src="docs/lower_back.jpg">
 
   4. Screw the Raspberry Pi to the front of the lower part of the chassis:
 
   <!-- TODO -->
-  <img src="docs/Lower_front.jpg">
+  <img src="docs/lower_front.jpg">
 
   5. Fix the powerbank to the back of the upper part of the chassis:
 
-  <img src="docs/Powerbank.JPG">
+  <img src="docs/powerbank.JPG">
 
   6. Add the RPLidar to the front of the upper part of the chassis:
 
