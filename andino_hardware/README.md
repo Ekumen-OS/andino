@@ -4,7 +4,7 @@ This package aims to provide the necessary information to the correct assembly o
 
 ## Bill of Materials
 
-<!-- TODO <JesusSilvaUtrera> Update this bill of materials using the spreadsheet -->
+<!-- TODO (https://github.com/Ekumen-OS/andino/issues/240) Update this bill of materials -->
 
 | Module | Part                    | Variant | Comments |
 |:--|:------------------------|:---------------------|:-------------------------------------------------------:|
@@ -67,7 +67,7 @@ The steps to reproduce the mounting of the Andino are:
 <a name="connection-diagram"></a>
 ## Connection Diagram
 
-<!-- TODO <JesusSilvaUtrera> improve this connection diagram, including all the parts -->
+<!-- TODO (https://github.com/Ekumen-OS/andino/issues/239) improve this connection diagram, including all the parts -->
 
 ### Motor-Arduino
 
