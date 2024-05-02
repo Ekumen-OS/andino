@@ -22,7 +22,7 @@ This package aims to provide the necessary information to the correct assembly o
 
 When you gather all the parts, you should have the following (NOTE: the printed encoder wheels are no longer necessary, since the motors are equipped with an embedded encoder):
 
-<img src="docs/parts.png">
+<img src="docs/parts.jpg">
 
 ## Assembly Process
 
