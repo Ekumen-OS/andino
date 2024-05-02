@@ -57,7 +57,7 @@ while [[ "$#" -gt 0 ]]; do
 done
 
 # Update the arguments to default values if needed.
-OS_VERSION="focal"
+OS_VERSION="noble"
 IMAGE_NAME=${IMAGE_NAME:-ros2_humble_andino}
 DOCKERFILE_PATH=$SCRIPT_FOLDER_PATH/Dockerfile
 
