@@ -49,7 +49,7 @@ When you gather all the parts, you should have the following (NOTE: the printed 
 
   5. Fix the powerbank to the back of the upper part of the chassis:
 
-  <img src="docs/powerbank.JPG">
+  <img src="docs/powerbank.jpg">
 
   6. Add the RPLidar to the front of the upper part of the chassis:
 
