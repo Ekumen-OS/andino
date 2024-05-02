@@ -31,7 +31,7 @@ RUN sudo usermod -a -G plugdev $USER
 RUN mkdir -p /home/$USER/ws/src
 
 # Adds to bashrc the ros humble overlay sourcing.
-RUN echo "source /opt/ros/humble/setup.bash" >> /home/$USER/.bashrc
+RUN echo "source /opt/ros/jazzy/setup.bash" >> /home/$USER/.bashrc
 # Adds colcon autocomplete
 RUN echo "source /usr/share/colcon_argcomplete/hook/colcon-argcomplete.bash" >> /home/$USER/.bashrc
 # Adds gazebo sourcing.
