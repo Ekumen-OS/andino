@@ -119,7 +119,9 @@ unsigned long App::last_pid_computation_{0};
 
 unsigned long App::last_set_motors_speed_cmd_{0};
 
-Adafruit_BNO055 App::bno_{55, BNO055_ADDRESS_A, &Wire};
+bool App::is_imu_connected{false};
+
+Adafruit_BNO055 App::bno055_imu_{/*sensorID=*/55, BNO055_ADDRESS_A, &Wire};
 
 void App::setup() {
   // Required by Arduino libraries to work.
@@ -144,20 +146,18 @@ void App::setup() {
   shell_.register_command(Commands::kReadAnalogGpio, cmd_read_analog_gpio_cb);
   shell_.register_command(Commands::kReadDigitalGpio, cmd_read_digital_gpio_cb);
   shell_.register_command(Commands::kReadEncoders, cmd_read_encoders_cb);
-  shell_.register_command(Commands::kReadHasImu, cmd_read_has_imu_cb);
-  shell_.register_command(Commands::kReadEncodersAndImu, cmd_read_encoders_and_imu_cb);
   shell_.register_command(Commands::kResetEncoders, cmd_reset_encoders_cb);
   shell_.register_command(Commands::kSetMotorsSpeed, cmd_set_motors_speed_cb);
   shell_.register_command(Commands::kSetMotorsPwm, cmd_set_motors_pwm_cb);
   shell_.register_command(Commands::kSetPidsTuningGains, cmd_set_pid_tuning_gains_cb);
+  shell_.register_command(Commands::kGetIsImuConnected, cmd_get_is_imu_connected_cb);
+  shell_.register_command(Commands::kReadEncodersAndImu, cmd_read_encoders_and_imu_cb);
 
-  /* Initialise the IMU sensor */
-  if (!bno_.begin()) {
-    /* There was a problem detecting the BNO055 ... check your connections */
-    Serial.print("Ooops, no BNO055 detected ... Check your wiring or I2C ADDR!");
-    HAS_IMU = false;
+  // Initialize IMU sensor.
+  if (bno055_imu_.begin()) {
+    bno055_imu_.setExtCrystalUse(true);
+    is_imu_connected = true;
   }
-  bno_.setExtCrystalUse(true);
 }
 
 void App::loop() {
@@ -193,165 +193,169 @@ void App::adjust_motors_speed() {
   if (right_pid_controller_.enabled()) {
     right_motor_.set_speed(right_motor_speed);
   }
+}
 
-  void App::stop_motors() {
+void App::stop_motors() {
+  left_motor_.set_speed(0);
+  right_motor_.set_speed(0);
+  left_pid_controller_.disable();
+  right_pid_controller_.disable();
+}
+
+void App::cmd_unknown_cb(int, char**) { Serial.println("Unknown command."); }
+
+void App::cmd_read_analog_gpio_cb(int argc, char** argv) {
+  if (argc < 2) {
+    return;
+  }
+
+  const int pin = atoi(argv[1]);
+  Serial.println(analogRead(pin));
+}
+
+void App::cmd_read_digital_gpio_cb(int argc, char** argv) {
+  if (argc < 2) {
+    return;
+  }
+
+  const int pin = atoi(argv[1]);
+  Serial.println(digitalRead(pin));
+}
+
+void App::cmd_read_encoders_cb(int, char**) {
+  Serial.print(left_encoder_.read());
+  Serial.print(" ");
+  Serial.println(right_encoder_.read());
+}
+
+void App::cmd_reset_encoders_cb(int, char**) {
+  left_encoder_.reset();
+  right_encoder_.reset();
+  left_pid_controller_.reset(left_encoder_.read());
+  right_pid_controller_.reset(right_encoder_.read());
+  Serial.println("OK");
+}
+
+void App::cmd_set_motors_speed_cb(int argc, char** argv) {
+  if (argc < 3) {
+    return;
+  }
+
+  const int left_motor_speed = atoi(argv[1]);
+  const int right_motor_speed = atoi(argv[2]);
+
+  // Reset the auto stop timer.
+  last_set_motors_speed_cmd_ = millis();
+  if (left_motor_speed == 0 && right_motor_speed == 0) {
     left_motor_.set_speed(0);
     right_motor_.set_speed(0);
-    left_pid_controller_.disable();
-    right_pid_controller_.disable();
-  }
-
-  void App::cmd_unknown_cb(int, char**) { Serial.println("Unknown command."); }
-
-  void App::cmd_read_analog_gpio_cb(int argc, char** argv) {
-    if (argc < 2) {
-      return;
-    }
-
-    const int pin = atoi(argv[1]);
-    Serial.println(analogRead(pin));
-  }
-
-  void App::cmd_read_digital_gpio_cb(int argc, char** argv) {
-    if (argc < 2) {
-      return;
-    }
-
-    const int pin = atoi(argv[1]);
-    Serial.println(digitalRead(pin));
-  }
-
-  void App::cmd_read_encoders_cb(int, char**) {
-    Serial.print(left_encoder_.read());
-    Serial.print(" ");
-    Serial.println(right_encoder_.read());
-  }
-
-  void App::cmd_read_has_imu_cb(int argc, char** argv) { Serial.println(HAS_IMU); }
-
-  void App::cmd_read_encoders_and_imu_cb(int argc, char** argv) {
-    Serial.print(left_encoder_.read());
-    Serial.print(" ");
-    Serial.print(right_encoder_.read());
-    Serial.print(" ");
-
-    // Quaternion data
-    imu::Quaternion quat = bno_.getQuat();
-    Serial.print(quat.x(), 4);
-    Serial.print(" ");
-    Serial.print(quat.y(), 4);
-    Serial.print(" ");
-    Serial.print(quat.z(), 4);
-    Serial.print(" ");
-    Serial.print(quat.w(), 4);
-    Serial.print(" ");
-
-    /* Display the floating point data */
-    imu::Vector<3> euler_angvel = bno_.getVector(Adafruit_BNO055::VECTOR_GYROSCOPE);
-    Serial.print(euler_angvel.x());
-    Serial.print(" ");
-    Serial.print(euler_angvel.y());
-    Serial.print(" ");
-    Serial.print(euler_angvel.z());
-    Serial.print(" ");
-
-    /* Display the floating point data */
-    imu::Vector<3> euler_linearaccel = bno_.getVector(Adafruit_BNO055::VECTOR_LINEARACCEL);
-    Serial.print(euler_linearaccel.x());
-    Serial.print(" ");
-    Serial.print(euler_linearaccel.y());
-    Serial.print(" ");
-    Serial.print(euler_linearaccel.z());
-    Serial.print("\t\t");
-
-    Serial.println("OK");
-  }
-
-  void App::cmd_reset_encoders_cb(int, char**) {
-    left_encoder_.reset();
-    right_encoder_.reset();
     left_pid_controller_.reset(left_encoder_.read());
     right_pid_controller_.reset(right_encoder_.read());
-    Serial.println("OK");
-  }
-
-  void App::cmd_set_motors_speed_cb(int argc, char** argv) {
-    if (argc < 3) {
-      return;
-    }
-
-    const int left_motor_speed = atoi(argv[1]);
-    const int right_motor_speed = atoi(argv[2]);
-
-    // Reset the auto stop timer.
-    last_set_motors_speed_cmd_ = millis();
-    if (left_motor_speed == 0 && right_motor_speed == 0) {
-      left_motor_.set_speed(0);
-      right_motor_.set_speed(0);
-      left_pid_controller_.reset(left_encoder_.read());
-      right_pid_controller_.reset(right_encoder_.read());
-      left_pid_controller_.disable();
-      right_pid_controller_.disable();
-    } else {
-      left_pid_controller_.enable();
-      right_pid_controller_.enable();
-    }
-
-    // The target speeds are in ticks per second, so we need to convert them to ticks per
-    // Constants::kPidRate.
-    left_pid_controller_.set_setpoint(left_motor_speed / Constants::kPidRate);
-    right_pid_controller_.set_setpoint(right_motor_speed / Constants::kPidRate);
-    Serial.println("OK");
-  }
-
-  void App::cmd_set_motors_pwm_cb(int argc, char** argv) {
-    if (argc < 3) {
-      return;
-    }
-
-    const int left_motor_pwm = atoi(argv[1]);
-    const int right_motor_pwm = atoi(argv[2]);
-
-    left_pid_controller_.reset(left_encoder_.read());
-    right_pid_controller_.reset(right_encoder_.read());
-    // Sneaky way to temporarily disable the PID.
     left_pid_controller_.disable();
     right_pid_controller_.disable();
-    left_motor_.set_speed(left_motor_pwm);
-    right_motor_.set_speed(right_motor_pwm);
-    Serial.println("OK");
+  } else {
+    left_pid_controller_.enable();
+    right_pid_controller_.enable();
   }
 
-  void App::cmd_set_pid_tuning_gains_cb(int argc, char** argv) {
-    // TODO(jballoffet): Refactor to expect command multiple arguments.
-    if (argc < 2) {
-      return;
-    }
+  // The target speeds are in ticks per second, so we need to convert them to ticks per
+  // Constants::kPidRate.
+  left_pid_controller_.set_setpoint(left_motor_speed / Constants::kPidRate);
+  right_pid_controller_.set_setpoint(right_motor_speed / Constants::kPidRate);
+  Serial.println("OK");
+}
 
-    static constexpr int kSizePidArgs{4};
-    int i = 0;
-    char arg[20];
-    char* str;
-    int pid_args[kSizePidArgs]{0, 0, 0, 0};
-
-    // Example: "u 30:20:10:50".
-    strcpy(arg, argv[1]);
-    char* p = arg;
-    while ((str = strtok_r(p, ":", &p)) != NULL && i < kSizePidArgs) {
-      pid_args[i] = atoi(str);
-      i++;
-    }
-    left_pid_controller_.set_tunings(pid_args[0], pid_args[1], pid_args[2], pid_args[3]);
-    right_pid_controller_.set_tunings(pid_args[0], pid_args[1], pid_args[2], pid_args[3]);
-    Serial.print("PID Updated: ");
-    Serial.print(pid_args[0]);
-    Serial.print(" ");
-    Serial.print(pid_args[1]);
-    Serial.print(" ");
-    Serial.print(pid_args[2]);
-    Serial.print(" ");
-    Serial.println(pid_args[3]);
-    Serial.println("OK");
+void App::cmd_set_motors_pwm_cb(int argc, char** argv) {
+  if (argc < 3) {
+    return;
   }
+
+  const int left_motor_pwm = atoi(argv[1]);
+  const int right_motor_pwm = atoi(argv[2]);
+
+  left_pid_controller_.reset(left_encoder_.read());
+  right_pid_controller_.reset(right_encoder_.read());
+  // Sneaky way to temporarily disable the PID.
+  left_pid_controller_.disable();
+  right_pid_controller_.disable();
+  left_motor_.set_speed(left_motor_pwm);
+  right_motor_.set_speed(right_motor_pwm);
+  Serial.println("OK");
+}
+
+void App::cmd_set_pid_tuning_gains_cb(int argc, char** argv) {
+  // TODO(jballoffet): Refactor to expect command multiple arguments.
+  if (argc < 2) {
+    return;
+  }
+
+  static constexpr int kSizePidArgs{4};
+  int i = 0;
+  char arg[20];
+  char* str;
+  int pid_args[kSizePidArgs]{0, 0, 0, 0};
+
+  // Example: "u 30:20:10:50".
+  strcpy(arg, argv[1]);
+  char* p = arg;
+  while ((str = strtok_r(p, ":", &p)) != NULL && i < kSizePidArgs) {
+    pid_args[i] = atoi(str);
+    i++;
+  }
+  left_pid_controller_.set_tunings(pid_args[0], pid_args[1], pid_args[2], pid_args[3]);
+  right_pid_controller_.set_tunings(pid_args[0], pid_args[1], pid_args[2], pid_args[3]);
+  Serial.print("PID Updated: ");
+  Serial.print(pid_args[0]);
+  Serial.print(" ");
+  Serial.print(pid_args[1]);
+  Serial.print(" ");
+  Serial.print(pid_args[2]);
+  Serial.print(" ");
+  Serial.println(pid_args[3]);
+  Serial.println("OK");
+}
+
+void App::cmd_get_is_imu_connected_cb(int, char**) { Serial.println(is_imu_connected); }
+
+void App::cmd_read_encoders_and_imu_cb(int, char**) {
+  Serial.print(left_encoder_.read());
+  Serial.print(" ");
+  Serial.print(right_encoder_.read());
+  Serial.print(" ");
+
+  // Retrieve absolute orientation (quaternion). See
+  // https://learn.adafruit.com/adafruit-bno055-absolute-orientation-sensor/overview for further
+  // information.
+  imu::Quaternion orientation = bno055_imu_.getQuat();
+  Serial.print(orientation.x(), 4);
+  Serial.print(" ");
+  Serial.print(orientation.y(), 4);
+  Serial.print(" ");
+  Serial.print(orientation.z(), 4);
+  Serial.print(" ");
+  Serial.print(orientation.w(), 4);
+  Serial.print(" ");
+
+  // Retrive angular velocity (rad/s). See
+  // https://learn.adafruit.com/adafruit-bno055-absolute-orientation-sensor/overview for further
+  // information.
+  imu::Vector<3> angular_velocity = bno055_imu_.getVector(Adafruit_BNO055::VECTOR_GYROSCOPE);
+  Serial.print(angular_velocity.x());
+  Serial.print(" ");
+  Serial.print(angular_velocity.y());
+  Serial.print(" ");
+  Serial.print(angular_velocity.z());
+  Serial.print(" ");
+
+  // Retrive linear acceleration (m/s^2). See
+  // https://learn.adafruit.com/adafruit-bno055-absolute-orientation-sensor/overview for further
+  // information.
+  imu::Vector<3> linear_acceleration = bno055_imu_.getVector(Adafruit_BNO055::VECTOR_LINEARACCEL);
+  Serial.print(linear_acceleration.x());
+  Serial.print(" ");
+  Serial.print(linear_acceleration.y());
+  Serial.print(" ");
+  Serial.print(linear_acceleration.z());
+}
 
 }  // namespace andino

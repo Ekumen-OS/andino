@@ -74,10 +74,6 @@ struct Commands {
   static constexpr const char* kReadDigitalGpio{"d"};
   /// @brief Reads the encoders tick count values.
   static constexpr const char* kReadEncoders{"e"};
-  /// @brief Reads if there is an IMU connected.
-  static constexpr const char* kReadHasImu{"h"};
-  /// @brief Reads the encoders tick count values and IMU data.
-  static constexpr const char* kReadEncodersAndImu{"i"};
   /// @brief Sets the encoders ticks count to zero.
   static constexpr const char* kResetEncoders{"r"};
   /// @brief Sets the motors speed [ticks/s].
@@ -86,6 +82,10 @@ struct Commands {
   static constexpr const char* kSetMotorsPwm{"o"};
   /// @brief Sets the PIDs tuning gains [format: "kp:kd:ki:ko"].
   static constexpr const char* kSetPidsTuningGains{"u"};
+  /// @brief Gets whether there is an IMU sensor connected.
+  static constexpr const char* kGetIsImuConnected{"h"};
+  /// @brief Reads the encoders tick count values and IMU sensor data.
+  static constexpr const char* kReadEncodersAndImu{"i"};
 };
 
 }  // namespace andino
