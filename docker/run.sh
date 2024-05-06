@@ -82,9 +82,11 @@ done
 IMAGE_NAME=${IMAGE_NAME:-ros2_jazzy_andino}
 CONTAINER_NAME=${CONTAINER_NAME:-ros2_jazzy_andino_container}
 
+USER=ubuntu
+
 SSH_PATH=/home/$USER/.ssh
-WORKSPACE_SRC_CONTAINER=/home/$(whoami)/ws/src/$REPOSITORY_FOLDER_NAME
-WORKSPACE_ROOT_CONTAINER=/home/$(whoami)/ws
+WORKSPACE_SRC_CONTAINER=/home/ubuntu/ws/src/$REPOSITORY_FOLDER_NAME
+WORKSPACE_ROOT_CONTAINER=/home/ubuntu/ws
 SSH_AUTH_SOCK_USER=$SSH_AUTH_SOCK
 
 # Create cache folders to store colcon build files
@@ -92,8 +94,8 @@ mkdir -p ${REPOSITORY_FOLDER_PATH}/.build
 mkdir -p ${REPOSITORY_FOLDER_PATH}/.install
 
 # Transfer the ownership to the user
-chown -R "$USER" ${REPOSITORY_FOLDER_PATH}/.build
-chown -R "$USER" ${REPOSITORY_FOLDER_PATH}/.install
+# chown -R "$USER" ${REPOSITORY_FOLDER_PATH}/.build
+# chown -R "$USER" ${REPOSITORY_FOLDER_PATH}/.install
 
 # Check if name container is already taken.
 if sudo -g docker docker container ls -a | grep "${CONTAINER_NAME}$" -c &> /dev/null; then
@@ -113,6 +115,7 @@ sudo docker run --privileged --net=host -it $NVIDIA_FLAGS \
        -v ${REPOSITORY_FOLDER_PATH}/.build:$WORKSPACE_ROOT_CONTAINER/build:rw \
        -v ${REPOSITORY_FOLDER_PATH}/.install:$WORKSPACE_ROOT_CONTAINER/install:rw \
        -v $SSH_PATH:$SSH_PATH \
+       -u 1000:1000 \
        --name $CONTAINER_NAME $IMAGE_NAME
 xhost -
 

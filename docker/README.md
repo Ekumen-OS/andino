@@ -17,7 +17,7 @@ For NVIDIA GPU support, `nvidia-container-toolkit` should be installed. *Skip th
 
 #### Building image and running container
 
-- Build the docker image whose default name is `ros2_humble_andino`:
+- Build the docker image whose default name is `ros2_jazzy_andino`:
 
 ```sh
 ./docker/build.sh
@@ -29,7 +29,7 @@ You can also try to set a specific image name:
 ./docker/build.sh -i my_fancy_image_name
 ```
 
-- Run a docker container from `ros2_humble_andino` called `ros2_humble_andino_container`:
+- Run a docker container from `ros2_jazzy_andino` called `ros2_jazzy_andino_container`:
 
 ```sh
 ./docker/run.sh
@@ -50,7 +50,7 @@ You can also try to set specific image and container names:
 - Inside the container, install dependencies via `rosdep`:
 
   ```sh
-  rosdep install -i -y --rosdistro humble --from-paths src
+  rosdep install -i -y --rosdistro jazzy --from-paths src
   ```
 
 Note that the repository is mounted into a workspace. That is convenient if you

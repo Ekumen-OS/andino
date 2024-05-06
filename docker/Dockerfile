@@ -1,8 +1,7 @@
 FROM osrf/ros:jazzy-desktop-full
 
 # Arguments for building
-ARG USERID
-ARG USER
+ARG USER=ubuntu
 
 # Setup environment
 ENV TERM linux
@@ -15,11 +14,15 @@ RUN apt-get update && apt-get install --no-install-recommends -y $(cat requireme
 RUN rm requirements.txt
 
 # Create a user with passwordless sudo
-RUN adduser --uid $USERID --gecos "ekumen developer" --disabled-password $USER
-RUN adduser $USER sudo
 RUN echo '%sudo ALL=(ALL) NOPASSWD:ALL' >> /etc/sudoers
 RUN echo "export QT_X11_NO_MITSHM=1" >> /home/$USER/.bashrc
-USER $USER
+
+# Install fixuid and configure it
+RUN curl -SsL https://github.com/boxboat/fixuid/releases/download/v0.6.0/fixuid-0.6.0-linux-amd64.tar.gz | tar -C /usr/local/bin -xzf - && \
+    chown root:root /usr/local/bin/fixuid && \
+    chmod 4755 /usr/local/bin/fixuid && \
+    mkdir -p /etc/fixuid && \
+    printf "user: $USER\ngroup: $USER\n" > /etc/fixuid/config.yml
 
 # Adds USER to dialout and plugdev group.
 # This is needed to access the serial ports, for further references check
@@ -27,13 +30,13 @@ USER $USER
 RUN sudo usermod -a -G dialout $USER
 RUN sudo usermod -a -G plugdev $USER
 
+USER $USER
+
 # Creates the src folder of the workspace.
 RUN mkdir -p /home/$USER/ws/src
 
-# Adds to bashrc the ros humble overlay sourcing.
+# Adds to bashrc the ros jazzy overlay sourcing.
 RUN echo "source /opt/ros/jazzy/setup.bash" >> /home/$USER/.bashrc
-# Adds colcon autocomplete
-RUN echo "source /usr/share/colcon_argcomplete/hook/colcon-argcomplete.bash" >> /home/$USER/.bashrc
 # Adds gazebo sourcing.
 RUN echo "source /usr/share/gazebo/setup.bash" >> /home/$USER/.bashrc
 
@@ -42,5 +45,8 @@ RUN sudo apt upgrade -y && sudo apt update && rosdep update
 
 # Defines a workspace folder.
 WORKDIR /home/$USER/ws
+
+# Use fixuid as the entrypoint in quiet mode
+ENTRYPOINT ["fixuid", "-q"]
 
 CMD ["/bin/bash"]
