@@ -97,7 +97,7 @@ The SBC used in this project is a Raspberry Pi 4b so the guidelines here will re
 Ubuntu Mate 22.04 ARM64 is the recommended operative system for this project. This OS provides good capabilities for a educational platform as well as good performance.
 
 For installing this OS in the Raspberry:
-1. Download the image from here: [ubuntu mate download]()https://ubuntu-mate.org/download/arm64/
+1. Download the image from here: [ubuntu mate download](https://ubuntu-mate.org/download/arm64/)
 
 
 2. Install OS to a microSD card using [Raspberry Pi Imager](https://www.raspberrypi.com/software/).
