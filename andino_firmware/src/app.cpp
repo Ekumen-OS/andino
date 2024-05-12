@@ -336,7 +336,7 @@ void App::cmd_read_encoders_and_imu_cb(int, char**) {
   Serial.print(orientation.w(), 4);
   Serial.print(" ");
 
-  // Retrive angular velocity (rad/s). See
+  // Retrieve angular velocity (rad/s). See
   // https://learn.adafruit.com/adafruit-bno055-absolute-orientation-sensor/overview for further
   // information.
   imu::Vector<3> angular_velocity = bno055_imu_.getVector(Adafruit_BNO055::VECTOR_GYROSCOPE);
@@ -347,7 +347,7 @@ void App::cmd_read_encoders_and_imu_cb(int, char**) {
   Serial.print(angular_velocity.z());
   Serial.print(" ");
 
-  // Retrive linear acceleration (m/s^2). See
+  // Retrieve linear acceleration (m/s^2). See
   // https://learn.adafruit.com/adafruit-bno055-absolute-orientation-sensor/overview for further
   // information.
   imu::Vector<3> linear_acceleration = bno055_imu_.getVector(Adafruit_BNO055::VECTOR_LINEARACCEL);
