@@ -29,6 +29,8 @@
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #pragma once
 
+#include <Adafruit_BNO055.h>
+
 #include "digital_out_arduino.h"
 #include "encoder.h"
 #include "interrupt_in_arduino.h"
@@ -83,6 +85,12 @@ class App {
   /// Callback method for the `Commands::kSetPidsTuningGains` command.
   static void cmd_set_pid_tuning_gains_cb(int argc, char** argv);
 
+  /// Callback method for the `Commands::kGetIsImuConnected` command.
+  static void cmd_get_is_imu_connected_cb(int argc, char** argv);
+
+  /// Callback method for the `Commands::kReadEncodersAndImu` command.
+  static void cmd_read_encoders_and_imu_cb(int argc, char** argv);
+
   /// Serial stream.
   static SerialStreamArduino serial_stream_;
 
@@ -115,11 +123,17 @@ class App {
   static Pid left_pid_controller_;
   static Pid right_pid_controller_;
 
+  /// Adafruit BNO055 IMU sensor.
+  static Adafruit_BNO055 bno055_imu_;
+
   /// Tracks the last time the PID computation was made.
   static unsigned long last_pid_computation_;
 
   /// Tracks the last time a `Commands::kSetMotorsSpeed` command was received.
   static unsigned long last_set_motors_speed_cmd_;
+
+  /// Tracks whether there is an IMU sensor connected.
+  static bool is_imu_connected;
 };
 
 }  // namespace andino
