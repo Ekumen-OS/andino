@@ -214,7 +214,7 @@ For now, after connecting it to the usb port:
 #### Fixed USB port names
 
 As having multiple USB devices connected to the USB ports of the Raspberry Pi, the automatically assigned USB port numbers could unexpectedly change after a reboot.
-To avoid assigning your device to a `tty_USBX` number that isn't the correct onew we should assign fixed USB port name for each connected device.
+To avoid assigning your device to a `tty_USBX` number that isn't the correct one we should assign fixed USB port name for each connected device.
 
 The idea is to be able to generate a link between the real `ttyUSBX` port and an invented one. For this we will need to create rules, that every time the Raspberry Pi boots are executed, and therefore we
 always point to the correct port name.
@@ -333,9 +333,9 @@ Let' source the ROS Humble installation:
 ```
 source /opt/ros/humble/setup.bash
 ```
-Let's build the packages (`andino_gz_classic` and `andino_navigation` work only in simulation):
+Let's build the packages (`andino_gz_classic` and `andino_apps` work only in simulation):
 ```
-colcon build --packages-skip andino_gz_classic andino_navigation
+colcon build --packages-skip andino_gz_classic andino_apps
 ```
 After building is completed:
 ```
