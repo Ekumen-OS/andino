@@ -25,7 +25,7 @@ This package aims to provide the necessary information to the correct assembly o
 
 <img src="docs/arduino_motor_diagram.png" />
 
-**Important❗  : As of a recent update, the A4 and A5 connections were moved to A2 and A3. This diagram will be updated soon. Refer to [andino_firmware/src/hw.h](../andino_firmware/src/hw.h) for pinout reference.**
+**Important❗: As of a recent update recent update ([#215](https://github.com/Ekumen-OS/andino/pull/215)), the A4 and A5 connections were moved to A2 and A3. This diagram will be updated soon. Refer to [andino_firmware/src/hw.h](../andino_firmware/src/hw.h) for pinout reference.**
 
 
 Some frequent errors:
