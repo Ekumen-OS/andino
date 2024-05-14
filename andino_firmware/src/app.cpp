@@ -64,7 +64,11 @@
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "app.h"
 
+#include <Adafruit_BNO055.h>
+#include <Adafruit_Sensor.h>
 #include <Arduino.h>
+#include <Wire.h>
+#include <utility/imumaths.h>
 
 #include "commands.h"
 #include "constants.h"
@@ -115,6 +119,10 @@ unsigned long App::last_pid_computation_{0};
 
 unsigned long App::last_set_motors_speed_cmd_{0};
 
+bool App::is_imu_connected{false};
+
+Adafruit_BNO055 App::bno055_imu_{/*sensorID=*/55, BNO055_ADDRESS_A, &Wire};
+
 void App::setup() {
   // Required by Arduino libraries to work.
   init();
@@ -142,6 +150,14 @@ void App::setup() {
   shell_.register_command(Commands::kSetMotorsSpeed, cmd_set_motors_speed_cb);
   shell_.register_command(Commands::kSetMotorsPwm, cmd_set_motors_pwm_cb);
   shell_.register_command(Commands::kSetPidsTuningGains, cmd_set_pid_tuning_gains_cb);
+  shell_.register_command(Commands::kGetIsImuConnected, cmd_get_is_imu_connected_cb);
+  shell_.register_command(Commands::kReadEncodersAndImu, cmd_read_encoders_and_imu_cb);
+
+  // Initialize IMU sensor.
+  if (bno055_imu_.begin()) {
+    bno055_imu_.setExtCrystalUse(true);
+    is_imu_connected = true;
+  }
 }
 
 void App::loop() {
@@ -171,10 +187,10 @@ void App::adjust_motors_speed() {
   int right_motor_speed = 0;
   left_pid_controller_.compute(left_encoder_.read(), left_motor_speed);
   right_pid_controller_.compute(right_encoder_.read(), right_motor_speed);
-  if (left_pid_controller_.enabled()){
+  if (left_pid_controller_.enabled()) {
     left_motor_.set_speed(left_motor_speed);
   }
-  if (right_pid_controller_.enabled()){
+  if (right_pid_controller_.enabled()) {
     right_motor_.set_speed(right_motor_speed);
   }
 }
@@ -297,6 +313,49 @@ void App::cmd_set_pid_tuning_gains_cb(int argc, char** argv) {
   Serial.print(" ");
   Serial.println(pid_args[3]);
   Serial.println("OK");
+}
+
+void App::cmd_get_is_imu_connected_cb(int, char**) { Serial.println(is_imu_connected); }
+
+void App::cmd_read_encoders_and_imu_cb(int, char**) {
+  Serial.print(left_encoder_.read());
+  Serial.print(" ");
+  Serial.print(right_encoder_.read());
+  Serial.print(" ");
+
+  // Retrieve absolute orientation (quaternion). See
+  // https://learn.adafruit.com/adafruit-bno055-absolute-orientation-sensor/overview for further
+  // information.
+  imu::Quaternion orientation = bno055_imu_.getQuat();
+  Serial.print(orientation.x(), 4);
+  Serial.print(" ");
+  Serial.print(orientation.y(), 4);
+  Serial.print(" ");
+  Serial.print(orientation.z(), 4);
+  Serial.print(" ");
+  Serial.print(orientation.w(), 4);
+  Serial.print(" ");
+
+  // Retrive angular velocity (rad/s). See
+  // https://learn.adafruit.com/adafruit-bno055-absolute-orientation-sensor/overview for further
+  // information.
+  imu::Vector<3> angular_velocity = bno055_imu_.getVector(Adafruit_BNO055::VECTOR_GYROSCOPE);
+  Serial.print(angular_velocity.x());
+  Serial.print(" ");
+  Serial.print(angular_velocity.y());
+  Serial.print(" ");
+  Serial.print(angular_velocity.z());
+  Serial.print(" ");
+
+  // Retrive linear acceleration (m/s^2). See
+  // https://learn.adafruit.com/adafruit-bno055-absolute-orientation-sensor/overview for further
+  // information.
+  imu::Vector<3> linear_acceleration = bno055_imu_.getVector(Adafruit_BNO055::VECTOR_LINEARACCEL);
+  Serial.print(linear_acceleration.x());
+  Serial.print(" ");
+  Serial.print(linear_acceleration.y());
+  Serial.print(" ");
+  Serial.print(linear_acceleration.z());
 }
 
 }  // namespace andino
