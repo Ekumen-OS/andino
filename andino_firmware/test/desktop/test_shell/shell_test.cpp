@@ -29,6 +29,9 @@
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "shell.h"
 
+#include <string>
+#include <vector>
+
 #include <gmock/gmock.h>
 #include <gtest/gtest.h>
 
@@ -96,9 +99,7 @@ class ShellTest : public testing::Test {
 
   static void save_arguments(int argc, char** argv) {
     argc_ = argc;
-    for (int i = 0; i < argc; i++) {
-      strcpy(argv_[i], argv[i]);
-    }
+    argv_.assign(argv, argv + argc);
   }
 
   static constexpr const char* kCommand1{"a"};
@@ -107,15 +108,15 @@ class ShellTest : public testing::Test {
 
   static int called_callback_;
   static int argc_;
-  static char argv_[5][10];
+  static std::vector<std::string> argv_;
 
   andino::Shell shell;
   MockSerialStream serial_stream_;
 };
 
-int ShellTest::called_callback_ = -1;
-int ShellTest::argc_ = 0;
-char ShellTest::argv_[5][10] = {'\0'};
+int ShellTest::called_callback_{-1};
+int ShellTest::argc_{0};
+std::vector<std::string> ShellTest::argv_;
 
 TEST_F(ShellTest, ProcessInputEmpty) {
   EXPECT_CALL(serial_stream_, available()).Times(1).WillOnce(Return(0));
@@ -124,170 +125,164 @@ TEST_F(ShellTest, ProcessInputEmpty) {
 }
 
 TEST_F(ShellTest, ProcessInputMessageSingleCharacterCommandSingleArg) {
-  const char* input_message = "a\r";
-  const char* expected_argv[] = {"a"};
+  const std::string input_message{"a\r"};
+  const std::vector<std::string> expected_argv{"a"};
 
-  int available_call_count = strlen(input_message) + 1;
+  int available_call_count = input_message.size() + 1;
   EXPECT_CALL(serial_stream_, available()).Times(available_call_count);
   ON_CALL(serial_stream_, available())
       .WillByDefault(
           testing::Invoke([&available_call_count]() -> int { return --available_call_count; }));
 
   int input_index = 0;
-  EXPECT_CALL(serial_stream_, read()).Times(strlen(input_message));
+  EXPECT_CALL(serial_stream_, read()).Times(input_message.size());
   ON_CALL(serial_stream_, read())
       .WillByDefault(testing::Invoke(
-          [input_message, &input_index]() -> int { return input_message[input_index++]; }));
+          [input_message, &input_index]() -> int { return input_message.at(input_index++); }));
 
   shell.process_input();
 
   ASSERT_EQ(called_callback_, 1);
   ASSERT_EQ(argc_, 1);
-  EXPECT_STREQ(argv_[0], expected_argv[0]);
+  EXPECT_THAT(argv_, ::testing::ElementsAreArray(expected_argv));
 }
 
 TEST_F(ShellTest, ProcessInputMessageUnknownCommand) {
-  const char* input_message = "z\r";
-  const char* expected_argv[] = {"z"};
+  const std::string input_message{"z\r"};
+  const std::vector<std::string> expected_argv{"z"};
 
-  int available_call_count = strlen(input_message) + 1;
+  int available_call_count = input_message.size() + 1;
   EXPECT_CALL(serial_stream_, available()).Times(available_call_count);
   ON_CALL(serial_stream_, available())
       .WillByDefault(
           testing::Invoke([&available_call_count]() -> int { return --available_call_count; }));
 
   int input_index = 0;
-  EXPECT_CALL(serial_stream_, read()).Times(strlen(input_message));
+  EXPECT_CALL(serial_stream_, read()).Times(input_message.size());
   ON_CALL(serial_stream_, read())
       .WillByDefault(testing::Invoke(
-          [input_message, &input_index]() -> int { return input_message[input_index++]; }));
+          [input_message, &input_index]() -> int { return input_message.at(input_index++); }));
 
   shell.process_input();
 
   ASSERT_EQ(called_callback_, 0);
   ASSERT_EQ(argc_, 1);
-  EXPECT_STREQ(argv_[0], expected_argv[0]);
+  EXPECT_THAT(argv_, ::testing::ElementsAreArray(expected_argv));
 }
 
 TEST_F(ShellTest, ProcessInputMessageTwoCharacterCommandSingleArg) {
-  const char* input_message = "ab\r";
-  const char* expected_argv[] = {"ab"};
+  const std::string input_message{"ab\r"};
+  const std::vector<std::string> expected_argv{"ab"};
 
-  int available_call_count = strlen(input_message) + 1;
+  int available_call_count = input_message.size() + 1;
   EXPECT_CALL(serial_stream_, available()).Times(available_call_count);
   ON_CALL(serial_stream_, available())
       .WillByDefault(
           testing::Invoke([&available_call_count]() -> int { return --available_call_count; }));
 
   int input_index = 0;
-  EXPECT_CALL(serial_stream_, read()).Times(strlen(input_message));
+  EXPECT_CALL(serial_stream_, read()).Times(input_message.size());
   ON_CALL(serial_stream_, read())
       .WillByDefault(testing::Invoke(
-          [input_message, &input_index]() -> int { return input_message[input_index++]; }));
+          [input_message, &input_index]() -> int { return input_message.at(input_index++); }));
 
   shell.process_input();
 
   ASSERT_EQ(called_callback_, 2);
   ASSERT_EQ(argc_, 1);
-  EXPECT_STREQ(argv_[0], expected_argv[0]);
+  EXPECT_EQ(argv_.at(0), expected_argv.at(0));
 }
 
 TEST_F(ShellTest, ProcessInputMessageThreeCharacterCommandSingleArg) {
-  const char* input_message = "cde\r";
-  const char* expected_argv[] = {"cde"};
+  const std::string input_message{"cde\r"};
+  const std::vector<std::string> expected_argv{"cde"};
 
-  int available_call_count = strlen(input_message) + 1;
+  int available_call_count = input_message.size() + 1;
   EXPECT_CALL(serial_stream_, available()).Times(available_call_count);
   ON_CALL(serial_stream_, available())
       .WillByDefault(
           testing::Invoke([&available_call_count]() -> int { return --available_call_count; }));
 
   int input_index = 0;
-  EXPECT_CALL(serial_stream_, read()).Times(strlen(input_message));
+  EXPECT_CALL(serial_stream_, read()).Times(input_message.size());
   ON_CALL(serial_stream_, read())
       .WillByDefault(testing::Invoke(
-          [input_message, &input_index]() -> int { return input_message[input_index++]; }));
+          [input_message, &input_index]() -> int { return input_message.at(input_index++); }));
 
   shell.process_input();
 
   ASSERT_EQ(called_callback_, 3);
   ASSERT_EQ(argc_, 1);
-  EXPECT_STREQ(argv_[0], expected_argv[0]);
+  EXPECT_THAT(argv_, ::testing::ElementsAreArray(expected_argv));
 }
 
 TEST_F(ShellTest, ProcessInputMessageTwoArgs) {
-  const char* input_message = "a 12\r";
-  const char* expected_argv[] = {"a", "12"};
+  const std::string input_message{"a 12\r"};
+  const std::vector<std::string> expected_argv{"a", "12"};
 
-  int available_call_count = strlen(input_message) + 1;
+  int available_call_count = input_message.size() + 1;
   EXPECT_CALL(serial_stream_, available()).Times(available_call_count);
   ON_CALL(serial_stream_, available())
       .WillByDefault(
           testing::Invoke([&available_call_count]() -> int { return --available_call_count; }));
 
   int input_index = 0;
-  EXPECT_CALL(serial_stream_, read()).Times(strlen(input_message));
+  EXPECT_CALL(serial_stream_, read()).Times(input_message.size());
   ON_CALL(serial_stream_, read())
       .WillByDefault(testing::Invoke(
-          [input_message, &input_index]() -> int { return input_message[input_index++]; }));
+          [input_message, &input_index]() -> int { return input_message.at(input_index++); }));
 
   shell.process_input();
 
   ASSERT_EQ(called_callback_, 1);
   ASSERT_EQ(argc_, 2);
-  EXPECT_STREQ(argv_[0], expected_argv[0]);
-  EXPECT_STREQ(argv_[1], expected_argv[1]);
+  EXPECT_THAT(argv_, ::testing::ElementsAreArray(expected_argv));
 }
 
 TEST_F(ShellTest, ProcessInputMessageThreeArgs) {
-  const char* input_message = "ab 12 3\r";
-  const char* expected_argv[] = {"ab", "12", "3"};
+  const std::string input_message{"ab 12 3\r"};
+  const std::vector<std::string> expected_argv{"ab", "12", "3"};
 
-  int available_call_count = strlen(input_message) + 1;
+  int available_call_count = input_message.size() + 1;
   EXPECT_CALL(serial_stream_, available()).Times(available_call_count);
   ON_CALL(serial_stream_, available())
       .WillByDefault(
           testing::Invoke([&available_call_count]() -> int { return --available_call_count; }));
 
   int input_index = 0;
-  EXPECT_CALL(serial_stream_, read()).Times(strlen(input_message));
+  EXPECT_CALL(serial_stream_, read()).Times(input_message.size());
   ON_CALL(serial_stream_, read())
       .WillByDefault(testing::Invoke(
-          [input_message, &input_index]() -> int { return input_message[input_index++]; }));
+          [input_message, &input_index]() -> int { return input_message.at(input_index++); }));
 
   shell.process_input();
 
   ASSERT_EQ(called_callback_, 2);
   ASSERT_EQ(argc_, 3);
-  EXPECT_STREQ(argv_[0], expected_argv[0]);
-  EXPECT_STREQ(argv_[1], expected_argv[1]);
-  EXPECT_STREQ(argv_[2], expected_argv[2]);
+  EXPECT_THAT(argv_, ::testing::ElementsAreArray(expected_argv));
 }
 
 TEST_F(ShellTest, ProcessInputMessageFourArgs) {
-  const char* input_message = "cde 12 3 456\r";
-  const char* expected_argv[] = {"cde", "12", "3", "456"};
+  const std::string input_message{"cde 12 3 456\r"};
+  const std::vector<std::string> expected_argv{"cde", "12", "3", "456"};
 
-  int available_call_count = strlen(input_message) + 1;
+  int available_call_count = input_message.size() + 1;
   EXPECT_CALL(serial_stream_, available()).Times(available_call_count);
   ON_CALL(serial_stream_, available())
       .WillByDefault(
           testing::Invoke([&available_call_count]() -> int { return --available_call_count; }));
 
   int input_index = 0;
-  EXPECT_CALL(serial_stream_, read()).Times(strlen(input_message));
+  EXPECT_CALL(serial_stream_, read()).Times(input_message.size());
   ON_CALL(serial_stream_, read())
       .WillByDefault(testing::Invoke(
-          [input_message, &input_index]() -> int { return input_message[input_index++]; }));
+          [input_message, &input_index]() -> int { return input_message.at(input_index++); }));
 
   shell.process_input();
 
   ASSERT_EQ(called_callback_, 3);
   ASSERT_EQ(argc_, 4);
-  EXPECT_STREQ(argv_[0], expected_argv[0]);
-  EXPECT_STREQ(argv_[1], expected_argv[1]);
-  EXPECT_STREQ(argv_[2], expected_argv[2]);
-  EXPECT_STREQ(argv_[3], expected_argv[3]);
+  EXPECT_THAT(argv_, ::testing::ElementsAreArray(expected_argv));
 }
 
 }  // namespace
