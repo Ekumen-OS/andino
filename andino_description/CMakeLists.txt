@@ -30,6 +30,4 @@ if(BUILD_TESTING)
   endforeach()
 endif()
 
-# ament_python_install_package(${PROJECT_NAME})
-
 ament_package()
