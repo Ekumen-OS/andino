@@ -125,7 +125,7 @@ TEST_F(ShellTest, ProcessInputEmpty) {
 }
 
 TEST_F(ShellTest, ProcessInputMessageSingleCharacterCommandSingleArg) {
-  const std::string input_message("a\r");
+  const std::string input_message{"a\r"};
   const std::vector<std::string> expected_argv{"a"};
 
   int available_call_count = input_message.size() + 1;
@@ -148,7 +148,7 @@ TEST_F(ShellTest, ProcessInputMessageSingleCharacterCommandSingleArg) {
 }
 
 TEST_F(ShellTest, ProcessInputMessageUnknownCommand) {
-  const std::string input_message("z\r");
+  const std::string input_message{"z\r"};
   const std::vector<std::string> expected_argv{"z"};
 
   int available_call_count = input_message.size() + 1;
@@ -171,7 +171,7 @@ TEST_F(ShellTest, ProcessInputMessageUnknownCommand) {
 }
 
 TEST_F(ShellTest, ProcessInputMessageTwoCharacterCommandSingleArg) {
-  const std::string input_message("ab\r");
+  const std::string input_message{"ab\r"};
   const std::vector<std::string> expected_argv{"ab"};
 
   int available_call_count = input_message.size() + 1;
@@ -194,7 +194,7 @@ TEST_F(ShellTest, ProcessInputMessageTwoCharacterCommandSingleArg) {
 }
 
 TEST_F(ShellTest, ProcessInputMessageThreeCharacterCommandSingleArg) {
-  const std::string input_message("cde\r");
+  const std::string input_message{"cde\r"};
   const std::vector<std::string> expected_argv{"cde"};
 
   int available_call_count = input_message.size() + 1;
@@ -217,7 +217,7 @@ TEST_F(ShellTest, ProcessInputMessageThreeCharacterCommandSingleArg) {
 }
 
 TEST_F(ShellTest, ProcessInputMessageTwoArgs) {
-  const std::string input_message("a 12\r");
+  const std::string input_message{"a 12\r"};
   const std::vector<std::string> expected_argv{"a", "12"};
 
   int available_call_count = input_message.size() + 1;
@@ -240,7 +240,7 @@ TEST_F(ShellTest, ProcessInputMessageTwoArgs) {
 }
 
 TEST_F(ShellTest, ProcessInputMessageThreeArgs) {
-  const std::string input_message("ab 12 3\r");
+  const std::string input_message{"ab 12 3\r"};
   const std::vector<std::string> expected_argv{"ab", "12", "3"};
 
   int available_call_count = input_message.size() + 1;
@@ -263,7 +263,7 @@ TEST_F(ShellTest, ProcessInputMessageThreeArgs) {
 }
 
 TEST_F(ShellTest, ProcessInputMessageFourArgs) {
-  const std::string input_message("cde 12 3 456\r");
+  const std::string input_message{"cde 12 3 456\r"};
   const std::vector<std::string> expected_argv{"cde", "12", "3", "456"};
 
   int available_call_count = input_message.size() + 1;
