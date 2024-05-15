@@ -11,7 +11,7 @@ In the `urdf` folder you have the URDF files that contain the description of the
 
 In case you want to change the physical properties of some of the components of the robot, you can do it modifying the default YAML files inside the `config/andino` folder.
 
-You can even add your own configuration files in another directory in the `config` folder, and passing this directory to the main file using `yaml_config_dir` xacro argument inside the launch files.
+You can even add your own configuration files in another directory in the `config` folder, and pass this directory to the main file using the `yaml_config_dir` xacro argument on the launch files.
 
 ## Launch Files
 

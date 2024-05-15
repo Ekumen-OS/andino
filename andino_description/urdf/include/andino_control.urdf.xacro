@@ -17,7 +17,7 @@
         <param name="right_wheel_name">${hardware_props['right_wheel_name']}</param>
         <param name="serial_device">${hardware_props['serial_device']}</param>
         <param name="baud_rate">${hardware_props['baud_rate']}</param>
-        <param name="timeout">1${hardware_props['timeout']}</param>
+        <param name="timeout">${hardware_props['timeout']}</param>
         <param name="enc_ticks_per_rev">${hardware_props['enc_ticks_per_rev']}</param>
       </hardware>
       <joint name="left_wheel_joint">

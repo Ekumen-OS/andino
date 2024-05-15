@@ -41,12 +41,12 @@ import xacro
 
 def generate_launch_description():
 
-    # Obtains andino_description's share directory path.
-    pkg_andino_description = get_package_share_directory('andino_description')
-
     # Arguments
     rsp_argument = DeclareLaunchArgument('rsp', default_value='true',
                           description='Run robot state publisher node.')
+
+    # Obtains andino_description's share directory path.
+    pkg_andino_description = get_package_share_directory('andino_description')
 
     # Obtain urdf from xacro files.
     arguments = {'yaml_config_dir': os.path.join(pkg_andino_description, 'config', 'andino')}

@@ -41,9 +41,6 @@ import xacro
 
 def generate_launch_description():
 
-    # Obtains andino_description's share directory path.
-    pkg_andino_description = get_package_share_directory('andino_description')
-
     # Arguments
     rviz_argument = DeclareLaunchArgument('rviz', default_value='true',
                           description='Open RViz.')
@@ -51,6 +48,9 @@ def generate_launch_description():
                           description='Run robot state publisher node.')
     jsp_argument = DeclareLaunchArgument('jsp', default_value='true',
                           description='Run joint state publisher node.')
+
+    # Obtains andino_description's share directory path.
+    pkg_andino_description = get_package_share_directory('andino_description')
 
     # Obtain urdf from xacro files.
     arguments = {'yaml_config_dir': os.path.join(pkg_andino_description, 'config', 'andino')}
