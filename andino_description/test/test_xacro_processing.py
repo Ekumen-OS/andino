@@ -34,6 +34,7 @@ import xacro
 from ament_index_python.packages import get_package_share_directory
 
 def test_xacro_processing():
+    """Test main xacro file (andino.urdf.xacro) processing"""
     # Get the file path.
     xacro_file_path = os.path.join(get_package_share_directory("andino_description"), 'urdf', 'andino.urdf.xacro')
 
