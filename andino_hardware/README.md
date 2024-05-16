@@ -23,10 +23,7 @@ This package aims to provide the necessary information to the correct assembly o
 
 ### Motor-Arduino
 
-<img src="docs/arduino_motor_diagram.png" />
-
-**Important❗: As of a recent update recent update ([#215](https://github.com/Ekumen-OS/andino/pull/215)), the A4 and A5 connections were moved to A2 and A3. This diagram will be updated soon. Refer to [andino_firmware/src/hw.h](../andino_firmware/src/hw.h) for pinout reference.**
-
+<img src="docs/andino_diagram_arduino.jpg" />
 
 Some frequent errors:
  - If one of the motors rotates in the opposite direction (think about the orientation of the motors in the chassis) probably the output(+ and -) of the L298N's output should be toggled.
