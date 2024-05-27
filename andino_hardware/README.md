@@ -33,7 +33,7 @@ Some frequent errors:
 
 <img src="docs/andino_diagram_raspberry.jpg" />
 
-*NOTE: depending on how good is the powerbank we have, the motors should be powered with more or less voltage. 9V is the limit for the chosen motors, but it seems to drain too much power at startup, so the recommended voltage to step up is 6/7V (the higher the voltage, the smoother the movement of the motors, but also higher power consumed).
+*NOTE: depending on how good is the powerbank we have, the motors should be powered with more or less voltage. While a higher voltage value (up to 9V) leads to smoother operation (better motor speed control), it also increases their open-loop speed, which is noticeable particularly during motion start and varies according to the power bank quality (output current capabilities). Therefore, adjusting the output voltage to lower values (around 7V) may be required so as to make the motors work as expected.
 
 ## Microcontroller Configuration
 
