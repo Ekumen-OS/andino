@@ -30,6 +30,10 @@
   <xacro:property name="sensor_yaml" value="$(arg yaml_config_dir)/sensors.yaml" />
   <xacro:property name="sensor_prop" value="${xacro.load_yaml(sensor_yaml)}"/>
 
+  <xacro:property name="hardware_yaml" value="$(arg yaml_config_dir)/hardware.yaml" />
+  <xacro:property name="hardware_props" value="${xacro.load_yaml(hardware_yaml)}"/>
+
+
   <!-- Footprint link -->
   <xacro:footprint wheel_props="${wheel_props}" />
 
@@ -89,6 +93,7 @@
   <!-- ros2_control -->
   <xacro:if value="$(arg use_real_ros_control)">
     <xacro:include filename="$(find ${package_name})/urdf/include/andino_control.urdf.xacro" />
+    <xacro:control hardware_props="${hardware_props}" />
   </xacro:if>
 
 

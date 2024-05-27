@@ -82,6 +82,10 @@ struct Commands {
   static constexpr const char* kSetMotorsPwm{"o"};
   /// @brief Sets the PIDs tuning gains [format: "kp:kd:ki:ko"].
   static constexpr const char* kSetPidsTuningGains{"u"};
+  /// @brief Gets whether there is an IMU sensor connected.
+  static constexpr const char* kGetIsImuConnected{"h"};
+  /// @brief Reads the encoders tick count values and IMU sensor data.
+  static constexpr const char* kReadEncodersAndImu{"i"};
 };
 
 }  // namespace andino
