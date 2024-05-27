@@ -29,6 +29,9 @@ Some frequent errors:
  - If one of the motors rotates in the opposite direction (think about the orientation of the motors in the chassis) probably the output(+ and -) of the L298N's output should be toggled.
  - When moving forward the encoder values should increase while moving backwards they should decrease. If it is happening the other way around probably the A and B encoder signals should be toggled.
 
+### Raspberry-Power
+
+<img src="docs/andino_diagram_raspberry.jpg" />
 
 ## Microcontroller Configuration
 
