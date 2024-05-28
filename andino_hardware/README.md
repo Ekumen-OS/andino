@@ -33,7 +33,7 @@ Some frequent errors:
 
 <img src="docs/andino_diagram_raspberry.jpg" />
 
-*NOTE: depending on how good is the powerbank we have, the motors should be powered with more or less voltage. While a higher voltage value (up to 9V) leads to smoother operation (better motor speed control), it also increases their open-loop speed, which is noticeable particularly during motion start and varies according to the power bank quality (output current capabilities). Therefore, adjusting the output voltage to lower values (around 7V) may be required so as to make the motors work as expected.
+*NOTE: depending on the power bank maximum output current, the motors may need to be powered with a voltage value lower than 9V. While a higher voltage value (up to 9V) leads to smoother operation (better motor speed control), it also increases their open-loop speed, which is noticeable particularly during motion start and varies according to the power bank quality (output current capabilities). Therefore, adjusting the output voltage to lower values (around 7V) may be required so as to make the motors work as expected.
 
 **NOTE: Ensure the ribbon cable is properly connected with the blue or silver side facing the USB ports.
 
