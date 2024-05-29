@@ -38,10 +38,10 @@ struct Hw {
   /// @brief Left encoder channel B pin. Connected to PD3 (digital pin 3).
   static constexpr int kLeftEncoderChannelBGpioPin{3};
 
-  /// @brief Right encoder channel A pin. Connected to PC4 (digital pin 18, analog pin A4).
-  static constexpr int kRightEncoderChannelAGpioPin{18};
-  /// @brief Right encoder channel B pin. Connected to PC5 (digital pin 19, analog pin A5).
-  static constexpr int kRightEncoderChannelBGpioPin{19};
+  /// @brief Right encoder channel A pin. Connected to PC2 (digital pin 16, analog pin A2).
+  static constexpr int kRightEncoderChannelAGpioPin{16};
+  /// @brief Right encoder channel B pin. Connected to PC3 (digital pin 17, analog pin A3).
+  static constexpr int kRightEncoderChannelBGpioPin{17};
 
   /// @brief Left motor driver backward pin. Connected to PD6 (digital pin 6).
   static constexpr int kLeftMotorBackwardGpioPin{6};
@@ -60,6 +60,11 @@ struct Hw {
   /// @note The enable input of the L298N motor driver may be directly jumped to 5V if the board has
   /// a jumper to do so.
   static constexpr int kRightMotorEnableGpioPin{12};
+
+  /// @brief IMU sensor I2C SCL pin. Connected to PC5 (digital pin 19, analog pin A5).
+  static constexpr int kImuI2cSclPin{19};
+  /// @brief IMU sensor I2C SDA pin. Connected to PC4 (digital pin 18, analog pin A4).
+  static constexpr int kImuI2cSdaPin{18};
 };
 
 }  // namespace andino
