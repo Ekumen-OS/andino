@@ -51,9 +51,8 @@ When you gather all the parts, you should have the following (NOTE: the printed 
 
   <img src="docs/lower_back.jpg">
 
-  4. Screw the Raspberry Pi to the front of the lower part of the chassis:
+  4. Screw the Raspberry Pi and the DC-DC converter to the front of the lower part of the chassis:
 
-  <!-- TODO -->
   <img src="docs/lower_front.jpg">
 
   5. Fix the powerbank to the back of the upper part of the chassis:
@@ -62,8 +61,7 @@ When you gather all the parts, you should have the following (NOTE: the printed 
 
   6. Add the RPLidar to the front of the upper part of the chassis:
 
-  <!-- TODO -->
-  <img src="docs/upper_chassis.jpg">
+  <img src="docs/lidar.jpg">
 
   7. Perform all the wiring following the [Connections Diagram](#connection-diagram) of both the upper and lower chassis.
 
