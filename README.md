@@ -45,7 +45,8 @@ Other projects built upon Andino! :rocket:
 
 ## :busts_in_silhouette: Community
 
-Join our Discord and contribute to the community! [<img src="docs/discord-mark-blue.png" width=30 />](https://discord.gg/tHhH32CTHu)
+[<img src="docs/discord-mark-blue.png" width=30 hspace="20"/>](https://discord.gg/tHhH32CTHu) Join our Discord and contribute to the community!
+
 
 ## :pick: Robot Assembly
 
