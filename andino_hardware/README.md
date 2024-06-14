@@ -286,9 +286,9 @@ Let' source the ROS Humble installation:
 ```
 source /opt/ros/humble/setup.bash
 ```
-Let's build the packages (`andino_gz_classic` and `andino_navigation` work only in simulation):
+Let's build the packages (`andino_gz_classic` and `andino_apps` relies on simulation so we skip them):
 ```
-colcon build --packages-skip andino_gz_classic andino_navigation
+colcon build --packages-skip andino_gz_classic andino_apps
 ```
 After building is completed:
 ```
