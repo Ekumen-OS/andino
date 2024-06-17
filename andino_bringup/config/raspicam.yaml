@@ -1,0 +1,29 @@
+# Calibration tutorial (from Nav2 docs): https://docs.nav2.org/tutorials/docs/camera_calibration.html
+# Other info for this Raspberry Pi Camera Module V2 can be found here: https://elinux.org/Rpi_Camera_Module#Technical_Parameters_.28v.2_board.29
+
+image_width: 640
+image_height: 480
+camera_name: narrow_stereo
+camera_matrix:
+  rows: 3
+  cols: 3
+  data: [502.10979,   0.     , 315.89371,
+           0.     , 499.35622, 233.15895,
+           0.     ,   0.     ,   1.     ]
+distortion_model: plumb_bob
+distortion_coefficients:
+  rows: 1
+  cols: 5
+  data: [0.150091, -0.263342, 0.002136, -0.004508, 0.000000]
+rectification_matrix:
+  rows: 3
+  cols: 3
+  data: [1., 0., 0.,
+         0., 1., 0.,
+         0., 0., 1.]
+projection_matrix:
+  rows: 3
+  cols: 4
+  data: [510.31363,   0.     , 312.43595,   0.     ,
+           0.     , 510.29425, 233.43648,   0.     ,
+           0.     ,   0.     ,   1.     ,   0.     ]

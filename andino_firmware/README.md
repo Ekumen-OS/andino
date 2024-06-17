@@ -37,7 +37,7 @@ Via `serial` connection (57600 baud) it is possible to interact with the microco
 
  - Get encoder values: `'e'`
  - Set open-loop speed for the motors[pwm] `'o <left> <right>'`
-   - Example to move forward full speed: `'o 255 255'` 
+   - Example to move forward full speed: `'o 255 255'`
    - Range `[-255 -> 255]`
  - Set closed-loop speed for the motors[ticks/sec] `'m <left> <right>'`
    - Important!: See the `Test it!` section.
