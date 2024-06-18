@@ -67,12 +67,11 @@ When you gather all the parts, you should have the following (NOTE: the printed 
 
   <!-- TODO -->
 
-  8. Perform all the wiring following the [Connections Diagram](#connection-diagram) of both the upper and lower chassis.
+  8. Perform all the wiring following the [Connections Diagram](#connection-diagram) of both the upper and lower chassis. Note that some of the connections may need to be done by soldering the cables.
 
   9.  Join both chassis together, and complete the remaining wiring to have your robot ready:
 
   <!-- TODO -->
-  <img src="docs/complete_robot.jpg">
 
 <a name="connection-diagram"></a>
 ## Connection Diagram
