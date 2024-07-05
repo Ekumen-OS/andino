@@ -78,6 +78,9 @@ When you gather all the parts, you should have the following (NOTE: the printed 
 
 ### Motor-Arduino
 
+<!-- TODO check if we need to apply this change or not -->
+**IMPORTANT NOTE**: maybe it would be good to reconsider the power part of the connections diagram, using cables with more section to ease the soldering to the step-up (using the dupont wires can be tricky, as the copper is really thin and it may break easily).
+
 <img src="docs/andino_diagram_arduino.jpg" />
 
 Some frequent errors:
