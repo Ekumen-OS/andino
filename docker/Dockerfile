@@ -4,8 +4,8 @@ FROM osrf/ros:jazzy-desktop-full
 ARG USER=ubuntu
 
 # Setup environment
-ENV TERM linux
-ENV DEBIAN_FRONTEND noninteractive
+ENV TERM=linux
+ENV DEBIAN_FRONTEND=noninteractive
 RUN echo 'debconf debconf/frontend select Noninteractive' | debconf-set-selections
 
 # Copy requirement files and install dependencies
@@ -37,8 +37,6 @@ RUN mkdir -p /home/$USER/ws/src
 
 # Adds to bashrc the ros jazzy overlay sourcing.
 RUN echo "source /opt/ros/jazzy/setup.bash" >> /home/$USER/.bashrc
-# Adds gazebo sourcing.
-RUN echo "source /usr/share/gazebo/setup.bash" >> /home/$USER/.bashrc
 
 # Updates
 RUN sudo apt upgrade -y && sudo apt update && rosdep update

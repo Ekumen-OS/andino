@@ -28,6 +28,7 @@
 
 """Run navigation2 pkg with Andino robot in Gazebo."""
 
+# TODO update this to use Gazebo non-classic
 
 import os
 
@@ -39,78 +40,78 @@ from launch.launch_description_sources import PythonLaunchDescriptionSource
 from launch.substitutions import LaunchConfiguration
 
 
-def generate_launch_description():
-    # Get the launch directory
-    nav2_bringup_dir = get_package_share_directory('nav2_bringup')
-    andino_navigation_dir = get_package_share_directory('andino_navigation')
-    andino_gz_classic_dir = get_package_share_directory('andino_gz_classic')
+# def generate_launch_description():
+#     # Get the launch directory
+#     nav2_bringup_dir = get_package_share_directory('nav2_bringup')
+#     andino_navigation_dir = get_package_share_directory('andino_navigation')
+#     andino_gz_classic_dir = get_package_share_directory('andino_gz_classic')
 
-    # Create the launch configuration variables
-    use_sim_time = LaunchConfiguration('use_sim_time')
-    params_file = LaunchConfiguration('params_file')
+#     # Create the launch configuration variables
+#     use_sim_time = LaunchConfiguration('use_sim_time')
+#     params_file = LaunchConfiguration('params_file')
 
-    # Declare the launch arguments
-    declare_use_sim_time_cmd = DeclareLaunchArgument(
-        'use_sim_time',
-        default_value='true',
-        description='Use simulation (Gazebo) clock if true',
-    )
+#     # Declare the launch arguments
+#     declare_use_sim_time_cmd = DeclareLaunchArgument(
+#         'use_sim_time',
+#         default_value='true',
+#         description='Use simulation (Gazebo) clock if true',
+#     )
 
-    declare_params_file_cmd = DeclareLaunchArgument(
-        'params_file',
-        default_value=os.path.join(andino_navigation_dir, 'params', 'nav2_params.yaml'),
-        description='Full path to the ROS 2 parameters file to use for all launched nodes',
-    )
+#     declare_params_file_cmd = DeclareLaunchArgument(
+#         'params_file',
+#         default_value=os.path.join(andino_navigation_dir, 'params', 'nav2_params.yaml'),
+#         description='Full path to the ROS 2 parameters file to use for all launched nodes',
+#     )
 
-    # Include andino simulation
-    include_andino = IncludeLaunchDescription(
-        PythonLaunchDescriptionSource(
-            os.path.join(andino_gz_classic_dir, 'launch', 'andino_one_robot.launch.py')
-        ),
-        launch_arguments={
-            'use_gazebo_ros_control': LaunchConfiguration(
-                'use_gazebo_ros_control', default='false'
-            ),
-            'initial_pose_x': LaunchConfiguration('initial_pose_x', default='-2.00'),
-            'initial_pose_y': LaunchConfiguration('initial_pose_y', default='-0.50'),
-            'initial_pose_z': LaunchConfiguration('initial_pose_z', default='0.01'),
-            'initial_pose_yaw': LaunchConfiguration('initial_pose_yaw', default='0.00'),
-            'world': LaunchConfiguration(
-                'world',
-                default=os.path.join(nav2_bringup_dir, 'worlds', 'world_only.model'),
-            ),
-            'rviz_config_file': LaunchConfiguration(
-                'rviz_config_file',
-                default=os.path.join(
-                    andino_navigation_dir, 'rviz', 'nav2_default_view.rviz'
-                ),
-            ),
-            'use_sim_time': use_sim_time,
-        }.items(),
-    )
+#     # Include andino simulation
+#     include_andino = IncludeLaunchDescription(
+#         PythonLaunchDescriptionSource(
+#             os.path.join(andino_gz_classic_dir, 'launch', 'andino_one_robot.launch.py')
+#         ),
+#         launch_arguments={
+#             'use_gazebo_ros_control': LaunchConfiguration(
+#                 'use_gazebo_ros_control', default='false'
+#             ),
+#             'initial_pose_x': LaunchConfiguration('initial_pose_x', default='-2.00'),
+#             'initial_pose_y': LaunchConfiguration('initial_pose_y', default='-0.50'),
+#             'initial_pose_z': LaunchConfiguration('initial_pose_z', default='0.01'),
+#             'initial_pose_yaw': LaunchConfiguration('initial_pose_yaw', default='0.00'),
+#             'world': LaunchConfiguration(
+#                 'world',
+#                 default=os.path.join(nav2_bringup_dir, 'worlds', 'world_only.model'),
+#             ),
+#             'rviz_config_file': LaunchConfiguration(
+#                 'rviz_config_file',
+#                 default=os.path.join(
+#                     andino_navigation_dir, 'rviz', 'nav2_default_view.rviz'
+#                 ),
+#             ),
+#             'use_sim_time': use_sim_time,
+#         }.items(),
+#     )
 
-    bringup_cmd = IncludeLaunchDescription(
-        PythonLaunchDescriptionSource(
-            os.path.join(andino_navigation_dir, 'launch', 'bringup.launch.py')
-        ),
-        launch_arguments={
-            'map': LaunchConfiguration(
-                'map',
-                default=os.path.join(
-                    nav2_bringup_dir, 'maps', 'turtlebot3_world.yaml'
-                ),
-            ),
-            'use_sim_time': use_sim_time,
-            'params_file': params_file,
-        }.items(),
-    )
+#     bringup_cmd = IncludeLaunchDescription(
+#         PythonLaunchDescriptionSource(
+#             os.path.join(andino_navigation_dir, 'launch', 'bringup.launch.py')
+#         ),
+#         launch_arguments={
+#             'map': LaunchConfiguration(
+#                 'map',
+#                 default=os.path.join(
+#                     nav2_bringup_dir, 'maps', 'turtlebot3_world.yaml'
+#                 ),
+#             ),
+#             'use_sim_time': use_sim_time,
+#             'params_file': params_file,
+#         }.items(),
+#     )
 
-    ld = LaunchDescription()
+#     ld = LaunchDescription()
 
-    ld.add_action(declare_use_sim_time_cmd)
-    ld.add_action(declare_params_file_cmd)
+#     ld.add_action(declare_use_sim_time_cmd)
+#     ld.add_action(declare_params_file_cmd)
 
-    ld.add_action(include_andino)
-    ld.add_action(bringup_cmd)
+#     ld.add_action(include_andino)
+#     ld.add_action(bringup_cmd)
 
-    return ld
+#     return ld
