@@ -209,6 +209,33 @@ Check camera status:
 vcgencmd get_camera
 ```
 
+If the output of the previous command is `supported=1 detected=1', everything is fine. If not, your camera won't work correctly, you need to perform some configuration first.
+
+Modify the `config.txt` file for the boot:
+
+```sh
+ sudo nano /boot/firmware/config.txt
+```
+
+And add these lines:
+
+```
+# Autoload overlays for any recognized cameras or displays that are attached
+# to the CSI/DSI ports. Please note this is for libcamera support, *not* for
+# the legacy camera stack
+start_x=1
+gpu_mem=128
+```
+
+Save and close the file. Then we need to enable the camera support for the raspberry:
+
+```sh
+sudo raspi-config
+```
+
+Go to `Interface Options`, select `camera` and enable it.
+
+Finally, you just need to reboot and the camera should be working fine.
 
 #### RPLidar installation
 
@@ -344,7 +371,7 @@ Let' source the ROS Humble installation:
 ```
 source /opt/ros/humble/setup.bash
 ```
-Let's build the packages (`andino_gz_classic` and `andino_apps` work only in simulation):
+Let's build the packages (`andino_gz_classic` and `andino_apps` relies on simulation so we skip them):
 ```
 colcon build --packages-skip andino_gz_classic andino_apps
 ```

@@ -43,6 +43,11 @@ Other projects built upon Andino! :rocket:
 - :green_circle: [`andino_isaac`](https://github.com/Ekumen-OS/andino_isaac): [Isaac Sim](https://docs.omniverse.nvidia.com/isaacsim/latest/index.html) simulation of the Andino robot.
 - :test_tube: [`andino_integration_tests`](https://github.com/Ekumen-OS/andino_integration_tests): Extension to the Andino robot showing how to build integration tests.
 
+## :busts_in_silhouette: Community
+
+[<img src="docs/discord-mark-blue.png" width=30 hspace="20"/>](https://discord.gg/tHhH32CTHu) Join our Discord and contribute to the community!
+
+
 ## :pick: Robot Assembly
 
 Visit [`andino_hardware`](./andino_hardware/) for assembly instructions.
