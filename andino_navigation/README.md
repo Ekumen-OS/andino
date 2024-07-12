@@ -12,9 +12,10 @@ _Real robot_
 ros2 launch andino_bringup andino_robot.launch.py
 ```
 
-_Example with Gazebo Classic_
+_Example with Gazebo Sim_
+The package `andino_gz` lives in a different repository, but it is necessary if you want to perform navigation with a simulated robot. You can use other simulation engines (webots, ISAAC... check the `related projects` on main README):
 ```
-ros2 launch andino_gz_classic andino_one_robot.launch.py
+ros2 launch andino_gz andino_gz.launch.py
 ```
 
   1. Provide a recorded map. Refer to [andino_slam](../andino_slam/README.md) to learn how to record a map with Andino.
