@@ -28,10 +28,8 @@ _Note: For videos go to [Media](#selfie-media) section._
 - :hammer_and_pick: [`andino_firmware`](./andino_firmware): Contains the code be run in the microcontroller for interfacing low level hardware with the SBC.
 - :gear: [`andino_base`](./andino_base): [ROS Control hardware interface](https://control.ros.org/master/doc/ros2_control/hardware_interface/doc/writing_new_hardware_interface.html) is implemented.
 - :control_knobs: [`andino_control`](./andino_control/): It launches the [`controller_manager`](https://control.ros.org/humble/doc/ros2_control/controller_manager/doc/userdoc.html) along with the [ros2 controllers](https://control.ros.org/master/doc/ros2_controllers/doc/controllers_index.html): [diff_drive_controller](https://control.ros.org/master/doc/ros2_controllers/diff_drive_controller/doc/userdoc.html) and the [joint_state_broadcaster](https://control.ros.org/master/doc/ros2_controllers/joint_state_broadcaster/doc/userdoc.html).
-- :computer: [`andino_gz_classic`](./andino_gz_classic/): [Gazebo Classic](https://classic.gazebosim.org/) simulation of the `andino` robot.
 - :world_map: [`andino_slam`](./andino_slam/): Provides support for SLAM with your `andino` robot.
 - :compass: [`andino_navigation`](./andino_navigation/): Navigation stack based on `nav2`.
-- :exclamation: [`andino_apps`](./andino_apps/): Integrated applications with the `andino` robot.
 
 ## :paperclips: Related projects
 
@@ -187,12 +185,6 @@ The [`andino_navigation`](./andino_navigation/README.md) package provides a navi
 https://github.com/Ekumen-OS/andino/assets/53065142/29951e74-e604-4a6e-80fc-421c0c6d8fee
 
 Follow the [`andino_navigation`'s README](./andino_navigation/README.md) instructions for bringing up the Navigation stack in the real robot or in the simulation.
-
-## :computer: Simulation
-
-The [`andino_gz_classic`](./andino_gz_classic/README.MD) package provides a Gazebo simulation for the Andino robot.
-
-<img src="./andino_gz_classic/docs/andino_gz_classic.png" width=400/>
 
 ## :selfie: Media
 
