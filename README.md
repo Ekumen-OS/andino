@@ -39,7 +39,6 @@ Other projects built upon Andino! :rocket:
 - :lady_beetle: [`andino_webots`](https://github.com/Ekumen-OS/andino_webots): [Webots](https://github.com/cyberbotics/webots) simulation of the Andino robot fully integrated with ROS 2.
 - :joystick: [`andino_o3de`](https://github.com/Ekumen-OS/andino_o3de): [O3DE](https://o3de.org/) simulation of the Andino robot.
 - :green_circle: [`andino_isaac`](https://github.com/Ekumen-OS/andino_isaac): [Isaac Sim](https://docs.omniverse.nvidia.com/isaacsim/latest/index.html) simulation of the Andino robot.
-- :robot: [`andino_rmf`](https://github.com/Ekumen-OS/andino_rmf): [OpenRMF](https://www.open-rmf.org/) integration of Andino simulation.
 - :test_tube: [`andino_integration_tests`](https://github.com/Ekumen-OS/andino_integration_tests): Extension to the Andino robot showing how to build integration tests.
 
 ## :busts_in_silhouette: Community
@@ -186,21 +185,6 @@ The [`andino_navigation`](./andino_navigation/README.md) package provides a navi
 https://github.com/Ekumen-OS/andino/assets/53065142/29951e74-e604-4a6e-80fc-421c0c6d8fee
 
 Follow the [`andino_navigation`'s README](./andino_navigation/README.md) instructions for bringing up the Navigation stack in the real robot or in the simulation.
-
-## :computer: Simulation
-
-<img src="https://github.com/Ekumen-OS/andino_gz/blob/humble/docs/media/andino_gz.png" width=600/>
-
-Within the Andino ecosystem simulations on several platforms are provided:
- - [`andino_gz_classic`](./andino_gz_classic/README.MD) - (To be deprecated as of Jazzy)
- - [`andino_gz`](https://github.com/Ekumen-OS/andino_gz) - **Recommended**
- - [`andino_webots`](https://github.com/Ekumen-OS/andino_webots)
- - [`andino_o3de`](https://github.com/Ekumen-OS/andino_o3de)
- - [`andino_isaac`](https://github.com/Ekumen-OS/andino_isaac)
-
-
-
-
 
 ## :selfie: Media
 
