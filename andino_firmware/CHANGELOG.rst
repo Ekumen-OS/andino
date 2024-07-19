@@ -2,8 +2,8 @@
 Changelog for package andino_firmware
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+0.2.0 (2024-07-19)
+------------------
 * Camera info yaml (`#231 <https://github.com/Ekumen-OS/andino/issues/231>`_)
 * Improve Shell unit tests (`#245 <https://github.com/Ekumen-OS/andino/issues/245>`_)
 * fix minor typo in App class (`#246 <https://github.com/Ekumen-OS/andino/issues/246>`_)

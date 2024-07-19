@@ -2,8 +2,8 @@
 Changelog for package andino_bringup
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+0.2.0 (2024-07-19)
+------------------
 * Camera info yaml (`#231 <https://github.com/Ekumen-OS/andino/issues/231>`_)
 * Added README for andino_bringup (`#233 <https://github.com/Ekumen-OS/andino/issues/233>`_)
 * Matches convention with cmd_vel and odom topics. (`#223 <https://github.com/Ekumen-OS/andino/issues/223>`_)
