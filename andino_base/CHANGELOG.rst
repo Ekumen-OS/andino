@@ -2,6 +2,11 @@
 Changelog for package andino_base
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* explicitly add <cstdint> header for fixed width integer types (`#254 <https://github.com/Ekumen-OS/andino/issues/254>`_)
+* Contributors: Sakura286
+
 0.1.0 (2023-10-09)
 ------------------
 * Adds pkg-config module dependency (`#161 <https://github.com/Ekumen-OS/andino/issues/161>`_)
