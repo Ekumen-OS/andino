@@ -2,8 +2,8 @@
 Changelog for package andino_description
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+0.2.0 (2024-07-19)
+------------------
 * Allow custom configuration (`#243 <https://github.com/Ekumen-OS/andino/issues/243>`_)
 * Process xacro file test (`#244 <https://github.com/Ekumen-OS/andino/issues/244>`_)
 * Contributors: Jesús Silva
