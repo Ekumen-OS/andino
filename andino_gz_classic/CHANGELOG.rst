@@ -2,8 +2,8 @@
 Changelog for package andino_gz_classic
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+0.2.0 (2024-07-19)
+------------------
 * Fixed wheel diameter in URDF (`#93 <https://github.com/Ekumen-OS/andino/issues/93>`_) (`#230 <https://github.com/Ekumen-OS/andino/issues/230>`_)
 * Contributors: Jesús Silva
 

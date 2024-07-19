@@ -2,8 +2,8 @@
 Changelog for package andino_base
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+0.2.0 (2024-07-19)
+------------------
 * explicitly add <cstdint> header for fixed width integer types (`#254 <https://github.com/Ekumen-OS/andino/issues/254>`_)
 * Contributors: Sakura286
 

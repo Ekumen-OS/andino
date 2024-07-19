@@ -2,8 +2,8 @@
 Changelog for package andino_hardware
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+0.2.0 (2024-07-19)
+------------------
 * Camera info yaml (`#231 <https://github.com/Ekumen-OS/andino/issues/231>`_)
 * Update andino_hardware README.md (`#256 <https://github.com/Ekumen-OS/andino/issues/256>`_)
 * Update connections diagram (`#252 <https://github.com/Ekumen-OS/andino/issues/252>`_)

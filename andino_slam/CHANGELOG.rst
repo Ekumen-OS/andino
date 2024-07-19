@@ -2,8 +2,8 @@
 Changelog for package andino_slam
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+0.2.0 (2024-07-19)
+------------------
 * Improves andino_navigation package. (`#224 <https://github.com/Ekumen-OS/andino/issues/224>`_)
 * Contributors: Franco Cipollone
 

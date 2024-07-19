@@ -2,8 +2,8 @@
 Changelog for package andino_apps
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+0.2.0 (2024-07-19)
+------------------
 * andino_apps package created and andino_navigation package updated (`#235 <https://github.com/Ekumen-OS/andino/issues/235>`_)
 * Contributors: Jesús Silva
 

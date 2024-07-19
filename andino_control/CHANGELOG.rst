@@ -2,8 +2,8 @@
 Changelog for package andino_control
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+0.2.0 (2024-07-19)
+------------------
 * Matches convention with cmd_vel and odom topics. (`#223 <https://github.com/Ekumen-OS/andino/issues/223>`_)
 * Contributors: Franco Cipollone
 
