@@ -190,9 +190,18 @@ Follow the [`andino_navigation`'s README](./andino_navigation/README.md) instruc
 
 ## :computer: Simulation
 
-The [`andino_gz_classic`](./andino_gz_classic/README.MD) package provides a Gazebo simulation for the Andino robot.
+<img src="https://github.com/Ekumen-OS/andino_gz/blob/humble/docs/media/andino_gz.png" width=600/>
 
-<img src="./andino_gz_classic/docs/andino_gz_classic.png" width=400/>
+Within the Andino ecosystem simulations on several platforms are provided:
+ - [`andino_gz_classic`](./andino_gz_classic/README.MD) - (To be deprecated as of Jazzy)
+ - [`andino_gz`](https://github.com/Ekumen-OS/andino_gz) - **Recommended**
+ - [`andino_webots`](https://github.com/Ekumen-OS/andino_webots)
+ - [`andino_o3de`](https://github.com/Ekumen-OS/andino_o3de)
+ - [`andino_isaac`](https://github.com/Ekumen-OS/andino_isaac)
+
+
+
+
 
 ## :selfie: Media
 
