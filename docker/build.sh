@@ -2,7 +2,7 @@
 
 # BSD 3-Clause License
 #
-# Copyright (c) 2023, Ekumen Inc.
+# Copyright (c) 2024, Ekumen Inc.
 # All rights reserved.
 #
 # Redistribution and use in source and binary forms, with or without
@@ -61,7 +61,6 @@ OS_VERSION="noble"
 IMAGE_NAME=${IMAGE_NAME:-ros2_jazzy_andino}
 DOCKERFILE_PATH=$SCRIPT_FOLDER_PATH/Dockerfile
 
-# USERID=$(id -u)
 USER=ubuntu
 
 sudo docker build -t $IMAGE_NAME \
