@@ -85,8 +85,8 @@ CONTAINER_NAME=${CONTAINER_NAME:-ros2_jazzy_andino_container}
 USER=ubuntu
 
 SSH_PATH=/home/$USER/.ssh
-WORKSPACE_SRC_CONTAINER=/home/ubuntu/ws/src/$REPOSITORY_FOLDER_NAME
-WORKSPACE_ROOT_CONTAINER=/home/ubuntu/ws
+WORKSPACE_SRC_CONTAINER=/home/$USER/ws/src/$REPOSITORY_FOLDER_NAME
+WORKSPACE_ROOT_CONTAINER=/home/$USER/ws
 SSH_AUTH_SOCK_USER=$SSH_AUTH_SOCK
 
 # Create cache folders to store colcon build files
