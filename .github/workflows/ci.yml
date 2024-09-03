@@ -3,14 +3,14 @@ name: colcon build & test
 on:
   push:
     branches:
-      - humble
+      - jazzy
   pull_request:
     branches:
-      - humble
+      - jazzy
   workflow_dispatch:
 
 env:
-  ROS_DISTRO: humble
+  ROS_DISTRO: jazzy
 
 # Cancel previously running PR jobs
 concurrency:
@@ -22,7 +22,7 @@ jobs:
     name: Compile and test
     runs-on: ubuntu-latest
     container:
-      image: ubuntu:22.04
+      image: ubuntu:24.04
     steps:
     - uses: actions/checkout@v3
     - uses: ros-tooling/setup-ros@v0.7
