@@ -2,7 +2,7 @@
 
 # BSD 3-Clause License
 #
-# Copyright (c) 2023, Ekumen Inc.
+# Copyright (c) 2024, Ekumen Inc.
 # All rights reserved.
 #
 # Redistribution and use in source and binary forms, with or without
@@ -92,10 +92,6 @@ SSH_AUTH_SOCK_USER=$SSH_AUTH_SOCK
 # Create cache folders to store colcon build files
 mkdir -p ${REPOSITORY_FOLDER_PATH}/.build
 mkdir -p ${REPOSITORY_FOLDER_PATH}/.install
-
-# Transfer the ownership to the user
-# chown -R "$USER" ${REPOSITORY_FOLDER_PATH}/.build
-# chown -R "$USER" ${REPOSITORY_FOLDER_PATH}/.install
 
 # Check if name container is already taken.
 if sudo -g docker docker container ls -a | grep "${CONTAINER_NAME}$" -c &> /dev/null; then
