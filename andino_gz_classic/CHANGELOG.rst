@@ -2,6 +2,11 @@
 Changelog for package andino_gz_classic
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+0.2.0 (2024-07-19)
+------------------
+* Fixed wheel diameter in URDF (`#93 <https://github.com/Ekumen-OS/andino/issues/93>`_) (`#230 <https://github.com/Ekumen-OS/andino/issues/230>`_)
+* Contributors: Jesús Silva
+
 0.1.0 (2023-10-09)
 ------------------
 * gz_classic_sim: Free caster wheel joint. (`#166 <https://github.com/Ekumen-OS/andino/issues/166>`_)

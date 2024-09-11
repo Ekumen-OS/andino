@@ -41,6 +41,7 @@ Other projects built upon Andino! :rocket:
 - :lady_beetle: [`andino_webots`](https://github.com/Ekumen-OS/andino_webots): [Webots](https://github.com/cyberbotics/webots) simulation of the Andino robot fully integrated with ROS 2.
 - :joystick: [`andino_o3de`](https://github.com/Ekumen-OS/andino_o3de): [O3DE](https://o3de.org/) simulation of the Andino robot.
 - :green_circle: [`andino_isaac`](https://github.com/Ekumen-OS/andino_isaac): [Isaac Sim](https://docs.omniverse.nvidia.com/isaacsim/latest/index.html) simulation of the Andino robot.
+- :robot: [`andino_rmf`](https://github.com/Ekumen-OS/andino_rmf): [OpenRMF](https://www.open-rmf.org/) integration of Andino simulation.
 - :test_tube: [`andino_integration_tests`](https://github.com/Ekumen-OS/andino_integration_tests): Extension to the Andino robot showing how to build integration tests.
 
 ## :busts_in_silhouette: Community
@@ -190,9 +191,18 @@ Follow the [`andino_navigation`'s README](./andino_navigation/README.md) instruc
 
 ## :computer: Simulation
 
-The [`andino_gz_classic`](./andino_gz_classic/README.MD) package provides a Gazebo simulation for the Andino robot.
+<img src="https://github.com/Ekumen-OS/andino_gz/blob/humble/docs/media/andino_gz.png" width=600/>
 
-<img src="./andino_gz_classic/docs/andino_gz_classic.png" width=400/>
+Within the Andino ecosystem simulations on several platforms are provided:
+ - [`andino_gz_classic`](./andino_gz_classic/README.MD) - (To be deprecated as of Jazzy)
+ - [`andino_gz`](https://github.com/Ekumen-OS/andino_gz) - **Recommended**
+ - [`andino_webots`](https://github.com/Ekumen-OS/andino_webots)
+ - [`andino_o3de`](https://github.com/Ekumen-OS/andino_o3de)
+ - [`andino_isaac`](https://github.com/Ekumen-OS/andino_isaac)
+
+
+
+
 
 ## :selfie: Media
 
