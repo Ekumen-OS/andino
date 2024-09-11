@@ -64,21 +64,19 @@ When you gather all the parts, you should have the following (NOTE: the printed 
 
   7. Add the IMU.
 
-  <!-- TODO -->
+  <!-- TODO Add photo of the IMU physical implementation-->
 
   8. Perform all the wiring following the [Connections Diagram](#connection-diagram) of both the upper and lower chassis. Note that some of the connections may need to be done by soldering the cables.
 
   9.  Join both chassis together, and complete the remaining wiring to have your robot ready:
 
-  <!-- TODO -->
+  <img src="docs/andino_complete.jpg>
 
 <a name="connection-diagram"></a>
 ## Connection Diagram
 
 ### Motor-Arduino
 
-<!-- TODO check if we need to apply this change or not -->
-**IMPORTANT NOTE**: maybe it would be good to reconsider the power part of the connections diagram, using cables with more section to ease the soldering to the step-up (using the dupont wires can be tricky, as the copper is really thin and it may break easily).
 
 <img src="docs/andino_diagram_arduino.jpg" />
 
