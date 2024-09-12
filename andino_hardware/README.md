@@ -70,7 +70,7 @@ When you gather all the parts, you should have the following (NOTE: the printed 
 
   9.  Join both chassis together, and complete the remaining wiring to have your robot ready:
 
-  <img src="docs/andino_complete.jpg>
+  <img src="docs/andino_complete.jpg">
 
 <a name="connection-diagram"></a>
 ## Connection Diagram
