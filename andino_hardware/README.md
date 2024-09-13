@@ -77,7 +77,6 @@ When you gather all the parts, you should have the following (NOTE: the printed 
 
 ### Motor-Arduino
 
-
 <img src="docs/andino_diagram_arduino.jpg" />
 
 Some frequent errors:
