@@ -182,13 +182,6 @@ Configure it properly:
    sudo usermod -a -G plugdev $USER
    ```
    Note you will need a reboot after this to be effective.
-2. Remove `brltty` from the system
-   ```
-   sudo apt remove brltty
-   ```
-   In Ubuntu 22.04 seems to be an issue with some chip drivers and the `brltty` daemon. To avoid this conflict we remove `brltty` as suggested. See [this stackoverflow post](https://stackoverflow.com/questions/70123431/why-would-ch341-uart-is-disconnected-from-ttyusb) for further information.
-
-
 
 #### Raspberry Camera Module V2
 
@@ -359,6 +352,8 @@ export ROS_DISTRO=humble
 ```
 And then proceed to install the workspace dependencies:
 ```
+sudo apt install python3-rosdep
+sudo rosdep init
 rosdep install --from-paths src -i -y -r
 ```
 Note that option `-r` has been added. For ARM based processors, there are missing packages, e.g. those related to simulation. We would not try to run the simulation in the compute platform of andino, however for convenience it is added here.

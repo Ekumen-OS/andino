@@ -2,7 +2,7 @@
 
 # BSD 3-Clause License
 #
-# Copyright (c) 2023, Ekumen Inc.
+# Copyright (c) 2024, Ekumen Inc.
 # All rights reserved.
 #
 # Redistribution and use in source and binary forms, with or without
@@ -36,8 +36,8 @@ set +e
 function show_help() {
   echo $'\nUsage:\t run.sh [OPTIONS] \n
   Options:\n
-  \t-i --image_name\t\t Name of the image to be run (default ros2_humble_andino).\n
-  \t-c --container_name\t Name of the container(default ros2_humble_andino_container).\n
+  \t-i --image_name\t\t Name of the image to be run (default ros2_jazzy_andino).\n
+  \t-c --container_name\t Name of the container(default ros2_jazzy_andino_container).\n
   \t--use_nvidia\t\t Use nvidia runtime.\n
   Examples:\n
   \trun.sh\n
@@ -79,21 +79,19 @@ done
 
 # Update the arguments to default values if needed.
 
-IMAGE_NAME=${IMAGE_NAME:-ros2_humble_andino}
-CONTAINER_NAME=${CONTAINER_NAME:-ros2_humble_andino_container}
+IMAGE_NAME=${IMAGE_NAME:-ros2_jazzy_andino}
+CONTAINER_NAME=${CONTAINER_NAME:-ros2_jazzy_andino_container}
+
+USER=ubuntu
 
 SSH_PATH=/home/$USER/.ssh
-WORKSPACE_SRC_CONTAINER=/home/$(whoami)/ws/src/$REPOSITORY_FOLDER_NAME
-WORKSPACE_ROOT_CONTAINER=/home/$(whoami)/ws
+WORKSPACE_SRC_CONTAINER=/home/$USER/ws/src/$REPOSITORY_FOLDER_NAME
+WORKSPACE_ROOT_CONTAINER=/home/$USER/ws
 SSH_AUTH_SOCK_USER=$SSH_AUTH_SOCK
 
 # Create cache folders to store colcon build files
 mkdir -p ${REPOSITORY_FOLDER_PATH}/.build
 mkdir -p ${REPOSITORY_FOLDER_PATH}/.install
-
-# Transfer the ownership to the user
-chown -R "$USER" ${REPOSITORY_FOLDER_PATH}/.build
-chown -R "$USER" ${REPOSITORY_FOLDER_PATH}/.install
 
 # Check if name container is already taken.
 if sudo -g docker docker container ls -a | grep "${CONTAINER_NAME}$" -c &> /dev/null; then
@@ -113,6 +111,7 @@ sudo docker run --privileged --net=host -it $NVIDIA_FLAGS \
        -v ${REPOSITORY_FOLDER_PATH}/.build:$WORKSPACE_ROOT_CONTAINER/build:rw \
        -v ${REPOSITORY_FOLDER_PATH}/.install:$WORKSPACE_ROOT_CONTAINER/install:rw \
        -v $SSH_PATH:$SSH_PATH \
+       -u 1000:1000 \
        --name $CONTAINER_NAME $IMAGE_NAME
 xhost -
 
