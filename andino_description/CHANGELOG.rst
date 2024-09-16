@@ -2,6 +2,12 @@
 Changelog for package andino_description
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+0.2.0 (2024-07-19)
+------------------
+* Allow custom configuration (`#243 <https://github.com/Ekumen-OS/andino/issues/243>`_)
+* Process xacro file test (`#244 <https://github.com/Ekumen-OS/andino/issues/244>`_)
+* Contributors: Jesús Silva
+
 0.1.0 (2023-10-09)
 ------------------
 * Updated lidar mesh (`#165 <https://github.com/Ekumen-OS/andino/issues/165>`_)
