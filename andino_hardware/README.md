@@ -99,12 +99,12 @@ For uploading the microcontroller firmware please refer to [`andino_firmware`](.
 
 The SBC used in this project is a Raspberry Pi 4b so the guidelines here will refer particularly to this family of on-board computers, however extending its use to other families is possible as well.
 
-### Operative System
+### Operative System [WIP]
 
-Ubuntu Mate 22.04 ARM64 is the recommended operative system for this project. This OS provides good capabilities for a educational platform as well as good performance.
+Ubuntu Server 24.04.1 is the recommended operative system for this project if you want to use the `jazzy` distro, since Ubuntu Mate 24 is not yet released.
 
 For installing this OS in the Raspberry:
-1. Download the image from here: [ubuntu mate download](https://ubuntu-mate.org/download/arm64/)
+1. Download the image from here: [download Ubuntu 24 for Raspberry](https://ubuntu.com/download/raspberry-pi)
 
 
 2. Install OS to a microSD card using [Raspberry Pi Imager](https://www.raspberrypi.com/software/).
