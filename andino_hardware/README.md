@@ -99,6 +99,9 @@ For uploading the microcontroller firmware please refer to [`andino_firmware`](.
 
 The SBC used in this project is a Raspberry Pi 4b so the guidelines here will refer particularly to this family of on-board computers, however extending its use to other families is possible as well.
 
+This section details the required configuration that is needed in the SBC.
+You can either follow these steps or **rely on community contribution (Recommended) for installing this via ansible playbooks**: See https://github.com/garyservin/andino_ansible_config
+
 ### Operative System
 
 Ubuntu Mate 22.04 ARM64 is the recommended operative system for this project. This OS provides good capabilities for a educational platform as well as good performance.

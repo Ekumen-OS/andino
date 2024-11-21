@@ -37,6 +37,7 @@ _Note: For videos go to [Media](#selfie-media) section._
 
 Other projects built upon Andino! :rocket:
 
+- :rocket: [`andino_ansible_config`](https://github.com/garyservin/andino_ansible_config): (**Thanks @garyservin !**): Ansible configuration to easily setup an Andino robot.
 - :computer: [`andino_gz`](https://github.com/Ekumen-OS/andino_gz): [Gazebo](https://gazebosim.org/home)(non-classic) simulation of the `andino` robot.
 - :lady_beetle: [`andino_webots`](https://github.com/Ekumen-OS/andino_webots): [Webots](https://github.com/cyberbotics/webots) simulation of the Andino robot fully integrated with ROS 2.
 - :joystick: [`andino_o3de`](https://github.com/Ekumen-OS/andino_o3de): [O3DE](https://o3de.org/) simulation of the Andino robot.
@@ -55,12 +56,18 @@ Visit [`andino_hardware`](./andino_hardware/) for assembly instructions.
 
 ## :mechanical_arm: Installation
 
+Remember to first go over the assembly instructions at [`andino_hardware`](./andino_hardware/)!
+
 ### Platforms
 
 - ROS 2: Humble Hawksbill
 - OS:
   - Ubuntu 22.04 Jammy Jellyfish
   - Ubuntu Mate 22.04 (On real robot (e.g: Raspberry Pi 4B))
+
+### Via ansible
+
+See [`andino_ansible_config`](https://github.com/garyservin/andino_ansible_config): This repository contains Ansible configurations for managing and automating the setup and configuration of an Andino robot.
 
 ### Build from Source
 
@@ -112,7 +119,7 @@ colcon build
 source install/setup.bash
 ```
 
-`Note`: Whether your are installing the packages in your dev machine or in your robot the procedure is the same.
+`Note`: Whether your are installing the packages in your dev machine or in your robot the procedure is the same. Remember to go over the assembly instructions first.
 
 ### Install the binaries
 
