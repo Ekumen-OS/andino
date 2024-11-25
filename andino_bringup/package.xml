@@ -16,6 +16,7 @@
 
   <exec_depend>rplidar_ros</exec_depend>
   <exec_depend>teleop_twist_joy</exec_depend>
+  <exec_depend>teleop_twist_keyboard</exec_depend>
   <exec_depend>joy_linux</exec_depend>
   <exec_depend>v4l2_camera</exec_depend>
   <exec_depend>laser_filters</exec_depend>
