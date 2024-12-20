@@ -55,10 +55,9 @@ def generate_launch_description():
         parameters=[{'robot_description': ParameterValue(robot_description, value_type=str)},
                     controller_params_file],
         remappings=[
-            ('/diff_controller/cmd_vel', '/cmd_vel'), # Used if use_stamped_vel param is true
-            ('/diff_controller/cmd_vel_unstamped', '/cmd_vel'), # Used if use_stamped_vel param is false
-            ('/diff_controller/cmd_vel_out', '/cmd_vel_out'), # Used if publish_limited_velocity param is true
-            ('/diff_controller/odom', '/odom'),
+            ('/diff_controller/cmd_vel', 'cmd_vel_stamped'),
+            ('/diff_controller/cmd_vel_out', 'cmd_vel_out'),
+            ('/diff_controller/odom', 'odom'),
         ],
         output="both",
     )
@@ -83,10 +82,18 @@ def generate_launch_description():
         )
     )
 
+    relay_node = Node(
+        package="topic_tools",
+        executable="relay_field",
+        name="cmd_vel_relay",
+        arguments=["cmd_vel", "cmd_vel_stamped", "geometry_msgs/TwistStamped", "{header: {stamp: {sec: 0, nanosec: 0}, frame_id: ''}, twist: m}", "--wait-for-start"],
+    )
+
     nodes = [
         control_node,
         joint_state_broadcaster_spawner,
         delay_diff_drive_controller_spawner_after_joint_state_broadcaster_spawner,
+        relay_node,
     ]
 
     return LaunchDescription(nodes)
