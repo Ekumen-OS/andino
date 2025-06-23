@@ -35,7 +35,7 @@ _Note: For videos go to [Media](#selfie-media) section._
 
 ## :paperclips: Related projects
 
-Other projects built upon Andino! :rocket:
+Projects built upon Andino! :rocket:
 
 - :rocket: [`andino_ansible_config`](https://github.com/garyservin/andino_ansible_config): (**Thanks @garyservin !**): Ansible configuration to easily setup an Andino robot.
 - :computer: [`andino_gz`](https://github.com/Ekumen-OS/andino_gz): [Gazebo](https://gazebosim.org/home)(non-classic)-based simulation of the `andino` robot.
@@ -46,6 +46,8 @@ Other projects built upon Andino! :rocket:
 - :robot: [`andino_rmf`](https://github.com/Ekumen-OS/andino_rmf): [OpenRMF](https://www.open-rmf.org/) integration of Andino simulation.
 - :test_tube: [`andino_integration_tests`](https://github.com/Ekumen-OS/andino_integration_tests): Extension to the Andino robot showing how to build integration tests.
 - :framed_picture: [`andino_lichtblick`](https://github.com/Ekumen-OS/andino_lichtblick): [Lichtblick](https://github.com/lichtblick-suite/lichtblick/) integration with Andino for web-based visualization.
+- :crab: [`andino-rs`](https://github.com/Ekumen-OS/andino_lichtblick): Rustacean version of *andino* robot. It also provides integration with [*dora*](https://github.com/dora-rs/dora) framework for both real and simulated *andino*.
+- :nerd_face: [`robotics_essentials_ros2`](https://github.com/henki-robotics/robotics_essentials_ros2): ROS 2 Essentials material for robotic course at [*University of Eastern Finland*](https://www.uef.fi/en).
 
 ## :busts_in_silhouette: Community
 
