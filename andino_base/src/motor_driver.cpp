@@ -29,9 +29,11 @@
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "andino_base/motor_driver.h"
 
+#include <chrono>
 #include <cstdlib>
 #include <iostream>
 #include <sstream>
+#include <thread>
 
 namespace andino_base {
 
@@ -42,6 +44,12 @@ void MotorDriver::Setup(const std::string& serial_device, int32_t baud_rate, int
   } catch (std::exception& e) {
     std::cout << e.what() << std::endl;
   }
+
+  std::cout << "Waiting 2 seconds for the Microcontroller to be ready..." << std::endl;
+  // When the Microcontroller is reset, it takes a few seconds to be ready.
+  // And tipically when the serial port is opened, the Microcontroller is reset.
+  std::this_thread::sleep_for(std::chrono::seconds(2));
+
   // TODO: Use baud_rate from parameter.
   if (baud_rate != 57600) {
     std::cerr << "A baudrate different than 57600 is not supported yet." << std::endl;

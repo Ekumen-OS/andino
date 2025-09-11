@@ -27,10 +27,8 @@
 // CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
 // OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-#include <chrono>
 #include <iostream>
 #include <sstream>
-#include <thread>
 
 #include <gflags/gflags.h>
 
@@ -62,10 +60,7 @@ int Main(int argc, char* argv[]) {
   motor_driver.Setup(FLAGS_serial_port, FLAGS_baud_rate, FLAGS_timeout_ms);
 
   std::cout << "Motor driver is connected: " << (motor_driver.is_connected() ? "True" : "False") << std::endl;
-  std::cout << "Waiting 2 seconds for the Microcontroller to be ready..." << std::endl;
-  // When the Microcontroller is reset, it takes a few seconds to be ready.
-  // And tipically when the serial port is opened, the Microcontroller is reset.
-  std::this_thread::sleep_for(std::chrono::seconds(2));
+
   // Send message
   std::cout << "Sending message: " << FLAGS_msg << std::endl;
   const std::string response = motor_driver.SendMsg(FLAGS_msg);
