@@ -1,5 +1,6 @@
 wheel:
   mass: 0.5        # Wheel mass in Kg
+  radius: 0.010747
   size:
     x: 0.032
     y: 0.032
