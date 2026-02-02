@@ -17,22 +17,36 @@ For NVIDIA GPU support, `nvidia-container-toolkit` should be installed. *Skip th
 
 #### Building image and running container
 
-- Build the docker image whose default name is `ros2_humble_andino`:
+The Docker setup supports both ROS 2 Humble and Jazzy distributions.
+
+- Build the docker image (defaults to Humble):
 
 ```sh
 ./docker/build.sh
 ```
 
-You can also try to set a specific image name:
+To build for Jazzy:
+
+```sh
+./docker/build.sh --ros_distro jazzy
+```
+
+You can also set a specific image name:
 
 ```sh
 ./docker/build.sh -i my_fancy_image_name
 ```
 
-- Run a docker container from `ros2_humble_andino` called `ros2_humble_andino_container`:
+- Run a docker container:
 
 ```sh
 ./docker/run.sh
+```
+
+To run Jazzy:
+
+```sh
+./docker/run.sh --ros_distro jazzy
 ```
 
 - **IMPORTANT**: If you are using nvidia drivers add the `--use_nvidia` flag:
@@ -41,7 +55,7 @@ You can also try to set a specific image name:
 ./docker/run.sh --use_nvidia
 ```
 
-You can also try to set specific image and container names:
+You can also set specific image and container names:
 
 ```sh
 ./docker/run.sh --use_nvidia -i my_fancy_image_name -c my_fancy_container_name
@@ -49,8 +63,14 @@ You can also try to set specific image and container names:
 
 - Inside the container, install dependencies via `rosdep`:
 
+  For Humble:
   ```sh
   rosdep install -i -y --rosdistro humble --from-paths src
+  ```
+
+  For Jazzy:
+  ```sh
+  rosdep install -i -y --rosdistro jazzy --from-paths src
   ```
 
 Note that the repository is mounted into a workspace. That is convenient if you

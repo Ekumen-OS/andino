@@ -28,10 +28,8 @@ _Note: For videos go to [Media](#selfie-media) section._
 - :hammer_and_pick: [`andino_firmware`](./andino_firmware): Contains the code be run in the microcontroller for interfacing low level hardware with the SBC.
 - :gear: [`andino_base`](./andino_base): [ROS Control hardware interface](https://control.ros.org/master/doc/ros2_control/hardware_interface/doc/writing_new_hardware_interface.html) is implemented.
 - :control_knobs: [`andino_control`](./andino_control/): It launches the [`controller_manager`](https://control.ros.org/humble/doc/ros2_control/controller_manager/doc/userdoc.html) along with the [ros2 controllers](https://control.ros.org/master/doc/ros2_controllers/doc/controllers_index.html): [diff_drive_controller](https://control.ros.org/master/doc/ros2_controllers/diff_drive_controller/doc/userdoc.html) and the [joint_state_broadcaster](https://control.ros.org/master/doc/ros2_controllers/joint_state_broadcaster/doc/userdoc.html).
-- :computer: [`andino_gz_classic`](./andino_gz_classic/): [Gazebo Classic](https://classic.gazebosim.org/) simulation of the `andino` robot.
 - :world_map: [`andino_slam`](./andino_slam/): Provides support for SLAM with your `andino` robot.
 - :compass: [`andino_navigation`](./andino_navigation/): Navigation stack based on `nav2`.
-- :exclamation: [`andino_apps`](./andino_apps/): Integrated applications with the `andino` robot.
 
 ## :paperclips: Related projects
 
@@ -64,10 +62,13 @@ Remember to first go over the assembly instructions at [`andino_hardware`](./and
 
 ### Platforms
 
-- ROS 2: Humble Hawksbill
+- ROS 2:
+  - Humble Hawksbill
+  - Jazzy Jalisco
 - OS:
-  - Ubuntu 22.04 Jammy Jellyfish
-  - Ubuntu Mate 22.04 (On real robot (e.g: Raspberry Pi 4B))
+  - Ubuntu 22.04 Jammy Jellyfish (Humble)
+  - Ubuntu 24.04 Noble Numbat (Jazzy)
+  - Ubuntu Mate 22.04 / Ubuntu Server 24.04 (On real robot e.g: Raspberry Pi 4B)
 
 ### Via ansible
 
@@ -77,7 +78,7 @@ See [`andino_ansible_config`](https://github.com/garyservin/andino_ansible_confi
 
 #### Dependencies
 
-1. Install [ROS 2](https://docs.ros.org/en/humble/Installation/Ubuntu-Install-Debians.html)
+1. Install ROS 2: [Humble](https://docs.ros.org/en/humble/Installation/Ubuntu-Install-Debians.html) or [Jazzy](https://docs.ros.org/en/jazzy/Installation/Ubuntu-Install-Debs.html)
 2. Install [colcon](https://colcon.readthedocs.io/en/released/user/installation.html)
 
 #### colcon workspace
@@ -127,9 +128,9 @@ source install/setup.bash
 
 ### Install the binaries
 
-The packages have been also released via ROS package manager system for the 'humble' distro. You can check them [here](https://repo.ros2.org/status_page/ros_humble_default.html?q=andino).
+The packages have been also released via ROS package manager system for the Humble and Jazzy distros. You can check them [here](https://repo.ros2.org/status_page/ros_humble_default.html?q=andino) (Humble) and [here](https://repo.ros2.org/status_page/ros_jazzy_default.html?q=andino) (Jazzy).
 
-These packages can be installed using `apt` (e.g: `sudo apt install ros-humble-andino-description`) or using `rosdep`.
+These packages can be installed using `apt` (e.g: `sudo apt install ros-humble-andino-description` or `sudo apt install ros-jazzy-andino-description`) or using `rosdep`.
 
 ## :rocket: Usage
 
@@ -205,11 +206,11 @@ Follow the [`andino_navigation`'s README](./andino_navigation/README.md) instruc
 <img src="https://github.com/Ekumen-OS/andino_gz/blob/humble/docs/media/andino_gz.png" width=600/>
 
 Within the Andino ecosystem simulations on several platforms are provided:
- - [`andino_gz_classic`](./andino_gz_classic/README.MD) - (To be deprecated as of Jazzy)
  - [`andino_gz`](https://github.com/Ekumen-OS/andino_gz) - **Recommended**
  - [`andino_webots`](https://github.com/Ekumen-OS/andino_webots)
  - [`andino_o3de`](https://github.com/Ekumen-OS/andino_o3de)
  - [`andino_isaac`](https://github.com/Ekumen-OS/andino_isaac)
+ - [`andino_mujoco`](https://github.com/Ekumen-OS/andino_mujoco)
 
 
 

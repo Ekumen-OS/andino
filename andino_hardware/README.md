@@ -104,10 +104,12 @@ You can either follow these steps or **rely on community contribution (Recommend
 
 ### Operative System
 
-Ubuntu Mate 22.04 ARM64 is the recommended operative system for this project. This OS provides good capabilities for a educational platform as well as good performance.
+The recommended operative system depends on which ROS 2 distro you want to use:
+- **Humble**: Ubuntu Mate 22.04 ARM64 - [Download](https://ubuntu-mate.org/download/arm64/)
+- **Jazzy**: Ubuntu Server 24.04.1 - [Download](https://ubuntu.com/download/raspberry-pi)
 
 For installing this OS in the Raspberry:
-1. Download the image from here: [ubuntu mate download](https://ubuntu-mate.org/download/arm64/)
+1. Download the image for your target ROS distro (see above).
 
 
 2. Install OS to a microSD card using [Raspberry Pi Imager](https://www.raspberrypi.com/software/).
@@ -185,13 +187,6 @@ Configure it properly:
    sudo usermod -a -G plugdev $USER
    ```
    Note you will need a reboot after this to be effective.
-2. Remove `brltty` from the system
-   ```
-   sudo apt remove brltty
-   ```
-   In Ubuntu 22.04 seems to be an issue with some chip drivers and the `brltty` daemon. To avoid this conflict we remove `brltty` as suggested. See [this stackoverflow post](https://stackoverflow.com/questions/70123431/why-would-ch341-uart-is-disconnected-from-ttyusb) for further information.
-
-
 
 #### Raspberry Camera Module V2
 
@@ -356,9 +351,9 @@ When it is the first time you run `rosdep`:
 ```
 rosdep update
 ```
-Make sure to export the `ROS_DISTRO` environment variable:
+Make sure to export the `ROS_DISTRO` environment variable (use `humble` or `jazzy` depending on your installation):
 ```
-export ROS_DISTRO=humble
+export ROS_DISTRO=humble  # or jazzy
 ```
 And then proceed to install the workspace dependencies:
 ```
@@ -366,13 +361,13 @@ rosdep install --from-paths src -i -y -r
 ```
 Note that option `-r` has been added. For ARM based processors, there are missing packages, e.g. those related to simulation. We would not try to run the simulation in the compute platform of andino, however for convenience it is added here.
 
-Let' source the ROS Humble installation:
+Let's source the ROS installation:
 ```
-source /opt/ros/humble/setup.bash
+source /opt/ros/$ROS_DISTRO/setup.bash
 ```
-Let's build the packages (`andino_gz_classic` and `andino_apps` work only in simulation):
+Let's build the packages:
 ```
-colcon build --packages-skip andino_gz_classic andino_apps
+colcon build
 ```
 After building is completed:
 ```

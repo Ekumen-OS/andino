@@ -3,14 +3,11 @@ name: colcon build & test
 on:
   push:
     branches:
-      - humble
+      - main
   pull_request:
     branches:
-      - humble
+      - main
   workflow_dispatch:
-
-env:
-  ROS_DISTRO: humble
 
 # Cancel previously running PR jobs
 concurrency:
@@ -19,16 +16,24 @@ concurrency:
 
 jobs:
   compile_and_test:
-    name: Compile and test
+    name: Compile and test (${{ matrix.ros_distro }})
     runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - ros_distro: humble
+            os_version: ubuntu:22.04
+          - ros_distro: jazzy
+            os_version: ubuntu:24.04
     container:
-      image: ubuntu:22.04
+      image: ${{ matrix.os_version }}
     steps:
     - uses: actions/checkout@v3
     - uses: ros-tooling/setup-ros@v0.7
     - uses: ros-tooling/action-ros-ci@v0.3
       id: action_ros_ci_step
       with:
-        package-name: andino_base andino_bringup andino_control andino_description andino_firmware andino_hardware andino_slam andino_gz_classic andino_navigation andino_apps
-        target-ros2-distro: ${{ env.ROS_DISTRO }}
+        package-name: andino_base andino_bringup andino_control andino_description andino_firmware andino_hardware andino_slam andino_navigation
+        target-ros2-distro: ${{ matrix.ros_distro }}
         import-token: ${{ secrets.GITHUB_TOKEN }}

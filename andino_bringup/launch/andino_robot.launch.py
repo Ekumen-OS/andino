@@ -61,9 +61,6 @@ def generate_launch_description():
         PythonLaunchDescriptionSource(
             os.path.join(pkg_andino_description, 'launch', 'andino_description.launch.py'),
         ),
-        launch_arguments={
-            'rsp': 'True',
-        }.items()
     )
 
     # Include andino_control launch file

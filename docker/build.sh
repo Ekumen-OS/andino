@@ -36,12 +36,13 @@ set -e
 function show_help() {
   echo $'\nUsage:\t build.sh [OPTIONS] \n
   Options:\n
-  \t-i --image_name\t\t Name of the image to be built (default ros2_humble_andino).\n
+  \t-i --image_name\t\t Name of the image to be built (default ros2_andino).\n
+  \t-d --ros_distro\t\t ROS 2 distro to use: humble or jazzy (default humble).\n
   Example:\n
-  \tbuild.sh --image_name custom_image_name\n'
+  \tbuild.sh --ros_distro jazzy --image_name custom_image_name\n'
 }
 
-echo "Building the docker image for ros2 humble andino development."
+echo "Building the docker image for ros2 andino development."
 
 SCRIPT_FOLDER_PATH="$(cd "$(dirname "$0")"; pwd)"
 CONTEXT_FOLDER_PATH="$(cd "$(dirname "$0")"; cd .. ; pwd)"
@@ -50,6 +51,7 @@ CONTEXT_FOLDER_PATH="$(cd "$(dirname "$0")"; cd .. ; pwd)"
 while [[ "$#" -gt 0 ]]; do
     case $1 in
         -i|--image_name) IMAGE_NAME="${2}"; shift ;;
+        -d|--ros_distro) ROS_DISTRO="${2}"; shift ;;
         -h|--help) show_help ; exit 1 ;;
         *) echo "Unknown parameter passed: $1"; exit 1 ;;
     esac
@@ -57,15 +59,18 @@ while [[ "$#" -gt 0 ]]; do
 done
 
 # Update the arguments to default values if needed.
-OS_VERSION="focal"
-IMAGE_NAME=${IMAGE_NAME:-ros2_humble_andino}
+ROS_DISTRO=${ROS_DISTRO:-humble}
+IMAGE_NAME=${IMAGE_NAME:-ros2_${ROS_DISTRO}_andino}
 DOCKERFILE_PATH=$SCRIPT_FOLDER_PATH/Dockerfile
 
 USERID=$(id -u)
 USER=$(whoami)
 
+echo "Building image for ROS 2 $ROS_DISTRO..."
+
 sudo docker build -t $IMAGE_NAME \
      --file $DOCKERFILE_PATH \
      --build-arg USERID=$USERID \
      --build-arg USER=$USER \
+     --build-arg ROS_DISTRO=$ROS_DISTRO \
      $CONTEXT_FOLDER_PATH
