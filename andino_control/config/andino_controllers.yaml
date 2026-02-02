@@ -20,7 +20,7 @@ diff_controller:
     odom_frame_id: odom
     base_frame_id: base_link
     enable_odom_tf: true
-    use_stamped_vel: false
+    use_stamped_vel: true
 
     linear.x.has_velocity_limits: false
     linear.x.has_acceleration_limits: false
