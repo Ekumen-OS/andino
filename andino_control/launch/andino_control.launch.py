@@ -82,6 +82,11 @@ def generate_launch_description():
         )
     )
 
+    # Relay node to convert Twist messages to TwistStamped messages.
+    # This allows nodes that publish unstamped Twist messages (e.g., Nav2) to work
+    # with the diff_drive_controller which expects TwistStamped messages.
+    # Input: /cmd_vel (geometry_msgs/Twist)
+    # Output: /cmd_vel_stamped (geometry_msgs/TwistStamped)
     relay_node = Node(
         package="topic_tools",
         executable="relay_field",
