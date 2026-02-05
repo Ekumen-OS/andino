@@ -188,6 +188,13 @@ Configure it properly:
    ```
    Note you will need a reboot after this to be effective.
 
+> [!IMPORTANT]
+> In Ubuntu 22.04 seems to be an issue with some chip drivers and the `brltty` daemon. To avoid ?> this conflict we remove `brltty` as suggested. See [this stackoverflow post](https://stackoverflow.com/>? > questions/70123431/why-would-ch341-uart-is-disconnected-from-ttyusb) for further information.
+> - Remove `brltty` from the system
+    ```
+    sudo apt remove brltty
+    ```
+
 #### Raspberry Camera Module V2
 
 After connecting the camera module to the Raspberry's camera port.

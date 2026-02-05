@@ -29,21 +29,46 @@
 # OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 from launch import LaunchDescription
+from launch.actions import DeclareLaunchArgument
+from launch.conditions import IfCondition, UnlessCondition
+from launch.substitutions import LaunchConfiguration
 
 from launch_ros.actions import Node
 
 
 def generate_launch_description():
-    teleop_node = Node(
+    stamped_arg = DeclareLaunchArgument(
+        'stamped',
+        default_value='true',
+        description='Whether to use stamped Twist messages'
+    )
+
+    stamped = LaunchConfiguration('stamped')
+
+    teleop_node_stamped = Node(
             package='teleop_twist_keyboard',
             executable='teleop_twist_keyboard',
             name='teleop_twist_keyboard_node',
             output='screen',
-            prefix = 'xterm -e',
+            prefix='xterm -e',
             parameters=[{'stamped': True}],
             remappings=[('/cmd_vel', 'cmd_vel_stamped')],
+            condition=IfCondition(stamped),
+         )
+
+    teleop_node_unstamped = Node(
+            package='teleop_twist_keyboard',
+            executable='teleop_twist_keyboard',
+            name='teleop_twist_keyboard_node',
+            output='screen',
+            prefix='xterm -e',
+            parameters=[{'stamped': False}],
+            remappings=[('/cmd_vel', 'cmd_vel')],
+            condition=UnlessCondition(stamped),
          )
 
     return LaunchDescription([
-        teleop_node,
+        stamped_arg,
+        teleop_node_stamped,
+        teleop_node_unstamped,
     ])

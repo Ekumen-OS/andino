@@ -17,6 +17,12 @@ COPY docker/requirements.txt .
 RUN apt-get update && apt-get install --no-install-recommends -y $(cat requirements.txt)
 RUN rm requirements.txt
 
+# Copy ROS requirement files and install ROS dependencies
+# This pre-installs ROS dependencies to speed up rosdep install
+COPY docker/ros_requirements.txt .
+RUN apt-get update && apt-get install --no-install-recommends -y $(sed "s/\${ROS_DISTRO}/${ROS_DISTRO}/g" ros_requirements.txt | grep -v '^#' | grep -v '^$')
+RUN rm ros_requirements.txt
+
 # Create a user with passwordless sudo
 RUN adduser --uid $USERID --gecos "ekumen developer" --disabled-password $USER
 RUN adduser $USER sudo

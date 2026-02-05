@@ -9,6 +9,7 @@ gdb
 git
 gnupg2
 gpg-agent
+libserial-dev
 joystick
 jstest-gtk
 locales
