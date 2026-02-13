@@ -26,7 +26,8 @@
 # OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 # OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-"""Andino-specific navigation launch file.
+"""
+Andino-specific navigation launch file.
 
 This is a customized version of nav2_bringup's navigation_launch.py that only
 includes the nodes Andino actually needs. In particular, it omits:
