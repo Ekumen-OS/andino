@@ -51,14 +51,18 @@ def generate_launch_description():
     # Auto-detect ROS distro and select the appropriate params file.
     ros_distro = os.environ.get('ROS_DISTRO', 'humble')
     if ros_distro == 'jazzy':
-        default_params_file = os.path.join(andino_navigation_dir, 'params', 'nav2_params_jazzy.yaml')
+        default_params_file = os.path.join(
+            andino_navigation_dir, 'params', 'nav2_params_jazzy.yaml')
     else:
-        default_params_file = os.path.join(andino_navigation_dir, 'params', 'nav2_params_humble.yaml')
+        default_params_file = os.path.join(
+            andino_navigation_dir, 'params', 'nav2_params_humble.yaml')
 
     # On Jazzy, use Andino's own navigation launch file that omits unused nodes
     # (docking_server, route_server). On Humble, use nav2_bringup's default.
     if ros_distro == 'jazzy':
-        navigation_launch_path = os.path.join(andino_navigation_dir, 'launch', 'include', 'navigation_launch.py')
+        navigation_launch_path = os.path.join(
+            andino_navigation_dir, 'launch', 'include',
+            'navigation_launch.py')
     else:
         navigation_launch_path = os.path.join(nav2_launch_dir, 'navigation_launch.py')
 
@@ -198,7 +202,10 @@ def generate_launch_description():
             package='rviz2',
             executable='rviz2',
             name='rviz2',
-            arguments=['-d', os.path.join(andino_navigation_dir, 'rviz', 'nav2_default_view.rviz')],
+            arguments=[
+                '-d', os.path.join(
+                    andino_navigation_dir, 'rviz',
+                    'nav2_default_view.rviz')],
             parameters=[{'use_sim_time': use_sim_time}],
             output='screen'),
     ])
