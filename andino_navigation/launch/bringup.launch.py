@@ -48,6 +48,20 @@ def generate_launch_description():
     andino_navigation_dir = get_package_share_directory('andino_navigation')
     nav2_launch_dir = os.path.join(get_package_share_directory('nav2_bringup'), 'launch')
 
+    # Auto-detect ROS distro and select the appropriate params file.
+    ros_distro = os.environ.get('ROS_DISTRO', 'humble')
+    if ros_distro == 'jazzy':
+        default_params_file = os.path.join(andino_navigation_dir, 'params', 'nav2_params_jazzy.yaml')
+    else:
+        default_params_file = os.path.join(andino_navigation_dir, 'params', 'nav2_params_humble.yaml')
+
+    # On Jazzy, use Andino's own navigation launch file that omits unused nodes
+    # (docking_server, route_server). On Humble, use nav2_bringup's default.
+    if ros_distro == 'jazzy':
+        navigation_launch_path = os.path.join(andino_navigation_dir, 'launch', 'include', 'navigation_launch.py')
+    else:
+        navigation_launch_path = os.path.join(nav2_launch_dir, 'navigation_launch.py')
+
     # Create the launch configuration variables
     namespace = LaunchConfiguration('namespace')
     use_namespace = LaunchConfiguration('use_namespace')
@@ -59,6 +73,7 @@ def generate_launch_description():
     use_composition = LaunchConfiguration('use_composition')
     use_respawn = LaunchConfiguration('use_respawn')
     log_level = LaunchConfiguration('log_level')
+    rviz = LaunchConfiguration('rviz')
 
     # Map fully qualified names to relative ones so the node's namespace can be prepended.
     # In case of the transforms (tf), currently, there doesn't seem to be a better alternative
@@ -107,7 +122,7 @@ def generate_launch_description():
 
     declare_params_file_cmd = DeclareLaunchArgument(
         'params_file',
-        default_value=os.path.join(andino_navigation_dir, 'params', 'nav2_params.yaml'),
+        default_value=default_params_file,
         description='Full path to the ROS 2 parameters file to use for all launched nodes')
 
     declare_autostart_cmd = DeclareLaunchArgument(
@@ -125,6 +140,10 @@ def generate_launch_description():
     declare_log_level_cmd = DeclareLaunchArgument(
         'log_level', default_value='info',
         description='log level')
+
+    declare_rviz_cmd = DeclareLaunchArgument(
+        'rviz', default_value='false',
+        description='Whether to launch RViz')
 
     # Specify the actions
     bringup_cmd_group = GroupAction([
@@ -165,7 +184,7 @@ def generate_launch_description():
                               'container_name': 'nav2_container'}.items()),
 
         IncludeLaunchDescription(
-            PythonLaunchDescriptionSource(os.path.join(nav2_launch_dir, 'navigation_launch.py')),
+            PythonLaunchDescriptionSource(navigation_launch_path),
             launch_arguments={'namespace': namespace,
                               'use_sim_time': use_sim_time,
                               'autostart': autostart,
@@ -173,6 +192,15 @@ def generate_launch_description():
                               'use_composition': use_composition,
                               'use_respawn': use_respawn,
                               'container_name': 'nav2_container'}.items()),
+
+        Node(
+            condition=IfCondition(rviz),
+            package='rviz2',
+            executable='rviz2',
+            name='rviz2',
+            arguments=['-d', os.path.join(andino_navigation_dir, 'rviz', 'nav2_default_view.rviz')],
+            parameters=[{'use_sim_time': use_sim_time}],
+            output='screen'),
     ])
 
     # Create the launch description and populate
@@ -192,6 +220,7 @@ def generate_launch_description():
     ld.add_action(declare_use_composition_cmd)
     ld.add_action(declare_use_respawn_cmd)
     ld.add_action(declare_log_level_cmd)
+    ld.add_action(declare_rviz_cmd)
 
     # Add the actions to launch all of the navigation nodes
     ld.add_action(bringup_cmd_group)

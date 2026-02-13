@@ -26,7 +26,11 @@ ros2 launch andino_gz andino_gz.launch.py
 ros2 launch andino_navigation bringup.launch.py map:=<path-to-my-map-yaml-file>
 ```
 
-By default, [config file](params/nav2_params.yaml) is used. For using a custom param file use:
+By default, the appropriate config file is automatically selected based on the ROS 2 distro (`$ROS_DISTRO`):
+- Humble: [nav2_params_humble.yaml](params/nav2_params_humble.yaml)
+- Jazzy: [nav2_params_jazzy.yaml](params/nav2_params_jazzy.yaml)
+
+For using a custom param file use:
 
 ```sh
 ros2 launch andino_navigation bringup.launch.py map:=<path-to-my-map-yaml-file> params_file:=<path-to-my-param-file>

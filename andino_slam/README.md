@@ -2,20 +2,35 @@
 
 ## Description
 
-For achieving SLAM we rely on the great [`slam_toolbox`](https://github.com/SteveMacenski/slam_toolbox/tree/ros2) package.
+For achieving SLAM we rely on the great [`slam_toolbox`](https://github.com/SteveMacenski/slam_toolbox) package.
+
+This package provides a launch file that wraps `slam_toolbox`'s `online_async_launch.py`, forwarding Andino-specific configuration. This ensures compatibility across ROS 2 distributions (Humble, Jazzy) by delegating lifecycle node management to `slam_toolbox` itself.
 
 ## Usage
 
-After the robot bring up, simply execute the provided launch file.
+After the robot bringup, simply execute the provided launch file.
 
-```
+```sh
 ros2 launch andino_slam slam_toolbox_online_async.launch.py
 ```
 
-Several configuration can be forwarded to the `slam_toolbox_node`. By default, the configuration parameters are obtained from [config/slam_toolbox_only_async.yaml](config/slam_toolbox_online_async.yaml). In case a custom file is wanted to be passed, simply use the launch file argument for indicating the path to a new file.
+### Launch Arguments
 
+| Argument | Default | Description |
+|---|---|---|
+| `slam_params_file` | `andino_slam/config/slam_toolbox_online_async.yaml` | Full path to the ROS 2 parameters file for the `slam_toolbox` node |
+| `use_sim_time` | `false` | Use simulation/Gazebo clock |
+
+For example, to pass a custom parameters file:
+
+```sh
+ros2 launch andino_slam slam_toolbox_online_async.launch.py slam_params_file:=<my_path>
 ```
-ros2 launch andino_slam slam_toolbox_online_async.launch.py slams_param_file:=<my_path>
+
+Or to use simulation time:
+
+```sh
+ros2 launch andino_slam slam_toolbox_online_async.launch.py use_sim_time:=true
 ```
 
 For saving the map you can use `map_saver_cli` node provided by Nav2.
