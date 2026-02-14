@@ -52,38 +52,50 @@ This package aims to provide the necessary information to the correct assembly o
 
   1. 
 
-  <img src="docs/assembly/1.base_and_omniwheel.jpg">
-  <img src="docs/assembly/2.base_and_omniwheel_up.jpg">
+  <img src="docs/assembly/1.base_and_omniwheel.jpg" width="800">
+  <img src="docs/assembly/2.base_and_omniwheel_up.jpg" width="800">
+
   2. 
 
-  <img src="docs/assembly/3.motors_and_imu.jpg">
+  <img src="docs/assembly/3.motors_and_imu.jpg" width="800">
+
   3. 
 
-  <img src="docs/assembly/4.camera_and_base_case.jpg">
-  <img src="docs/assembly/5.camera_in_case.jpg">
-  <img src="docs/assembly/6.camera_in_place.jpg">
+  <img src="docs/assembly/4.camera_and_base_case.jpg" width="800">
+  <img src="docs/assembly/5.camera_in_case.jpg" width="800">
+  <img src="docs/assembly/6.camera_in_place.jpg" width="800">
+
   4. 
 
-  <img src="docs/assembly/7.raspi_in_place.jpg">
+  <img src="docs/assembly/7.raspi_in_place.jpg" width="800">
+
   5. 
 
-  <img src="docs/assembly/8.motor_driver_connections.jpg">
-  <img src="docs/assembly/9.motor_driver_in_place.jpg">
+  <img src="docs/assembly/8.motor_driver_connections.jpg" width="800">
+  <img src="docs/assembly/9.motor_driver_in_place.jpg" width="800">
 
   6. 
 
-  <img src="docs/assembly/10.arduino_in_place.jpg">
+  <img src="docs/assembly/10.arduino_in_place.jpg" width="800">
+  <img src="docs/assembly/10.1.organize_cables.jpg" width="800">
+
   7. 
 
-  <img src="docs/assembly/11.lidar_base.jpg">
-  <img src="docs/assembly/12.lidar_in_place.jpg">
+  <img src="docs/assembly/11.lidar_base.jpg" width="800">
+  <img src="docs/assembly/12.lidar_in_place.jpg" width="800">
+  <img src="docs/assembly/12.1.place_lidar_base_in_main_chassis.jpg" width="800">
+
   8. 
 
-  <img src="docs/assembly/13.battery_case_switch_and_dcdc.jpg">
-  <img src="docs/assembly/14.battery_case_outside.jpg">
+  <img src="docs/assembly/13.battery_case_switch_and_dcdc.jpg" width="800">
+  <img src="docs/assembly/14.battery_case_outside.jpg" width="800">
+  
   9. 
 
-  <img src="docs/assembly/15.battery_case_full.jpg">
+  <img src="docs/assembly/15.battery_case_full.jpg" width="800">
+  
+  <img src="docs/assembly/16.place_battery_chassis_in_base_chassis.jpg" width="800">
+  <img src="docs/assembly/17.final_version.jpg" width="800">
 
   <!-- TODO Add photo of all connected-->
 
