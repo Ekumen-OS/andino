@@ -93,7 +93,6 @@ This package aims to provide the necessary information to the correct assembly o
   9. 
 
   <img src="docs/assembly/15.battery_case_full.jpg" width="800">
-  
   <img src="docs/assembly/16.place_battery_chassis_in_base_chassis.jpg" width="800">
   <img src="docs/assembly/17.final_version.jpg" width="800">
 
@@ -112,11 +111,12 @@ Some frequent errors:
 
 ### Raspberry-Power
 
-<img src="docs/layout/andino_diagram_raspberry.jpg" />
 
-*NOTE: depending on the power bank maximum output current, the motors may need to be powered with a voltage value lower than 9V. While a higher voltage value (up to 9V) leads to smoother operation (better motor speed control), it also increases their open-loop speed, which is noticeable particularly during motion start and varies according to the power bank quality (output current capabilities). Therefore, adjusting the output voltage to lower values (around 7V) may be required so as to make the motors work as expected.
+<img src="docs/layout/full_power_layout.png" />
 
-**NOTE: Ensure the ribbon cable is properly connected with the blue or silver side facing the USB ports.
+*NOTE: Ground cable to the switch is only if it has a led indicator.
+
+**NOTE: For camera ensure the ribbon cable is properly connected with the blue or silver side facing the USB ports.
 
 ## Microcontroller Configuration
 
