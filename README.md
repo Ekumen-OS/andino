@@ -1,3 +1,14 @@
+
+
+> [!CAUTION]
+> ## ⚠️ This branch is DEPRECATED ⚠️
+>
+> **As of [PR #298](https://github.com/Ekumen-OS/andino/pull/298), this branch is no longer maintained.**
+>
+> The `main` branch now supports **both Humble and Jazzy** versions. Please switch to the [`main`](https://github.com/Ekumen-OS/andino/tree/main) branch for all future development and usage.
+
+---
+
 <div align="center">
 
   ![Logo White](./docs/logo_white.svg#gh-dark-mode-only)
