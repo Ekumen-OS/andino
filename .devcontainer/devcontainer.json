@@ -1,0 +1,56 @@
+{
+    "name": "Andino",
+    "privileged": true,
+    "build": {
+                "context": "../",
+                "dockerfile": "../docker/Dockerfile",
+                "args": {
+                        "USERID": "${localEnv:USER_UID:1000}",
+                        "USER": "${localEnv:USER:ekumendev}"
+                    }
+            },
+
+    "customizations": {
+        "vscode": {
+            "extensions": [
+                "streetsidesoftware.code-spell-checker",
+                "ms-iot.vscodel-ros",
+                "ms-vscode.cpptools",
+                "ms-python.python",
+                "ms-azuretools.vscode-docker",
+                "ms-vscode-remote.remote-containers"
+            ],
+            "settings": {
+                "terminal.integrated.shell.linux": "/bin/bash"
+            }
+        }
+    },
+    "mounts": [
+        "source=${localWorkspaceFolder},target=/home/${localEnv:USER}/ws/src,type=bind",
+        "source=/tmp/.X11-unix,target=/tmp/.X11-unix,type=bind",
+        "source=${localEnv:HOME}/.ssh,target=/home/${localEnv:USER}/.ssh,type=bind"
+    ],
+    "runArgs": [
+        "--hostname=${localEnv:HOSTNAME:ekumendev}",
+        "--name=ros2_humble_andino_container",
+        "--gpus=all",
+        "--env=DISPLAY=${localEnv:DISPLAY}",
+        "--env=XDG_RUNTIME_DIR=${localEnv:XDG_RUNTIME_DIR}",
+        "--runtime=nvidia",
+        "--env=QT_X11_NO_MITSHM=1",
+        "--env=NVIDIA_VISIBLE_DEVICES=all",
+        "--env=NVIDIA_VISIBLE_DEVICES=all",
+        "--env=NVIDIA_DRIVER_CAPABILITIES=compute,utility,video"
+    ],
+    "workspaceFolder": "/home/${localEnv:USER}/ws",
+    "postCreateCommand": "/bin/bash -c 'rosdep install --from-paths src --ignore-src -i -y && colcon build && source install/setup.bash'",
+    "shutdownAction": "stopContainer"
+}
+
+// REMINDER 
+// Please run xhost +local:docker on your host machine.
+
+// Add the following line to .bashrc:
+//  export USER_UID=$(id -u)
+//  export USER=$(whoami)
+//  export HOSTNAME=$(hostname)
