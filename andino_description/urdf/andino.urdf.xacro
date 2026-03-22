@@ -24,8 +24,11 @@
   <xacro:property name="base_yaml" value="$(arg yaml_config_dir)/base.yaml" />
   <xacro:property name="base_props" value="${xacro.load_yaml(base_yaml)}"/>
 
-  <xacro:property name="second_base_yaml" value="$(arg yaml_config_dir)/second_base.yaml" />
-  <xacro:property name="second_base_props" value="${xacro.load_yaml(second_base_yaml)}"/>
+  <xacro:property name="lidar_base_yaml" value="$(arg yaml_config_dir)/lidar_base.yaml" />
+  <xacro:property name="lidar_base_props" value="${xacro.load_yaml(lidar_base_yaml)}"/>
+
+  <xacro:property name="battery_base_yaml" value="$(arg yaml_config_dir)/battery_base.yaml" />
+  <xacro:property name="battery_base_props" value="${xacro.load_yaml(battery_base_yaml)}"/>
 
   <xacro:property name="sensor_yaml" value="$(arg yaml_config_dir)/sensors.yaml" />
   <xacro:property name="sensor_prop" value="${xacro.load_yaml(sensor_yaml)}"/>
@@ -39,35 +42,44 @@
 
   <!-- Base link -->
   <xacro:base link_name="base_link" base_prop="${base_props}" mesh="${base_props['base']['mesh']}" >
-    <origin xyz="0 0 0" rpy="0 0 0" />
+    <origin xyz="0 0 0" rpy="0 0 ${pi}" />
   </xacro:base>
 
-  <!-- Second story link -->
-  <xacro:base link_name="second_base_link" base_prop="${second_base_props}" mesh="${second_base_props['base']['mesh']}" >
-    <origin xyz="0 0 0.05" rpy="0 0 0" />
+  <!-- Lidar base link -->
+  <xacro:base link_name="lidar_base_link" base_prop="${lidar_base_props}" mesh="${lidar_base_props['base']['mesh']}" >
+    <origin xyz="0.062067 0 0.08" rpy="0 ${pi} 0" />
   </xacro:base>
   <!-- Joint to connect second_story with base_link -->
-  <joint name="second_base_joint" type="fixed">
+  <joint name="lidar_base_joint" type="fixed">
     <parent link="base_link"/>
-    <child link="second_base_link" />
+    <child link="lidar_base_link" />
+    <origin xyz="0 0 0" rpy="0 0 0" />
+  </joint>
+
+   <!-- Battery base link -->
+  <xacro:base link_name="battery_base_link" base_prop="${battery_base_props}" mesh="${battery_base_props['base']['mesh']}" >
+    <origin xyz="0.035 0 0.0815" rpy="0 ${pi} 0" />
+  </xacro:base>
+  <!-- Joint to connect second_story with base_link -->
+  <joint name="battery_base_joint" type="fixed">
+    <parent link="base_link"/>
+    <child link="battery_base_link" />
     <origin xyz="0 0 0" rpy="0 0 0" />
   </joint>
 
   <!-- Caster Wheel -->
-  <xacro:caster_wheel reflect="-1"
-                      use_fixed="$(arg use_fixed_caster)"
-                      wheel_props="${caster_wheel_props}">
+  <xacro:caster_wheel wheel_props="${caster_wheel_props}">
   </xacro:caster_wheel>
 
   <!-- Wheels -->
   <xacro:wheel prefix="right" reflect="-1"
                       wheel_props="${wheel_props}"
-                      base_props="${base_props}" >
+                      motor_props="${motor_props}" >
   </xacro:wheel>
 
   <xacro:wheel prefix="left" reflect="1"
                       wheel_props="${wheel_props}"
-                      base_props="${base_props}" >
+                      motor_props="${motor_props}" >
   </xacro:wheel>
 
 
@@ -83,7 +95,7 @@
   </xacro:motor>
 
   <!-- Sensors -->
-  <xacro:laser prefix="rplidar" parent_link="second_base_link"
+  <xacro:laser prefix="rplidar" parent_link="lidar_base_link"
                    sensor_prop="${sensor_prop}">
   </xacro:laser>
 

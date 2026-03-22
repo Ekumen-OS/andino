@@ -1,8 +1,8 @@
 mass: 0.032        # Wheel mass in Kg
-radius: 0.0331    # Wheel radius in m
-length: 0.025     # Wheel length in m, considering is as a cylinder
+radius: 0.0331     # Wheel radius in m
+length: 0.025      # Wheel length in m, considering is as a cylinder
 mesh: '../components/wheel.stl'  # Leave it empty ('') to have a red wheel
 scale: ''
-x_offset: 0.079
-y_offset: 0.015
-z_offset: -0.017
+x_offset: 0.016438    # Wheel to motor offset in x
+y_offset: 0.025721    # Wheel to motor offset in y
+z_offset: 0.0      # Wheel to motor offset in z
