@@ -50,96 +50,96 @@ This package aims to provide the necessary information to the correct assembly o
 
 ## Assembly Process
 
-  ### 1. Caster wheel 
-  #### Place the base chassis face down, install Caste wheel in the base chassis.
-  <img src="docs/assembly/1.base_and_omniwheel.jpg" width="800">
+  ### 1. Rear wheel 
+  #### Place the base chassis face down, install the  wheel in the base chassis.
+  <img src="docs/assembly/1.base_and_omniwheel.jpg" width="600">
 
   #### Place the base chassis face up.
 
-  <img src="docs/assembly/2.base_and_omniwheel_up.jpg" width="800">
+  <img src="docs/assembly/2.base_and_omniwheel_up.jpg" width="600">
 
   ### 2. Motors and IMU
   
   #### Install motors using 4 X 30mm screws and the IMU using a zip tide as shown in the image. 
 
-  <img src="docs/assembly/3.motors_and_imu.jpg" width="800">
+  <img src="docs/assembly/3.motors_and_imu.jpg" width="600">
 
   ### 3. Camera 
 
   #### Pass the camera flex through the hole below the IMU base as shown in the image.
 
-  <img src="docs/assembly/4.camera_and_base_case.jpg" width="800">
+  <img src="docs/assembly/4.camera_and_base_case.jpg" width="600">
 
   ##### Place the camera inside the camera case as shown in the image.
 
-  <img src="docs/assembly/5.camera_in_case.jpg" width="800">
+  <img src="docs/assembly/5.camera_in_case.jpg" width="600">
 
   #### Place the camera case in its position as shown in the image, be careful when you spread the base, to avoid braking it.
 
-  <img src="docs/assembly/6.camera_in_place.jpg" width="800">
+  <img src="docs/assembly/6.camera_in_place.jpg" width="600">
 
   ### 4. Raspberry 
 
   #### Rotate the base 180 degrees and place the raspberry as shown in the image. And place the wheels by inserting them into the motors.
 
-  <img src="docs/assembly/7.raspi_in_place.jpg" width="800">
+  <img src="docs/assembly/7.raspi_in_place.jpg" width="600">
 
   ### 5. Motor Driver
   
   #### Add power and 5V cables to the motor driver. at least 15cm for power cables.  
 
-  <img src="docs/assembly/8.motor_driver_connections.jpg" width="800">
+  <img src="docs/assembly/8.motor_driver_connections.jpg" width="600">
 
   #### Finish all the driver connections according to the [connection diagram](#motor-arduino)
   
-  <img src="docs/assembly/9.motor_driver_in_place.jpg" width="800">
+  <img src="docs/assembly/9.motor_driver_in_place.jpg" width="600">
 
   ### 6. Arduino
 
   #### Place the arduino using the arduino lock base.
 
-  <img src="docs/assembly/10.arduino_in_place.jpg" width="800">
+  <img src="docs/assembly/10.arduino_in_place.jpg" width="600">
   
   #### Make the remaining connection of the [connection diagram](#motor-arduino) and organize the cables as you prefer.
 
-  <img src="docs/assembly/10.1.organize_cables.jpg" width="800">
+  <img src="docs/assembly/10.1.organize_cables.jpg" width="600">
 
   ### 7. Lidar Base
 
   #### Place the lidar in the lidar base as shown in the image.
-  <img src="docs/assembly/11.lidar_base.jpg" width="800">
+  <img src="docs/assembly/11.lidar_base.jpg" width="600">
 
   #### Fix the lidar driver to the lidar base using zip tides as shown in the image.
 
-  <img src="docs/assembly/12.lidar_in_place.jpg" width="800">
+  <img src="docs/assembly/12.lidar_in_place.jpg" width="600">
 
   #### Place the lidar base above the base cassis and use screw it in place. 
 
-  <img src="docs/assembly/12.1.place_lidar_base_in_main_chassis.jpg" width="800">
+  <img src="docs/assembly/12.1.place_lidar_base_in_main_chassis.jpg" width="600">
 
   ### 8. Battery chassis. 
   
   #### Place the 5V step down driver and the killer switch in the battery chassis as shown in the image.
 
-  <img src="docs/assembly/13.battery_case_switch_and_dcdc.jpg" width="800">
+  <img src="docs/assembly/13.battery_case_switch_and_dcdc.jpg" width="600">
 
   #### Exterior should looks like this
 
-  <img src="docs/assembly/14.battery_case_outside.jpg" width="800">
+  <img src="docs/assembly/14.battery_case_outside.jpg" width="600">
   
   #### Place the battery case inside the battery chassis as shown in the image.
 
-  <img src="docs/assembly/15.battery_case_full.jpg" width="800">
+  <img src="docs/assembly/15.battery_case_full.jpg" width="600">
 
   ### 9. Final Assembly
 
   #### Make all the power connections in the [power connections schema](#raspberry-power) and place the battery chassis in the base chassis as shown in the image.
 
-  <img src="docs/assembly/16.place_battery_chassis_in_base_chassis.jpg" width="800">
+  <img src="docs/assembly/16.place_battery_chassis_in_base_chassis.jpg" width="600">
 
   ### 10. Final Andino closed
 
-  <img src="docs/assembly/17.final_version.jpg" width="800">
+  <img src="docs/assembly/17.final_version.jpg" width="600">
 
 <a name="connection-diagram"></a>
 ## Connection Diagram
