@@ -8,18 +8,19 @@
   - prefix [string]: used to diferentiate the link and joint name;
   - reflect [1/-1]: value to set the side of the wheel;
   - wheel_props [dictionary]: wheel properties;
-  - base_props [dictionary]: base link properties;
+  - motor_props [dictionary]: motor link properties;
   - mesh [string]: file name of the wheel mesh;
     - DEFAULT Value -> Empty string
 -->
   <xacro:macro name="wheel"
-               params="prefix reflect wheel_props base_props ">
+               params="prefix reflect wheel_props motor_props ">
 
   <xacro:property name="pos_x_joint"
-     value="${(base_props['base']['x_size']/2) - wheel_props['x_offset']}"/>
+     value="${(motor_props['x_offset']) + wheel_props['x_offset']}"/>
   <xacro:property name="pos_y_joint"
-    value="${(base_props['base']['y_size']/2) + wheel_props['y_offset'] + (wheel_props['length']/2)}"/>
-  <xacro:property name="pos_z_joint" value="${wheel_props['z_offset']}"/>
+    value="${(motor_props['y_offset']) + wheel_props['y_offset']}"/>
+  <xacro:property name="pos_z_joint" 
+    value="${(motor_props['z_offset']) + wheel_props['z_offset']}"/>
 
     <link name="${prefix}_wheel">
     <xacro:if value="${wheel_props['mesh'] != '' }" >
@@ -83,10 +84,8 @@
   <xacro:macro name="motor"
                params="prefix reflect motor_props base_props ">
 
-  <xacro:property name="pos_x_joint"
-     value="${(base_props['base']['x_size']/2) - motor_props['x_offset']}"/>
-  <xacro:property name="pos_y_joint"
-    value="${(base_props['base']['y_size']/2) + motor_props['y_offset'] + (motor_props['y_size']/2)}"/>
+  <xacro:property name="pos_x_joint" value="${motor_props['x_offset']}"/>
+  <xacro:property name="pos_y_joint" value="${motor_props['y_offset']}"/>
   <xacro:property name="pos_z_joint" value="${motor_props['z_offset']}"/>
 
     <link name="${prefix}_motor">
@@ -177,7 +176,7 @@
       </visual>
     </xacro:if>
     <collision>
-      <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0"/>
+      <origin xyz="-0.02 0.0 ${base_prop['base']['z_size']/2.0}" rpy="0.0 0.0 0.0"/>
       <geometry>
         <box size="${base_prop['base']['x_size']} ${base_prop['base']['y_size']} ${base_prop['base']['z_size']}"/>
       </geometry>
