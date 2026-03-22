@@ -1,6 +1,9 @@
 # andino_hardware
 
 This package aims to provide the necessary information to the correct assembly of the robot.
+> [!IMPORTANT]
+> The hardware has been updated. If you are looking for the old design please go to [f7af556d00a099cf18a9d1e17eb7e725fa97e1da](https://github.com/Ekumen-OS/andino/tree/f7af556d00a099cf18a9d1e17eb7e725fa97e1da)
+
 
 ## Bill of Materials
 
