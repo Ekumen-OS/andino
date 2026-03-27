@@ -63,3 +63,17 @@ A serial port connection must be created at 57600 bauds. You can use the serial 
 
 * Closed loop verification
   - Send `m <tps> <tps>` where `tps` stands for `ticks per second`. For example if your motor-encoder system gets 700 ticks per revolution then sending `m 700 700` will rotate both motors at 1 rev per sec. (~3.14rad/sec)
+
+## Commands
+
+| Command | Description | Args | Example | Result |
+| --- | --- | --- | --- | --- |
+| `a` | Read Analog GPIO pin | pin_number | `a 0` |  |
+| `d` | Read Digital GPIO pin | pin_number | `d 2` |  |
+| `e` | Get encoder tick values |  | `e` | `<left> <right>` |
+| `r` | Reset encoder values |  | `r` |  |
+| `m` | Set closed-loop speed for the motors[ticks/sec] | left_tps right_tps | `m 700 700` |  |
+| `o` | Set open-loop speed for the motors[pwm] | left_pwm right_pwm | `o 255 255` |  |
+| `u` | Set PID values | kp kd ki offset | `u 1.0 0.1 0.01 0` |  |
+| `h` | Get if IMU is connected |  | `h` | `0` if not connected, `1` if connected |
+| `i` | Get IMU data and encoder tick values |  | `i` | `<left> <right>  <orientation_X> <orientation_Y> <orientation_Z> <orientation_W> <angular_velocity_X> <angular_velocity_Y> <angular_velocity_Z> <linear_acceleration_X> <linear_acceleration_Y> <linear_acceleration_Z>` |
