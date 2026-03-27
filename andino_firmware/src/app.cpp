@@ -278,6 +278,10 @@ void App::cmd_set_motors_pwm_cb(int argc, char** argv) {
   // Sneaky way to temporarily disable the PID.
   left_pid_controller_.disable();
   right_pid_controller_.disable();
+
+  // Reset the auto stop timer.
+  last_set_motors_speed_cmd_ = millis();
+
   left_motor_.set_speed(left_motor_pwm);
   right_motor_.set_speed(right_motor_pwm);
   Serial.println("OK");
