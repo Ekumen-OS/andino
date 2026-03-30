@@ -1,83 +1,155 @@
 # andino_hardware
 
 This package aims to provide the necessary information to the correct assembly of the robot.
+> [!IMPORTANT]
+> The hardware has been updated. If you are looking for the old design please go to [f7af556d00a099cf18a9d1e17eb7e725fa97e1da](https://github.com/Ekumen-OS/andino/tree/f7af556d00a099cf18a9d1e17eb7e725fa97e1da)
+
 
 ## Bill of Materials
 
-| Number | Module | Part | Links | Comments |
+| Part_number | Image | Part_name | Links | Comments |
 |:--:|:--:|:-----------------------:|:--------------------:|:-------------------------------------------------------:|
-| 1 | SBC | Raspberry Pi 4 B (4 Gb) | [PiShop](https://www.pishop.us/product/raspberry-pi-4-model-b-2gb/), [TiendaTec](https://www.tiendatec.es/raspberry-pi/gama-raspberry-pi/1100-raspberry-pi-4-modelo-b-4gb-5056561800349.html) | If you want better performance you could buy the 8GB model |
-| 2 | Chassis |  2 x Print 3d Chassis + Rubber Tyre Wheels | [Chassis](./printing_model/chassis/), [Wheels Sparkfun](https://www.sparkfun.com/products/13259) | - |
-| 3 | Motors | 2 x Motor with Encoder | [Sparkfun](https://www.sparkfun.com/products/16413) | - |
-| 4 | Microcontroller | Arduino Nano | [Amazon](https://www.amazon.es/RUIZHI-Interfaz-Controlador-Mejorada-Compatible/dp/B0CNGKG4MZ/ref=sr_1_6?dib=eyJ2IjoiMSJ9.gnHfW9VtlEjMns12dAyHXLyFAlaikWpFyoOQJpO0iJBR-zelggQTQ9n001SH_P6NQ9DO3gPetP2krm7GAGvJus6vz4Utqu8Hy1gol0Rq7nmtJITd70ZNi3linf9v1g1iP7MlBx98cBGLVvFy-O2kZnJ63uZDwOZzwz_kExJzUWAxroO3AjufqqGOQHswLfDfjH6jpOJt54xxpCaqurDccId2O0uGKOj6WpPz6iLSubpsPB479SWYPSncxWQzz2kO4VjT6HVzPS2uWi19TS-A9WXVZceLBiz9t25Pf39jiGQ.1sLxrQ94HdIoXBq4VcDFMZhzKoL3wyJoY-U6BmDI6fY&dib_tag=se&keywords=arduino+nano+v3&qid=1714468231&sr=8-6) | You can also use an Arduino Uno, but mind size. It should include a microUSB - USB cable. If not, you will need to purchase it.  |
-| 5 | Motor Driver | L298N Dual H Bridge | [Amazon](https://www.amazon.com/Bridge-Stepper-Driver-Module-Controller/dp/B09T6K9RFZ/ref=sr_1_4?crid=37YY7JO6C3WVE&keywords=l298&qid=1685740618&sprefix=l29%2Caps%2C277&sr=8-4) | - |
-| 6 | Laser Scanner | RPLidar A1M8 | [RobotShop](https://www.robotshop.com/products/rplidar-a1m8-360-degree-laser-scanner-development-kit?_pos=3&_sid=b0aefcea1&_ss=r), [Amazon](https://www.amazon.es/dp/B07VLFGT27?ref_=cm_sw_r_cso_wa_apan_dp_RJ3AZC2XCEVDK0X2DCGA&starsLeft=1&th=1) | If no microUSB-USB cable is included, you will need to purchase one |
-| 7 | Camera | Raspi Camera Module V2, 8 MP | [Robotshop](https://www.robotshop.com/products/raspberry-pi-camera-module-v2), [Amazon](https://www.amazon.com/Raspberry-Pi-Camera-Module-Megapixel/dp/B01ER2SKFS?th=1), [Longer cable](https://www.amazon.es/AZDelivery-Repuesto-Raspberry-30cm-Flexkabel/dp/B01NAXKTDP/ref=sr_1_9?__mk_es_ES=%C3%85M%C3%85%C5%BD%C3%95%C3%91&crid=I1IK0FQVQCCU&dib=eyJ2IjoiMSJ9.2UYb-3a8M00iHZZiHT0xjp8vfzq-3BSmJSLxdtcCMV6WMj8g5T8T_j5DKX8cESxqnVN01YpV3nX28IuhewGTOsmJ4yF5st20TxU7kHNHftZE_aygB5vT-001wEvUfx70V0H0DZljw0YfC4R2wpjsTR_89pAA95C4F8LhJiGbbUGTEjBgmjnsRIFs6FYatZa9KVusNyv2cKxGZlav36gdoAkMXQUvX578c6frxSnH5DROCeK6bKSqrczA7R8OBVWC995fK1AxHbJLHZJEDQGXMVhUkHd2liBV0nq48mnyE6Q.nHty4TxSpldkH8FZAia_rx7sX6c2uIBpPRUEqwq5NiY&dib_tag=se&keywords=raspberry%2Bpi%2Bcamera%2Bcable&qid=1716878948&sprefix=raspberry%2Bpi%2Bcamera%2Bcable%2Caps%2C76&sr=8-9&th=1)  | A link for a longer cable (30 cm) is included, just in case the one included with the camera is too short. |
-| 8 | Electrical Power Supply | Powerbank 5V | [Amazon](https://www.amazon.es/Heganus-Powerbank-10000mAh-port%C3%A1til-pr%C3%A1ctico/dp/B082PPPWXY/ref=asc_df_B082PPPWXY/?tag=googshopes-21&linkCode=df0&hvadid=420334509253&hvpos=&hvnetw=g&hvrand=13392500367381615369&hvpone=&hvptwo=&hvqmt=&hvdev=c&hvdvcmdl=&hvlocint=&hvlocphy=9181150&hvtargid=pla-878722533582&psc=1&mcid=642b7553488f350a8726c7bfb183a667&tag=&ref=&adgrpid=95757266066&hvpone=&hvptwo=&hvadid=420334509253&hvpos=&hvnetw=g&hvrand=13392500367381615369&hvqmt=&hvdev=c&hvdvcmdl=&hvlocint=&hvlocphy=9181150&hvtargid=pla-878722533582) | Any powerbank is suitable: Mind size / weight / output current(>=2A) |
-| 9 | Power Step up | DC - DC boost converter | [Amazon Europe](https://www.amazon.es/Convertidor-convertidor-Controlador-almacenamiento-Transformadores/dp/B08D5XF571) | If motors support higher voltage than 5V a step-up(e.g: to 9V) can be added between powerbank (5V) and motor driver. Screw clockwise to reduce the output voltage. |
-| 10 | Fixing & Mount | M3 bolts/fasteners - M3 Spacers - M2.5/2.0 bolts/fasteners for SBC | [Mercado Libre](https://articulo.mercadolibre.com.ar/MLA-823234605-kit-tornillos-electronica-500-unid-fresada-philips-m3-oferta-_JM#position=1&search_layout=stack&type=item&tracking_id=2a14497e-a3dc-4a0f-98fb-b3b524117284), [Amazon](https://www.amazon.com/Taiss-620PCS-Metric-Assortment-Washers/dp/B0CWXRG6VL/ref=sr_1_2_sspa?crid=3R3BT7LOQWZ4B&dib=eyJ2IjoiMSJ9.EBY3VtTnCGRri20ECsEwpF2eTrWOhlADXq8Rbv78LP7JVW0giUfPQ5-G3e5cVq7svNoKIPbFGf0jQoImIPuJvU72yWC0XaaXyHE03TjX1zVT-AxcCUr6bvvqnQrrwFNowZjHy2ZibnHX4sDMx3aixEmx5XUGq43KVEID5FIGzTw6xsLQd410DewktxUFWCHLSD8HR8BeAUKcP3mzciuPmc8dcz9TzY5cZ_wYFO-WyEQ.B5-OkrGZbzkIn8cw4Zb_LtQUoxX1qKuiVqI6PTNmpZk&dib_tag=se&keywords=kit+M3+tuercas+y+tornillos&qid=1714469030&sprefix=kit+m3+tuercas+y+tornillos%2Caps%2C149&sr=8-2-spons&sp_csd=d2lkZ2V0TmFtZT1zcF9hdGY&psc=1), [Spacers](https://www.amazon.es/YOKIVE-Separadores-Tornillos-Hexagonal-Consistente/dp/B0BWXL75R6/ref=sr_1_11?__mk_es_ES=%C3%85M%C3%85%C5%BD%C3%95%C3%91&crid=39R5HOTYH2AC9&dib=eyJ2IjoiMSJ9.7A-mx6__B2agU-KSbpRPhlNj2WkQfkj8OtZKEmwlwHa3NiDqUA-1Um0339r3Ssad0h03L471s08VcgBGByJpKwummUR8Sgyt3AuF4sahKIacNlyBlD8mcl3bNQ54HR8L585aepoUOxllFXUi2AEGde8kjkNqaiOEcyflppOf1eKtAtlyTYnnjOVJs5YqRK97QV3pUt1g8Rt1zLn7RsEtRrvlMQIXXBjIFFZsqK2tN7OBY2lgorgdRsXP1aS5tad9rD9vsl9SkPUx_c1Bf0ulzabNSFk19v_cSd0IwEx2zSw.30hsx31Q_-5A3eLrlOwhoTvAs_yDufCk04NiN0xk0C8&dib_tag=se&keywords=spacer+30mm+m3&qid=1716156793&refinements=p_n_free_shipping_eligible%3A20930980031&rnid=20930979031&sprefix=spacer+30mm+m3%2Caps%2C107&sr=8-11) | You will probably need to replace the default spacers for the LiDAR with M3 spacers |
-| 11 | Other 3D printed parts | Camera Mount | [3D models](./printing_model/raspi_cam_mount/) | These parts are for fixing the Raspi Cam at the front of the robot |
-| 12 | Caster wheel | Caster wheel | [Amazon](https://www.amazon.es/Unidades-Peque%C3%B1as-Dispositivo-Transferencia-Transporte/dp/B098XHYW7F/ref=asc_df_B098XHYW7F/?tag=googshopes-21&linkCode=df0&hvadid=529604577974&hvpos=&hvnetw=g&hvrand=15132275207682237467&hvpone=&hvptwo=&hvqmt=&hvdev=c&hvdvcmdl=&hvlocint=&hvlocphy=9181150&hvtargid=pla-1396749454795&psc=1&mcid=b1df85a65d163e89b507de60e73f9e65) | - |
-| 13 | SD Card | 64 GB SD Card | [Apokin](https://www.apokin.es/tarjeta-microsd-philips-64gb-class10.html), [Amazon](https://www.amazon.es/Kingston-Tarjeta-SDCS2-64GB-Adaptador/dp/B07YGZQ4H8/ref=sr_1_7?dib=eyJ2IjoiMSJ9.zE4PI6DCNK3d78rtl5ga1NQXGwJT1jC2iqi3mXNzbdJ4BosAUPCn9gc13Gc7pdHDx-7wTy4CDj0zIlgDpu9qXH-6GLgI--pJbfi3OvTBPhwwH-tfi1OzM9xqcAOJG6pJuTtkknsyFk6Ma2EHJ4UdheaziDC_KKaWNKgsf_DFbcA-ZxQSXlTtQqwHvCzgi8hq4vKGiEIY-LSZS_sXE9IUGroo0Isl59Po2IXhTBG5IHnnsVR_7lo0dVBVFYl-5GY2CvJbrixULuPl90TbFTTP6DoIeDcpFdDTcbvSK3Lecss.WXBgIZllFgQxx13Szl3q6WIlTOliwrN8V42J1SzNJ8o&dib_tag=se&qid=1714552555&refinements=p_n_feature_browse-bin%3A948155031&s=computers&sr=1-7) | The SD Card is used to host the OS for the Raspberry Pi |
-| 14 | (Optional) Plastic seals | - | - | You will need at least 2 longer ones to fix the powerbank to the upper chassis, and the shorter ones for all the wires. If you don't want to use them, you can use other method to fix the powerbank and wires |
+| 1 | <img src="docs/parts/raspberry.jpg" width="400"> | Raspberry Pi 4 B (4 Gb) | [PiShop](https://www.pishop.us/product/raspberry-pi-4-model-b-2gb/), [TiendaTec](https://www.tiendatec.es/raspberry-pi/gama-raspberry-pi/1100-raspberry-pi-4-modelo-b-4gb-5056561800349.html), [Amazon](https://www.amazon.com/-/es/desarrollo-Multifuncional-Desarrollo-Aprendizaje-Programaci%C3%B3n/dp/B0B7RN5PPN/ref=sr_1_1?crid=2TP47BV2H7KR3&dib=eyJ2IjoiMSJ9.mGPLQSzGdo46mempglSxiyOOBw_6_bzApyMN9nBELUDhMvprgoi-t-zlc_pvFQPc0UNyPoKxyOc7x5dUVNo2yRiEc5D5H-qOEGPiy5Eyj2CATkz6OrMycJRDrRyIgrX_m3PWq5ZgZlfTX6iFeEzh42QTuLopPU1BAjkaUWcv9hbcXvg4bVRpybxgqssX1YJXzkt-sATzkmN5S7Rpe-7_-y-83lx2S6BdC5XR550Oews._M_Ne0Dh3wEIpSbYG6LzQIDHuXtoYlHuBKReSf9LPZg&dib_tag=se&keywords=raspberry+pi+4&qid=1771022722&sprefix=ras%2Caps%2C150&sr=8-1) | If you want better performance you could buy the 8GB model |
+| 2 | <img src="docs/parts/base_chassis.jpg" width="400"> | [Base_chassis](./printing_model/chassis/base_chassis.stl) | 3D printed |
+| 3 | <img src="docs/parts/lidar_chassis.jpg" width="400"> | [lidar_chassis](./printing_model/chassis/lidar_chassis.stl) | 3D printed |
+| 4 | <img src="docs/parts/battery_chassis.jpg" width="400"> | [Battery_chassis](./printing_model/chassis/battery_chassis.stl) | 3D printed |
+| 5 | <img src="docs/parts/arduino_lock_base.jpg" width="400" > | [Arduino_lock_base](./printing_model/chassis/arduino_lock_base.stl) | 3D printed |
+| 6 | <img src="docs/parts/camera_case.jpg" width="400"> | [Camera_case](./printing_model/raspi_cam_mount/) | 3D printed |
+| 7 | <img src="docs/parts/motors.jpg" width="400"> | 2 x Motor with Encoder | [Sparkfun](https://www.sparkfun.com/products/16413) | Motor name: Hobby Motor with Encoder - Metal Gear (DG01D-E) |
+| 8 | <img src="docs/parts/wheels.jpg" width="400" > | Wheels | [Amazon](https://www.amazon.com/-/es/Paquete-neum%C3%A1ticos-repuesto-inteligentes-autom%C3%B3vil/dp/B0CG1C7T8J/ref=sr_1_1?crid=80ZH97C0XB41&dib=eyJ2IjoiMSJ9.ijIJncnmb5RTnhTUdHvLIkoRR9ETXL1yN80oP5o6pLl_M1gweGQv8Bc4ZzZXLwu3FHXErDb4N90k34FK7T4vksXcP6Ndq6uTXnHfDpvqZxqn9BXa1hpDxVFS2uIrh_UveXW9e-qeRadyM1IwvMVM2gOQaFt6fZ1ZacODgIiHDQSYorrqmwE3Ner99OtWPWkvMvqHuD75oDls9OZE99Ed5nNXlGzO7lOZyUIjCKtlmenpinQVPkfT-_6hTdBGrpdV7bwRpRlS7RuSV9nruQHakjroS5nTiKpq1TASIHR43QU.gsTbZywsqmgc6wPFsOY2lHRRYZnrQAcRF3Y9craGxIU&dib_tag=se&keywords=tt+motor+wheels&qid=1771023074&sprefix=motor+tt+wheel%2Caps%2C175&sr=8-1) | Wheels are generic wheels for TT motors.|
+| 9 | <img src="docs/parts/arduino.jpg" width="400"> | Arduino Nano | [Amazon](https://www.amazon.es/Nano-V3-mega328P-Desarrollo-Binghe-Microcontrolador-Compatible/dp/B0DKJMJ147/ref=sr_1_1?__mk_es_ES=%C3%85M%C3%85%C5%BD%C3%95%C3%91&crid=2HELLSEW2KGDD&dib=eyJ2IjoiMSJ9.RFy2FmC9kl5hrXCOo1gt-654KLEWD37fvHkxBsa7xOP9l_IKF3_jJogbQYxkPyFckd_Uh_1YGRpoQZMp34mdmBllqzbql2jA9ZwJ_kWb4O_oFqPo7bysKSqpCIwfwmOEq6Zxoc8jlpc7feX0WCeefRYnuXkP6AphPl1xTY3BUQvj5IxJ1mYd0C4JSV-MmXBDkjuF8HY88HMehYgHBBbg-GbL3XSAcFS-tGMY4EgCNwFLRue1mCtStPcl5UWUtEsfb4fBXyZxKpZZlxLXVB1i7a3P3JzpVzqJW7fsrhLXVmA.Zb3P7-8aRzzJdhy0rvdbLZjkgG1zSptfoM4iaaJwvpE&dib_tag=se&keywords=arduino+nano+v3&qid=1771023225&sprefix=arduino+nano+v3%2Caps%2C474&sr=8-1) | Arduino pins can be soldered in any position, but it is recommended to solder them as shown in the picture.|
+| 10 | <img src="docs/parts/IMU.jpg" width="400"> | IMU - BNO055 | [Amazon](https://www.amazon.es/Geomagnetismo-Aceleraci%C3%B3n-Dispositivos-Procesamiento-Adquisici%C3%B3n/dp/B0DSHWF2LT/ref=sr_1_10?__mk_es_ES=%C3%85M%C3%85%C5%BD%C3%95%C3%91&crid=NBCLYW8UDTCC&dib=eyJ2IjoiMSJ9.cDS6mGB-km8xQysSDalqV7UjQFmUmuGLd8qUWuBwsxBuKUAMfQnqP6zYPf6SgxLlX_Kb5PlV_bLRx_2x6xMXS5c9pZKDqw2WYRtxQyprJALBDl23XnGoIe7i-uDpGReg_-dT7JhMIiLsGUALIVkFI9bIre_f8eU-CrDNrm8ItUEWBk7KkJS5FWa5wBZR1uPyiWwFxw5Dr0gy6CqiR5ah-X9sSbJ9sORuzU65NzvM8zOdiWYpnmSbaY211Apj3Yjqd6Rs5c1rtBRQekgv_XGtqj-T-1GY6QbOAdz-GN4g1KY.OSbmnv3iJ_M_3bco3WVV9FVUZjUgd-EvLOOCehA7040&dib_tag=se&keywords=IMU+-+BNO055&qid=1771023269&sprefix=imu+-+bno055%2Caps%2C489&sr=8-10) | - |
+| 11 | <img src="docs/parts/motor_driver.jpg" width="400"> | L298N Dual H Bridge | [Amazon](https://www.amazon.com/Bridge-Stepper-Driver-Module-Controller/dp/B09T6K9RFZ/ref=sr_1_4?crid=37YY7JO6C3WVE&keywords=l298&qid=1685740618&sprefix=l29%2Caps%2C277&sr=8-4) | - |
+| 12 | <img src="docs/parts/lidar.jpg" width="400"> | RPLidar A1M8 | [RobotShop](https://www.robotshop.com/products/rplidar-a1m8-360-degree-laser-scanner-development-kit?_pos=3&_sid=b0aefcea1&_ss=r), [Amazon](https://www.amazon.com/RPLIDAR-A1M8-Evitaci%C3%B3n-Obst%C3%A1culos-Navegaci%C3%B3n/dp/B07TJW5SXF/ref=sr_1_1_sspa?__mk_es_US=%C3%85M%C3%85%C5%BD%C3%95%C3%91&crid=6Z65FTP4XRZ&dib=eyJ2IjoiMSJ9.9rz2OfYpvAAEF8dUy6aYwqFhw6U8mCHA81HqCWfHiZMaPQO8jQOW-KuMmijXVXM4heaiaDCFsT9qvaTGa47y18B47pG_dGnbdgR9m_QX-UZ4WmVl0mU_EYa54QhKxx672F65mqmdz2lioURxc_7O3A.SFuniUk-6Gp0R_yL-P5bhzVNQNc-qPg9DkEKZPRvAvk&dib_tag=se&keywords=RPLidar+A1M8&qid=1771023378&sprefix=rplidar+a1m8%2Caps%2C250&sr=8-1-spons&sp_csd=d2lkZ2V0TmFtZT1zcF9hdGY&psc=1) | If no microUSB-USB cable is included, you will need to purchase one |
+| 13 | <img src="docs/parts/camera.jpg" width="400"> | Raspi Camera Module V2, 8 MP | [Robotshop](https://www.robotshop.com/products/raspberry-pi-camera-module-v2), [Amazon](https://www.amazon.com/Raspberry-Pi-Camera-Module-Megapixel/dp/B01ER2SKFS?th=1), [Longer cable](https://www.amazon.es/AZDelivery-Repuesto-Raspberry-30cm-Flexkabel/dp/B01NAXKTDP/ref=sr_1_9?__mk_es_ES=%C3%85M%C3%85%C5%BD%C3%95%C3%91&crid=I1IK0FQVQCCU&dib=eyJ2IjoiMSJ9.2UYb-3a8M00iHZZiHT0xjp8vfzq-3BSmJSLxdtcCMV6WMj8g5T8T_j5DKX8cESxqnVN01YpV3nX28IuhewGTOsmJ4yF5st20TxU7kHNHftZE_aygB5vT-001wEvUfx70V0H0DZljw0YfC4R2wpjsTR_89pAA95C4F8LhJiGbbUGTEjBgmjnsRIFs6FYatZa9KVusNyv2cKxGZlav36gdoAkMXQUvX578c6frxSnH5DROCeK6bKSqrczA7R8OBVWC995fK1AxHbJLHZJEDQGXMVhUkHd2liBV0nq48mnyE6Q.nHty4TxSpldkH8FZAia_rx7sX6c2uIBpPRUEqwq5NiY&dib_tag=se&keywords=raspberry%2Bpi%2Bcamera%2Bcable&qid=1716878948&sprefix=raspberry%2Bpi%2Bcamera%2Bcable%2Caps%2C76&sr=8-9&th=1)  | A link for a longer cable (30 cm) is included, just in case the one included with the camera is too short. |
+| 14 | <img src="docs/parts/battery_case.jpg" width="400"> | Battery Case | [Amazon](https://www.amazon.es/GTIWUNG-Soporte-Bater%C3%ADa-Almacenamiento-Pl%C3%A1stico/dp/B08CY5JKG4/ref=sr_1_5?__mk_es_ES=%C3%85M%C3%85%C5%BD%C3%95%C3%91&crid=14DBV6GMV9YIP&dib=eyJ2IjoiMSJ9.AiAmesc8h9MLdB6hmFQT4tzk_lWRWqH1soWP-mWBVQlusnlIziwGRyxc186s679Nd6KCvuJp5GEkinpVWIgSnQY_Y1CZaS0YD-KcJp73pDv4SKvSLKpKYQwfbtTV32_wsMqZrpZWJ_pJYOgDwif19DcMCtdmk5Xf3m4SrukOng3C-7gHiznzr0tLgOyv2EJdech-W6m0tJtl10II1eTnq1gz89W4GK3PW1Nb-Mc8fwr17el3KvvrkYBEvDrnhfdfdG-wwy0EH7xOAmrrDYiOSOlqEXP38Sj7ZYg6atB_axk.ZGQqYl_z8bP5Xg1xgjbRm7xW1ty1oA0oaW4B70268L0&dib_tag=se&keywords=18650%2Bbattery%2Bcase%2B3&qid=1771027178&sprefix=18650%2Bbattery%2Bcase%2B3%2Caps%2C423&sr=8-5&th=1) | Link is for a 6 pack cases but only one is needed. |
+| 15 | <img src="docs/parts/batteries.jpg" width="400"> | Batteries | [Amazon](https://www.amazon.es/18650-Recargable-Unidades-Descarga-Soldadura/dp/B0FP6536TP/ref=sr_1_15?__mk_es_ES=%C3%85M%C3%85%C5%BD%C3%95%C3%91&crid=M4U5RCR55YN1&dib=eyJ2IjoiMSJ9.jFIzKfW_3oqvbUs3OnPuQilyGIEcqtutqxTkGORK6lpAovDhnXWTm5Yix_F5ydJWaX86sSlzT8BBfQOsQGgPMVOnfXTSl1C-t_v1OZgr25FyyN9yqrViLuXbwEJZKsnqP5MaFVp-PpBaUSxASMbSuXH11COgilp8xs0pKzblla_0Wul7YktN9H0kfAMqlVTxZ8A4KStBmtkZIwBf8BA9P0fruKy2a1xlIDb1VUJ9Av5Cy6YgfbI71n0WpSdn6UZDIObHhvPXmS51t3HrWSKplddyTB0cEXzQuxxBJ6MU3-I.GinFCd0nw6TBRYZFrZsIWg0D3qy2khbYxTYAeOUuHyM&dib_tag=se&keywords=18650+batteries&qid=1771026847&sprefix=18650+batter%2Caps%2C442&sr=8-15) | Any 18650 batteries should work |
+| 16 | <img src="docs/parts/batteries_charger.jpg" width="400"> | Batteries charger | [Amazon](https://www.amazon.es/REACELL-Cargador-Inteligente-R%C3%A1pido-Recargable/dp/B0BNPCMNGZ/ref=sr_1_9?__mk_es_ES=%C3%85M%C3%85%C5%BD%C3%95%C3%91&crid=1145KJVG7QLLJ&dib=eyJ2IjoiMSJ9.AiAmesc8h9MLdB6hmFQT4tzk_lWRWqH1soWP-mWBVQlfWpxCQL2S-wweBItVcUZNpDFi-tDugEBzD4GyGI7cqxP91okI-rxfZCR1_v0BkR34SKvSLKpKYQwfbtTV32_wsMqZrpZWJ_pJYOgDwif19HJw9zLJGvUjCXpIuQXR2CFjl6RAixXLmmiybQAyPT2Fwxrf-vCF-psNvELBs_YVwprGp2PQZKVZvXfMSN9ceXv3GIu5kk3PzPMlTNaRtTPo8JWly-woqa3o7QXVK9kTj-lqEXP38Sj7ZYg6atB_axk.vKZ5XsA5t5sjahvQsLEJ1xbEZofTXhnjn66-dLbn0Mc&dib_tag=se&keywords=18650+battery+case+3&qid=1771026748&sprefix=18650+baterry+case+%2Caps%2C431&sr=8-9) | You can buy any 18650 battery charger e.g one for more than 2 batteries. |
+| 17 | <img src="docs/parts/dc_dc_converter.jpg" width="400"> | DC - DC converter | [Amazon](https://www.amazon.com/-/es/Adaptador-corriente-compatible-Raspberry-autom%C3%B3vil/dp/B09DGDQ48H/ref=sr_1_3?__mk_es_US=%C3%85M%C3%85%C5%BD%C3%95%C3%91&crid=2F9EDCW5A81YU&dib=eyJ2IjoiMSJ9.Dzh0FWbiiGTjQ8TuE9-5d7ve2ZNtAFn5kYrHT9HeK1R9n7cUSDWuYMXdJGyD9HcAv7Rb7tKCXZDTP4B5j9VSO4x_Hyg4oUOYsWDstc6WSS-w2dQh1dhSTEQ3ZdY0jJFBkADqXp2iTqFtGAbKFiR7F-dLwEIRR2y948q8oxcJO904XB91QB70CwJyA-8p1mZeictRqIEbb4m_5mZrXF4U8DJYquii8kKvEweyAN7Gd2s.oWCZlWJZVtrTbw4LU2zVIqdkDA6VStudh_zDdw_iwjs&dib_tag=se&keywords=dc%2Bdc%2Bstep%2Bdown%2Busb%2Bc&qid=1771024289&sprefix=dc%2Bdc%2Bstep%2Bdown%2Busb%2Bc%2Caps%2C194&sr=8-3&th=1) | You can use any stepdown DC-DC regulator that supports and input of 12V and give 5V output at at least 3A |
+| 18 | <img src="docs/parts/kill_switch.jpg" width="400"> | Kill-Switch | [Amazon](https://www.amazon.com/interruptor-basculante-encendido-interruptores-cuadrados/dp/B0CS96LX3V/ref=sr_1_33_sspa?__mk_es_US=%C3%85M%C3%85%C5%BD%C3%95%C3%91&crid=BKWXR2ZJGOJN&dib=eyJ2IjoiMSJ9.H2gIXvIBQb9Rm35su7Md9zwyr8Gptf1vTzMs4pM6pITGjHj071QN20LucGBJIEps.wS84pF1tUpmJZATTu-NYupgOL2yhl0xAL4PPmUfxyWI&dib_tag=se&keywords=interruptor%2B12V%2Bcon%2Bluz&qid=1771040005&sprefix=interruptor%2B12v%2Bcon%2Blu%2Caps%2C256&sr=8-33-spons&xpid=oohU7DE__5G1B&sp_csd=d2lkZ2V0TmFtZT1zcF9hdGZfbmV4dA&th=1) | Mounting hole is 13 x 20 mm |
+| 19 | <img src="docs/parts/caster_wheel.jpg" width="400"> | Caster wheel | [Amazon](https://www.amazon.es/Unidades-Peque%C3%B1as-Dispositivo-Transferencia-Transporte/dp/B098XHYW7F/ref=asc_df_B098XHYW7F/?tag=googshopes-21&linkCode=df0&hvadid=529604577974&hvpos=&hvnetw=g&hvrand=15132275207682237467&hvpone=&hvptwo=&hvqmt=&hvdev=c&hvdvcmdl=&hvlocint=&hvlocphy=9181150&hvtargid=pla-1396749454795&psc=1&mcid=b1df85a65d163e89b507de60e73f9e65) | - |
+| 20 | SD Card | 64 GB SD Card | [Apokin](https://www.apokin.es/tarjeta-microsd-philips-64gb-class10.html), [Amazon](https://www.amazon.es/Kingston-Tarjeta-SDCS2-64GB-Adaptador/dp/B07YGZQ4H8/ref=sr_1_7?dib=eyJ2IjoiMSJ9.zE4PI6DCNK3d78rtl5ga1NQXGwJT1jC2iqi3mXNzbdJ4BosAUPCn9gc13Gc7pdHDx-7wTy4CDj0zIlgDpu9qXH-6GLgI--pJbfi3OvTBPhwwH-tfi1OzM9xqcAOJG6pJuTtkknsyFk6Ma2EHJ4UdheaziDC_KKaWNKgsf_DFbcA-ZxQSXlTtQqwHvCzgi8hq4vKGiEIY-LSZS_sXE9IUGroo0Isl59Po2IXhTBG5IHnnsVR_7lo0dVBVFYl-5GY2CvJbrixULuPl90TbFTTP6DoIeDcpFdDTcbvSK3Lecss.WXBgIZllFgQxx13Szl3q6WIlTOliwrN8V42J1SzNJ8o&dib_tag=se&qid=1714552555&refinements=p_n_feature_browse-bin%3A948155031&s=computers&sr=1-7) | The SD Card is used to host the OS for the Raspberry Pi |
+| 21 | <img src="docs/parts/screws.jpg" width="400"> | screws kit | [Amazon](https://www.amazon.es/tornillos-avellanada-tuercas-surtido-roscados/dp/B0DQCSK3QR/ref=sr_1_5_sspa?__mk_es_ES=%C3%85M%C3%85%C5%BD%C3%95%C3%91&crid=AFF5F7FYBDUB&dib=eyJ2IjoiMSJ9.ZUD2S05GEuuoyW7sRYNpgDhWHJaADc8wpON9Sg2wys0v9XqOfz8oKGDaqaZmUBlSabjBiFTIzkPlEf7ON5uiBZQ6OB1aZ0UGrGfFlrLE_mLmdQdLaSQVmEVvBE995BLlvjqut8I6yvXme12RA2VJzG13WLi1qOVixQ4myjtnnA3B9wk505ZL4ZExdsJFdvVqtQLxRzIgXXnL9U53sOX0kBuBVFWmZH6vDgydNCoBzj-wa6JdoQE-axAzkKKTW0GYjZ0qi7ey6OC5UbLatuOEDGTK53V8xWL9xX1dhzlG4R4.8WkDmd8CW8NBbORnmVYv2NaSBqNEOT0Lb3NoxMatrQk&dib_tag=se&keywords=M3%2Bscrews%2Bkit&qid=1771027282&sprefix=m%2Bscrews%2Bkit%2Caps%2C325&sr=8-5-spons&aref=kiRFD1FbHJ&sp_csd=d2lkZ2V0TmFtZT1zcF9hdGY&th=1) | You don't need all the screws but here you can get all the screws that you need in the [screw-table](#screw-table)|
+| 22 | <img src="docs/parts/zip_ties.jpeg" width="400" > | zip ties | [Amazon](https://www.amazon.com/ANOSON-tama%C3%B1os-pulgadas-resistentes-ultravioletas/dp/B0C2Z4L3S6/ref=sr_1_1_sspa?crid=2ZYM3RCU9OJ6E&dib=eyJ2IjoiMSJ9.yZ0eRA1tzbb2B37cITr4PLcStxxj1qdg5A10dy_E0ezu8RIc4Fsujpp2th3NXioZhTWgEQY-t4G5stldZ3mBP8nybzClHFN8dAmpdJGnX-DcVRUU3QcjpUohrfpgF7DLDsZSWdQxwK6C0eVrN31-BFKqK8takJlzA2qCquWuRI0QuBOm8RH4aCXwCk4RaKm_HFv91p-TSKEUWS9vCXwHJ9Q_w2RV0SOWn1Pc_ywMLXg.jU38936ZP5XD-iN9xdjLrik2UqqlSPLezCuR95I5Acg&dib_tag=se&keywords=zip%2Bties&qid=1771040286&sprefix=zip%2Caps%2C241&sr=8-1-spons&sp_csd=d2lkZ2V0TmFtZT1zcF9hdGY&th=1) | Link is a good option, but your only going to use 4 to 6 |
 
-When you gather all the parts, you should have the following (NOTE: the printed encoder wheels are no longer necessary, since the motors are equipped with an embedded encoder):
-
-<img src="docs/parts.jpg">
+### Screw table
+| Size | length | quantity needed |
+|:--:|:------:|:--------------------:|
+| 3m | 6mm | 0 |
+| 3m | 8mm | 2 |
+| 3m | 10mm | 4 |
+| 3m | 12mm | 6 |
+| 3m | 16mm | 5 |
+| 3m | 20mm | 0 |
+| 3m | 25mm | 2 |
+| 3m | 30mm | 4 |
+| 3m | Nuts | 19 |
 
 ### Tooling
 
 | Number | Tool | Links | Comments |
 |:--:|:------:|:--------------------:|:-------------------------------------------------------:|
-| 1 | Set of screwdrivers | [Amazon](https://www.amazon.es/Ainiv-Destornilladores-Precisi%C3%B3n-Destornillador-magnetizador/dp/B09CD1F44B/ref=asc_df_B09CD1XT57/?tag=googshopes-21&linkCode=df0&hvadid=529495276761&hvpos=&hvnetw=g&hvrand=2854754490438163902&hvpone=&hvptwo=&hvqmt=&hvdev=c&hvdvcmdl=&hvlocint=&hvlocphy=9181160&hvtargid=pla-1431590275356&mcid=4f49c0c6c8ca33b390169090ae4ad15b&th=1) | You need flat and star screwdrivers |
-| 2 | Silicon Pistol | [Amazon](https://www.amazon.es/Tilswall-Pegamento-Manualidades-Bricolaje-Reparaciones/dp/B07TD1RD4R/ref=pd_ci_mcx_pspc_dp_d_2_i_1?pd_rd_w=49k0d&content-id=amzn1.sym.f11fe75a-7397-412e-9b90-7e09bf6f5c14&pf_rd_p=f11fe75a-7397-412e-9b90-7e09bf6f5c14&pf_rd_r=MA73TQJTYS2GMC7XW7YC&pd_rd_wg=Z3aRz&pd_rd_r=08e805c6-81b7-4023-8ea1-9b357536cba1&pd_rd_i=B07TD1RD4R&th=1) | This pistol should include 75 silicon bars so you won't need to purchase them separately |
+| 1 | Set of screwdrivers | [Amazon]() | |
 
 ## Assembly Process
 
-  1. Screw the Motor Driver and the idler wheel to the lower chassis.
+  ### 1. Rear wheel 
+  #### Place the base chassis face down, install the  wheel in the base chassis.
+  <img src="docs/assembly/1.base_and_casterwheel.jpg" width="600">
 
-  <img src="docs/caster_wheel_h_bridge.jpg">
+  #### Place the base chassis face up.
 
-  Here you have a front image of how the caster wheel are mounted to the chassis:
+  <img src="docs/assembly/2.base_and_casterwheel_up.jpg" width="600">
 
-  <img src="docs/caster_wheel.jpg">
+  ### 2. Motors and IMU
+  
+  #### Install motors using 4 X 30mm screws and the IMU using a zip tide as shown in the image. 
 
-  2. Screw the 3D printed parts for the Raspi Camera Module:
+  <img src="docs/assembly/3.motors_and_imu.jpg" width="600">
 
-  <img src="docs/printed_camera_parts.jpg">
+  ### 3. Camera 
 
-  3. Add the Arduino Nano to the back of the lower part of the chassis. It should look like this:
+  #### Pass the camera flex through the hole below the IMU base as shown in the image.
 
-  <img src="docs/lower_back.jpg">
+  <img src="docs/assembly/4.camera_and_base_case.jpg" width="600">
 
-  4. Screw the Raspberry Pi and the DC-DC converter to the front of the lower part of the chassis:
+  ##### Place the camera inside the camera case as shown in the image.
 
-  <img src="docs/lower_front.jpg">
+  <img src="docs/assembly/5.camera_in_case.jpg" width="600">
 
-  5. Fix the powerbank to the back of the upper part of the chassis:
+  #### Place the camera case in its position as shown in the image, be careful when you spread the base, to avoid braking it.
 
-  <img src="docs/powerbank.jpg">
+  <img src="docs/assembly/6.camera_in_place.jpg" width="600">
 
-  6. Add the RPLidar to the front of the upper part of the chassis:
+  ### 4. Raspberry 
 
-  <img src="docs/lidar.jpg">
+  #### Rotate the base 180 degrees and place the raspberry as shown in the image. And place the wheels by inserting them into the motors.
 
-  7. Add the IMU (WIP)
+  <img src="docs/assembly/7.raspi_in_place.jpg" width="600">
 
-  <!-- TODO Add photo of the IMU physical implementation-->
+  ### 5. Motor Driver
+  
+  #### Add power and 5V cables to the motor driver. at least 15cm for power cables.  
 
-  8. Perform all the wiring following the [Connections Diagram](#connection-diagram) of both the upper and lower chassis. Note that some of the connections may need to be done by soldering the cables.
+  <img src="docs/assembly/8.motor_driver_connections.jpg" width="600">
 
-  9.  Join both chassis together, and complete the remaining wiring to have your robot ready:
+  #### Finish all the driver connections according to the [connection diagram](#motor-arduino)
+  
+  <img src="docs/assembly/9.motor_driver_in_place.jpg" width="600">
 
-  <img src="docs/andino_complete.jpg">
+  ### 6. Arduino
+
+  #### Place the arduino using the arduino lock base.
+
+  <img src="docs/assembly/10.arduino_in_place.jpg" width="600">
+  
+  #### Make the remaining connection of the [connection diagram](#motor-arduino) and organize the cables as you prefer.
+
+  <img src="docs/assembly/10.1.organize_cables.jpg" width="600">
+
+  ### 7. Lidar Base
+
+  #### Place the lidar in the lidar base as shown in the image.
+  <img src="docs/assembly/11.lidar_base.jpg" width="600">
+
+  #### Fix the lidar driver to the lidar base using zip tides as shown in the image.
+
+  <img src="docs/assembly/12.lidar_in_place.jpg" width="600">
+
+  #### Place the lidar base above the base cassis and use screw it in place. 
+
+  <img src="docs/assembly/12.1.place_lidar_base_in_main_chassis.jpg" width="600">
+
+  ### 8. Battery chassis. 
+  
+  #### Place the 5V step down driver and the killer switch in the battery chassis as shown in the image.
+
+  <img src="docs/assembly/13.battery_case_switch_and_dcdc.jpg" width="600">
+
+  #### Exterior should looks like this
+
+  <img src="docs/assembly/14.battery_case_outside.jpg" width="600">
+  
+  #### Place the battery case inside the battery chassis as shown in the image.
+
+  <img src="docs/assembly/15.battery_case_full.jpg" width="600">
+
+  ### 9. Final Assembly
+
+  #### Make all the power connections in the [power connections schema](#raspberry-power) and place the battery chassis in the base chassis as shown in the image.
+
+  <img src="docs/assembly/16.place_battery_chassis_in_base_chassis.jpg" width="600">
+
+  ### 10. Final Andino closed
+
+  <img src="docs/assembly/17.final_version.jpg" width="600">
 
 <a name="connection-diagram"></a>
 ## Connection Diagram
 
 ### Motor-Arduino
 
-<img src="docs/andino_diagram_arduino.jpg" />
+<img src="docs/layout/andino_diagram_arduino.jpg" />
 
 Some frequent errors:
  - If one of the motors rotates in the opposite direction (think about the orientation of the motors in the chassis) probably the output(+ and -) of the L298N's output should be toggled.
@@ -85,11 +157,14 @@ Some frequent errors:
 
 ### Raspberry-Power
 
-<img src="docs/andino_diagram_raspberry.jpg" />
 
-*NOTE: depending on the power bank maximum output current, the motors may need to be powered with a voltage value lower than 9V. While a higher voltage value (up to 9V) leads to smoother operation (better motor speed control), it also increases their open-loop speed, which is noticeable particularly during motion start and varies according to the power bank quality (output current capabilities). Therefore, adjusting the output voltage to lower values (around 7V) may be required so as to make the motors work as expected.
+<img src="docs/layout/full_power_layout.png" />
 
-**NOTE: Ensure the ribbon cable is properly connected with the blue or silver side facing the USB ports.
+> [!NOTE]
+> Ground cable to the switch is only necessary if it has a led indicator.
+
+> [!NOTE]
+> For the camera ensure the ribbon cable is properly connected with the blue or silver side facing the USB ports.
 
 ## Microcontroller Configuration
 
