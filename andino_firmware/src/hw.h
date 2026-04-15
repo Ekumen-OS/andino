@@ -37,28 +37,28 @@ struct Hw {
   /// @brief Left encoder channel A pin.
   /// @note These pins are chosen for a typical ESP32 DevKit; adjust to match
   /// your wiring.
-  static constexpr int kLeftEncoderChannelAGpioPin{34};
+  static constexpr int kLeftEncoderChannelAGpioPin{33};
   /// @brief Left encoder channel B pin.
-  static constexpr int kLeftEncoderChannelBGpioPin{35};
+  static constexpr int kLeftEncoderChannelBGpioPin{32};
 
   /// @brief Right encoder channel A pin.
-  static constexpr int kRightEncoderChannelAGpioPin{32};
+  static constexpr int kRightEncoderChannelAGpioPin{34};
   /// @brief Right encoder channel B pin.
-  static constexpr int kRightEncoderChannelBGpioPin{33};
+  static constexpr int kRightEncoderChannelBGpioPin{35};
 
-  /// @brief Left motor driver backward pin (L298N IN1).
-  static constexpr int kLeftMotorBackwardGpioPin{5};
-  /// @brief Left motor driver forward pin (L298N IN2).
-  static constexpr int kLeftMotorForwardGpioPin{18};
-  /// @brief Left motor driver enable pin (L298N ENA).
-  static constexpr int kLeftMotorEnableGpioPin{23};
+  /// @brief Left motor driver backward pin (L298N IN3).
+  static constexpr int kLeftMotorBackwardGpioPin{27};
+  /// @brief Left motor driver forward pin (L298N IN4).
+  static constexpr int kLeftMotorForwardGpioPin{26};
+  /// @brief Left motor driver enable pin (L298N ENB).
+  static constexpr int kLeftMotorEnableGpioPin{25};
 
-  /// @brief Right motor driver backward pin (L298N IN3).
-  static constexpr int kRightMotorBackwardGpioPin{25};
-  /// @brief Right motor driver forward pin (L298N IN4).
-  static constexpr int kRightMotorForwardGpioPin{26};
-  /// @brief Right motor driver enable pin (L298N ENB).
-  static constexpr int kRightMotorEnableGpioPin{27};
+  /// @brief Right motor driver backward pin (L298N IN1).
+  static constexpr int kRightMotorBackwardGpioPin{12};
+  /// @brief Right motor driver forward pin (L298N IN2).
+  static constexpr int kRightMotorForwardGpioPin{14};
+  /// @brief Right motor driver enable pin (L298N ENA).
+  static constexpr int kRightMotorEnableGpioPin{13};
 
   /// @brief IMU sensor I2C SCL pin (default ESP32 SCL).
   static constexpr int kImuI2cSclPin{22};
