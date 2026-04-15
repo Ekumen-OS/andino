@@ -75,12 +75,18 @@
 #include "digital_out_arduino.h"
 #include "encoder.h"
 #include "hw.h"
-#include "interrupt_in_arduino.h"
 #include "motor.h"
 #include "pid.h"
-#include "pwm_out_arduino.h"
 #include "serial_stream_arduino.h"
 #include "shell.h"
+
+#if defined(ARDUINO_ARCH_ESP32)
+#include "interrupt_in_esp32.h"
+#include "pwm_out_esp32_mcpwm.h"
+#else
+#include "interrupt_in_arduino.h"
+#include "pwm_out_arduino.h"
+#endif
 
 namespace andino {
 
@@ -89,24 +95,48 @@ SerialStreamArduino App::serial_stream_;
 Shell App::shell_;
 
 DigitalOutArduino App::left_motor_enable_digital_out_(Hw::kLeftMotorEnableGpioPin);
+#if defined(ARDUINO_ARCH_ESP32)
+PwmOutEsp32Mcpwm App::left_motor_forward_pwm_out_(Hw::kLeftMotorForwardGpioPin, MCPWM_UNIT_0,
+                                                  MCPWM0A);
+PwmOutEsp32Mcpwm App::left_motor_backward_pwm_out_(Hw::kLeftMotorBackwardGpioPin, MCPWM_UNIT_0,
+                                                   MCPWM0B);
+#else
 PwmOutArduino App::left_motor_forward_pwm_out_(Hw::kLeftMotorForwardGpioPin);
 PwmOutArduino App::left_motor_backward_pwm_out_(Hw::kLeftMotorBackwardGpioPin);
+#endif
 Motor App::left_motor_(&left_motor_enable_digital_out_, &left_motor_forward_pwm_out_,
                        &left_motor_backward_pwm_out_);
 
 DigitalOutArduino App::right_motor_enable_digital_out_(Hw::kRightMotorEnableGpioPin);
+#if defined(ARDUINO_ARCH_ESP32)
+PwmOutEsp32Mcpwm App::right_motor_forward_pwm_out_(Hw::kRightMotorForwardGpioPin, MCPWM_UNIT_1,
+                                                   MCPWM1A);
+PwmOutEsp32Mcpwm App::right_motor_backward_pwm_out_(Hw::kRightMotorBackwardGpioPin, MCPWM_UNIT_1,
+                                                    MCPWM1B);
+#else
 PwmOutArduino App::right_motor_forward_pwm_out_(Hw::kRightMotorForwardGpioPin);
 PwmOutArduino App::right_motor_backward_pwm_out_(Hw::kRightMotorBackwardGpioPin);
+#endif
 Motor App::right_motor_(&right_motor_enable_digital_out_, &right_motor_forward_pwm_out_,
                         &right_motor_backward_pwm_out_);
 
+#if defined(ARDUINO_ARCH_ESP32)
+InterruptInEsp32 App::left_encoder_channel_a_interrupt_in_(Hw::kLeftEncoderChannelAGpioPin);
+InterruptInEsp32 App::left_encoder_channel_b_interrupt_in_(Hw::kLeftEncoderChannelBGpioPin);
+#else
 InterruptInArduino App::left_encoder_channel_a_interrupt_in_(Hw::kLeftEncoderChannelAGpioPin);
 InterruptInArduino App::left_encoder_channel_b_interrupt_in_(Hw::kLeftEncoderChannelBGpioPin);
+#endif
 Encoder App::left_encoder_(&left_encoder_channel_a_interrupt_in_,
                            &left_encoder_channel_b_interrupt_in_);
 
+#if defined(ARDUINO_ARCH_ESP32)
+InterruptInEsp32 App::right_encoder_channel_a_interrupt_in_(Hw::kRightEncoderChannelAGpioPin);
+InterruptInEsp32 App::right_encoder_channel_b_interrupt_in_(Hw::kRightEncoderChannelBGpioPin);
+#else
 InterruptInArduino App::right_encoder_channel_a_interrupt_in_(Hw::kRightEncoderChannelAGpioPin);
 InterruptInArduino App::right_encoder_channel_b_interrupt_in_(Hw::kRightEncoderChannelBGpioPin);
+#endif
 Encoder App::right_encoder_(&right_encoder_channel_a_interrupt_in_,
                             &right_encoder_channel_b_interrupt_in_);
 
@@ -281,6 +311,12 @@ void App::cmd_set_motors_pwm_cb(int argc, char** argv) {
 
   // Reset the auto stop timer.
   last_set_motors_speed_cmd_ = millis();
+
+  Serial.println("Setting motors PWM: ");
+  Serial.print("Right: ");
+  Serial.println(right_motor_pwm);
+  Serial.print("Left: ");
+  Serial.println(left_motor_pwm);
 
   left_motor_.set_speed(left_motor_pwm);
   right_motor_.set_speed(right_motor_pwm);

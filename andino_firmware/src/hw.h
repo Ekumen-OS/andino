@@ -33,6 +33,38 @@ namespace andino {
 
 /// @brief Hardware configuration.
 struct Hw {
+#if defined(ARDUINO_ARCH_ESP32)
+  /// @brief Left encoder channel A pin.
+  /// @note These pins are chosen for a typical ESP32 DevKit; adjust to match
+  /// your wiring.
+  static constexpr int kLeftEncoderChannelAGpioPin{34};
+  /// @brief Left encoder channel B pin.
+  static constexpr int kLeftEncoderChannelBGpioPin{35};
+
+  /// @brief Right encoder channel A pin.
+  static constexpr int kRightEncoderChannelAGpioPin{32};
+  /// @brief Right encoder channel B pin.
+  static constexpr int kRightEncoderChannelBGpioPin{33};
+
+  /// @brief Left motor driver backward pin (L298N IN1).
+  static constexpr int kLeftMotorBackwardGpioPin{5};
+  /// @brief Left motor driver forward pin (L298N IN2).
+  static constexpr int kLeftMotorForwardGpioPin{18};
+  /// @brief Left motor driver enable pin (L298N ENA).
+  static constexpr int kLeftMotorEnableGpioPin{23};
+
+  /// @brief Right motor driver backward pin (L298N IN3).
+  static constexpr int kRightMotorBackwardGpioPin{25};
+  /// @brief Right motor driver forward pin (L298N IN4).
+  static constexpr int kRightMotorForwardGpioPin{26};
+  /// @brief Right motor driver enable pin (L298N ENB).
+  static constexpr int kRightMotorEnableGpioPin{27};
+
+  /// @brief IMU sensor I2C SCL pin (default ESP32 SCL).
+  static constexpr int kImuI2cSclPin{22};
+  /// @brief IMU sensor I2C SDA pin (default ESP32 SDA).
+  static constexpr int kImuI2cSdaPin{21};
+#else
   /// @brief Left encoder channel A pin. Connected to PD2 (digital pin 2).
   static constexpr int kLeftEncoderChannelAGpioPin{2};
   /// @brief Left encoder channel B pin. Connected to PD3 (digital pin 3).
@@ -65,6 +97,7 @@ struct Hw {
   static constexpr int kImuI2cSclPin{19};
   /// @brief IMU sensor I2C SDA pin. Connected to PC4 (digital pin 18, analog pin A4).
   static constexpr int kImuI2cSdaPin{18};
+#endif
 };
 
 }  // namespace andino

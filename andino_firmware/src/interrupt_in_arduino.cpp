@@ -31,6 +31,10 @@
 
 #include <Arduino.h>
 
+// This implementation is AVR-specific and must not be compiled on other
+// architectures (e.g. ESP32), where a different interrupt backend is used.
+#if !defined(ARDUINO_ARCH_ESP32)
+
 /// Holds the attached callbacks.
 static andino::InterruptIn::InterruptCallback g_callbacks[3] = {nullptr};
 
@@ -86,3 +90,5 @@ void InterruptInArduino::attach(InterruptCallback callback) const {
 }
 
 }  // namespace andino
+
+#endif  // !ARDUINO_ARCH_ESP32

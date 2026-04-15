@@ -33,12 +33,18 @@
 
 #include "digital_out_arduino.h"
 #include "encoder.h"
-#include "interrupt_in_arduino.h"
 #include "motor.h"
 #include "pid.h"
-#include "pwm_out_arduino.h"
 #include "serial_stream_arduino.h"
 #include "shell.h"
+
+#if defined(ARDUINO_ARCH_ESP32)
+#include "interrupt_in_esp32.h"
+#include "pwm_out_esp32_mcpwm.h"
+#else
+#include "interrupt_in_arduino.h"
+#include "pwm_out_arduino.h"
+#endif
 
 namespace andino {
 
@@ -99,24 +105,44 @@ class App {
 
   /// Left wheel motor.
   static DigitalOutArduino left_motor_enable_digital_out_;
+#if defined(ARDUINO_ARCH_ESP32)
+  static PwmOutEsp32Mcpwm left_motor_forward_pwm_out_;
+  static PwmOutEsp32Mcpwm left_motor_backward_pwm_out_;
+#else
   static PwmOutArduino left_motor_forward_pwm_out_;
   static PwmOutArduino left_motor_backward_pwm_out_;
+#endif
   static Motor left_motor_;
 
   /// Right wheel motor.
   static DigitalOutArduino right_motor_enable_digital_out_;
+#if defined(ARDUINO_ARCH_ESP32)
+  static PwmOutEsp32Mcpwm right_motor_forward_pwm_out_;
+  static PwmOutEsp32Mcpwm right_motor_backward_pwm_out_;
+#else
   static PwmOutArduino right_motor_forward_pwm_out_;
   static PwmOutArduino right_motor_backward_pwm_out_;
+#endif
   static Motor right_motor_;
 
   /// Left wheel encoder.
+#if defined(ARDUINO_ARCH_ESP32)
+  static InterruptInEsp32 left_encoder_channel_a_interrupt_in_;
+  static InterruptInEsp32 left_encoder_channel_b_interrupt_in_;
+#else
   static InterruptInArduino left_encoder_channel_a_interrupt_in_;
   static InterruptInArduino left_encoder_channel_b_interrupt_in_;
+#endif
   static Encoder left_encoder_;
 
   /// Right wheel encoder.
+#if defined(ARDUINO_ARCH_ESP32)
+  static InterruptInEsp32 right_encoder_channel_a_interrupt_in_;
+  static InterruptInEsp32 right_encoder_channel_b_interrupt_in_;
+#else
   static InterruptInArduino right_encoder_channel_a_interrupt_in_;
   static InterruptInArduino right_encoder_channel_b_interrupt_in_;
+#endif
   static Encoder right_encoder_;
 
   /// PID controllers (one per wheel).
