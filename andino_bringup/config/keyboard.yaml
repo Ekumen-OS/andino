@@ -1,0 +1,4 @@
+teleop_twist_keyboard_node:
+  ros__parameters:
+    speed: 0.3
+    turn: 4.0
