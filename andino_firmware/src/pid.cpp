@@ -105,17 +105,34 @@ void Pid::compute(int encoder_count, int& computed_output) {
   long output = (kp_ * error - kd_ * (input - last_input_) + integral_term_) / ko_;
   output += last_output_;
 
-  // Accumulate integral term as long as output doesn't saturate.
+  // Saturate output to configured limits. Also avoid integral wind-up when saturated.
+  bool saturated = false;
+
   if (output >= output_max_) {
     output = output_max_;
+    saturated = true;
   } else if (output <= output_min_) {
     output = output_min_;
-  } else {
+    saturated = true;
+  }
+
+  // Accumulate integral term only when not saturated.
+  if (!saturated) {
     integral_term_ += ki_ * error;
   }
 
-  // Set the computed output accordingly.
+  // Start from the saturated output, then apply a directional clamp only
+  // to the value returned to the caller. Internal state (last_output_)
+  // keeps the full saturated output.
   computed_output = output;
+
+  // If the setpoint is positive, do not command negative output (reverse).
+  // If the setpoint is negative, do not command positive output (forward).
+  if (setpoint_ > 0 && computed_output < 0) {
+    computed_output = 0;
+  } else if (setpoint_ < 0 && computed_output > 0) {
+    computed_output = 0;
+  }
 
   // Store obtained values.
   last_encoder_count_ = encoder_count;
@@ -129,7 +146,12 @@ void Pid::set_tunings(int kp, int kd, int ki, int ko) {
   kp_ = kp;
   kd_ = kd;
   ki_ = ki;
-  ko_ = ko;
+  // Avoid invalid configuration that would cause divide-by-zero in compute().
+  if (ko == 0) {
+    ko_ = 1;
+  } else {
+    ko_ = ko;
+  }
 }
 
 }  // namespace andino
