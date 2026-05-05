@@ -1,5 +1,9 @@
 *.build
+*build
 *.install
+*install
+*.log
+*log
 
 # PlatformIO files
 .pio
@@ -9,3 +13,4 @@
 
 # PyCache
 *.pyc
+
