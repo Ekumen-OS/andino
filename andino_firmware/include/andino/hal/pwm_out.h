@@ -35,7 +35,8 @@ namespace andino {
 class PwmOut {
  public:
   /// @brief Destructs the PWM output.
-  virtual ~PwmOut() {}
+  virtual ~PwmOut() {
+  }
 
   /// @brief Initializes the PWM output.
   virtual void begin() const = 0;

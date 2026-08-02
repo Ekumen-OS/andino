@@ -39,7 +39,8 @@ namespace andino {
 class SerialStreamArduino : public SerialStream {
  public:
   /// @brief Constructs a SerialStreamArduino.
-  explicit SerialStreamArduino() : SerialStream() {}
+  explicit SerialStreamArduino() : SerialStream() {
+  }
 
   void begin(unsigned long baud) const override;
 

@@ -31,16 +31,16 @@
 
 #include <Adafruit_BNO055.h>
 
-#include "andino/hal/serial_stream.h"
-#include "andino/hal/clock.h"
-#include "andino/hal/digital_out.h"
-#include "andino/hal/pwm_out.h"
-#include "andino/hal/interrupt_in.h"
-#include "andino/drivers/motor.h"
-#include "andino/drivers/encoder.h"
 #include "andino/app/constants.h"
 #include "andino/app/pid.h"
 #include "andino/app/shell.h"
+#include "andino/drivers/encoder.h"
+#include "andino/drivers/motor.h"
+#include "andino/hal/clock.h"
+#include "andino/hal/digital_out.h"
+#include "andino/hal/interrupt_in.h"
+#include "andino/hal/pwm_out.h"
+#include "andino/hal/serial_stream.h"
 
 namespace andino {
 
@@ -64,11 +64,10 @@ class App {
    * @param right_encoder_b The right encoder channel B interrupt input.
    * @param bno055_imu The Adafruit BNO055 IMU sensor.
    */
-  App(const Clock& clock, SerialStream& serial_stream,
-      DigitalOut& left_motor_enable, PwmOut& left_motor_forward, PwmOut& left_motor_backward,
-      DigitalOut& right_motor_enable, PwmOut& right_motor_forward, PwmOut& right_motor_backward,
-      InterruptIn& left_encoder_a, InterruptIn& left_encoder_b,
-      InterruptIn& right_encoder_a, InterruptIn& right_encoder_b,
+  App(const Clock& clock, SerialStream& serial_stream, DigitalOut& left_motor_enable,
+      PwmOut& left_motor_forward, PwmOut& left_motor_backward, DigitalOut& right_motor_enable,
+      PwmOut& right_motor_forward, PwmOut& right_motor_backward, InterruptIn& left_encoder_a,
+      InterruptIn& left_encoder_b, InterruptIn& right_encoder_a, InterruptIn& right_encoder_b,
       Adafruit_BNO055& bno055_imu)
       : clock_(clock),
         serial_stream_(serial_stream),
@@ -78,9 +77,10 @@ class App {
         right_encoder_(&right_encoder_a, &right_encoder_b),
         bno055_imu_(bno055_imu),
         left_pid_controller_(Constants::kPidKp, Constants::kPidKd, Constants::kPidKi,
-                              Constants::kPidKo, -Constants::kPwmMax, Constants::kPwmMax),
+                             Constants::kPidKo, -Constants::kPwmMax, Constants::kPwmMax),
         right_pid_controller_(Constants::kPidKp, Constants::kPidKd, Constants::kPidKi,
-                               Constants::kPidKo, -Constants::kPwmMax, Constants::kPwmMax) {}
+                              Constants::kPidKo, -Constants::kPwmMax, Constants::kPwmMax) {
+  }
 
   // Delete copy and move operations to enforce unique reference ownership.
   App(const App&) = delete;
