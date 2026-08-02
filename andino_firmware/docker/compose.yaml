@@ -1,0 +1,33 @@
+name: andino-firmware
+
+services:
+  dev:
+    build:
+      context: ..
+      dockerfile: docker/Dockerfile
+    image: andino-firmware-dev:latest
+    container_name: andino_firmware_dev
+    # Run container as the host's UID and GID to ensure proper ownership of any created files.
+    user: "${UID:-1000}:${GID:-1000}"
+    volumes:
+      # Mount the andino_firmware directory into the workspace directory.
+      - ..:/workspace
+      # Persist the PlatformIO package and platform cache under a user-writable path.
+      - pio_cache:/tmp/.platformio
+      # Pass through USB devices and system events for firmware flashing.
+      - /dev:/dev
+    environment:
+      # Direct PlatformIO to use the persistent volume for its core directory.
+      - PLATFORMIO_CORE_DIR=/tmp/.platformio
+    # Run container in privileged mode to enable USB hardware access.
+    privileged: true
+    # Use host network to simplify any networking or debugging if needed.
+    network_mode: host
+    # Keep the container running in the background for interactive use.
+    tty: true
+    stdin_open: true
+    working_dir: /workspace
+
+volumes:
+  pio_cache:
+    name: andino_firmware_pio_cache
