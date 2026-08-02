@@ -29,16 +29,49 @@
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "andino/app/app.h"
 
+#include <Adafruit_BNO055.h>
+#include <Wire.h>
+
+#include "andino/app/hw.h"
+#include "andino/bsp/clock_arduino.h"
+#include "andino/bsp/digital_out_arduino.h"
+#include "andino/bsp/interrupt_in_arduino.h"
+#include "andino/bsp/pwm_out_arduino.h"
+#include "andino/bsp/serial_stream_arduino.h"
+
+// BSP implementations.
+static andino::ClockArduino sys_clock;
+static andino::SerialStreamArduino serial_stream;
+static andino::DigitalOutArduino left_motor_enable(andino::Hw::kLeftMotorEnableGpioPin);
+static andino::PwmOutArduino left_motor_forward(andino::Hw::kLeftMotorForwardGpioPin);
+static andino::PwmOutArduino left_motor_backward(andino::Hw::kLeftMotorBackwardGpioPin);
+static andino::DigitalOutArduino right_motor_enable(andino::Hw::kRightMotorEnableGpioPin);
+static andino::PwmOutArduino right_motor_forward(andino::Hw::kRightMotorForwardGpioPin);
+static andino::PwmOutArduino right_motor_backward(andino::Hw::kRightMotorBackwardGpioPin);
+static andino::InterruptInArduino left_encoder_a(andino::Hw::kLeftEncoderChannelAGpioPin);
+static andino::InterruptInArduino left_encoder_b(andino::Hw::kLeftEncoderChannelBGpioPin);
+static andino::InterruptInArduino right_encoder_a(andino::Hw::kRightEncoderChannelAGpioPin);
+static andino::InterruptInArduino right_encoder_b(andino::Hw::kRightEncoderChannelBGpioPin);
+static Adafruit_BNO055 bno055_imu(55, BNO055_ADDRESS_A, &Wire);
+
+// Main application.
+static andino::App app(sys_clock, serial_stream,
+                       left_motor_enable, left_motor_forward, left_motor_backward,
+                       right_motor_enable, right_motor_forward, right_motor_backward,
+                       left_encoder_a, left_encoder_b,
+                       right_encoder_a, right_encoder_b,
+                       bno055_imu);
+
 /// @brief Application entry point.
 ///
 /// @return Execution final status (never reached).
 int main(void) {
   // Application configuration.
-  andino::App::setup();
+  app.setup();
 
   // Application main run loop.
   while (1) {
-    andino::App::loop();
+    app.loop();
   }
 
   return 0;

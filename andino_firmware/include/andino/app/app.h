@@ -31,37 +31,70 @@
 
 #include <Adafruit_BNO055.h>
 
-#include "andino/bsp/digital_out_arduino.h"
-#include "andino/drivers/encoder.h"
-#include "andino/bsp/interrupt_in_arduino.h"
+#include "andino/hal/serial_stream.h"
+#include "andino/hal/clock.h"
+#include "andino/hal/digital_out.h"
+#include "andino/hal/pwm_out.h"
+#include "andino/hal/interrupt_in.h"
 #include "andino/drivers/motor.h"
+#include "andino/drivers/encoder.h"
+#include "andino/app/constants.h"
 #include "andino/app/pid.h"
-#include "andino/bsp/pwm_out_arduino.h"
-#include "andino/bsp/serial_stream_arduino.h"
-#include "andino/bsp/clock_arduino.h"
 #include "andino/app/shell.h"
 
 namespace andino {
 
-/// @brief This class wraps the MCU main application.
+/// @brief Controller class encapsulating all Andino coordination logic.
 class App {
  public:
-  /// This class only contains static members.
-  App() = delete;
+  /**
+   * @brief Constructs a new App instance.
+   *
+   * @param clock The clock service.
+   * @param serial_stream The serial communication stream.
+   * @param left_motor_enable The left motor enable digital output.
+   * @param left_motor_forward The left motor forward PWM output.
+   * @param left_motor_backward The left motor backward PWM output.
+   * @param right_motor_enable The right motor enable digital output.
+   * @param right_motor_forward The right motor forward PWM output.
+   * @param right_motor_backward The right motor backward PWM output.
+   * @param left_encoder_a The left encoder channel A interrupt input.
+   * @param left_encoder_b The left encoder channel B interrupt input.
+   * @param right_encoder_a The right encoder channel A interrupt input.
+   * @param right_encoder_b The right encoder channel B interrupt input.
+   * @param bno055_imu The Adafruit BNO055 IMU sensor.
+   */
+  App(const Clock& clock, SerialStream& serial_stream,
+      DigitalOut& left_motor_enable, PwmOut& left_motor_forward, PwmOut& left_motor_backward,
+      DigitalOut& right_motor_enable, PwmOut& right_motor_forward, PwmOut& right_motor_backward,
+      InterruptIn& left_encoder_a, InterruptIn& left_encoder_b,
+      InterruptIn& right_encoder_a, InterruptIn& right_encoder_b,
+      Adafruit_BNO055& bno055_imu)
+      : clock_(clock),
+        serial_stream_(serial_stream),
+        left_motor_(&left_motor_enable, &left_motor_forward, &left_motor_backward),
+        right_motor_(&right_motor_enable, &right_motor_forward, &right_motor_backward),
+        left_encoder_(&left_encoder_a, &left_encoder_b),
+        right_encoder_(&right_encoder_a, &right_encoder_b),
+        bno055_imu_(bno055_imu),
+        left_pid_controller_(Constants::kPidKp, Constants::kPidKd, Constants::kPidKi,
+                              Constants::kPidKo, -Constants::kPwmMax, Constants::kPwmMax),
+        right_pid_controller_(Constants::kPidKp, Constants::kPidKd, Constants::kPidKi,
+                               Constants::kPidKo, -Constants::kPwmMax, Constants::kPwmMax) {}
+
+  // Delete copy and move operations to enforce unique reference ownership.
+  App(const App&) = delete;
+  App& operator=(const App&) = delete;
+  App(App&&) = delete;
+  App& operator=(App&&) = delete;
 
   /// @brief Configures and sets the application up. Meant to be called once at startup.
-  static void setup();
+  void setup();
 
-  /// @brief Application main run loop. Meant to be called continously.
-  static void loop();
+  /// @brief Application main run loop. Meant to be called continuously.
+  void loop();
 
  private:
-  /// Computes the PID output and updates the motors speed accordingly.
-  static void adjust_motors_speed();
-
-  /// Stops the motors and disables the PID.
-  static void stop_motors();
-
   /// Callback method for an unknown command (default).
   static void cmd_unknown_cb(void* context, int argc, char** argv);
 
@@ -92,52 +125,45 @@ class App {
   /// Callback method for the `Commands::kReadEncodersAndImu` command.
   static void cmd_read_encoders_and_imu_cb(void* context, int argc, char** argv);
 
-  /// Serial stream.
-  static SerialStreamArduino serial_stream_;
+  /// Computes the PID output and updates the motors speed accordingly.
+  void adjust_motors_speed();
 
-  /// System clock.
-  static ClockArduino clock_;
+  /// Stops the motors and disables the PID.
+  void stop_motors();
 
-  /// Application command shell.
-  static Shell shell_;
+  const Clock& clock_;
+
+  SerialStream& serial_stream_;
 
   /// Left wheel motor.
-  static DigitalOutArduino left_motor_enable_digital_out_;
-  static PwmOutArduino left_motor_forward_pwm_out_;
-  static PwmOutArduino left_motor_backward_pwm_out_;
-  static Motor left_motor_;
+  Motor left_motor_;
 
   /// Right wheel motor.
-  static DigitalOutArduino right_motor_enable_digital_out_;
-  static PwmOutArduino right_motor_forward_pwm_out_;
-  static PwmOutArduino right_motor_backward_pwm_out_;
-  static Motor right_motor_;
+  Motor right_motor_;
 
   /// Left wheel encoder.
-  static InterruptInArduino left_encoder_channel_a_interrupt_in_;
-  static InterruptInArduino left_encoder_channel_b_interrupt_in_;
-  static Encoder left_encoder_;
+  Encoder left_encoder_;
 
   /// Right wheel encoder.
-  static InterruptInArduino right_encoder_channel_a_interrupt_in_;
-  static InterruptInArduino right_encoder_channel_b_interrupt_in_;
-  static Encoder right_encoder_;
+  Encoder right_encoder_;
+
+  Adafruit_BNO055& bno055_imu_;
 
   /// PID controllers (one per wheel).
-  static Pid left_pid_controller_;
-  static Pid right_pid_controller_;
+  Pid left_pid_controller_;
+  Pid right_pid_controller_;
 
-  /// Adafruit BNO055 IMU sensor.
-  static Adafruit_BNO055 bno055_imu_;
+  /// Application command shell.
+  Shell shell_;
 
   /// Tracks the last time the PID computation was made.
-  static unsigned long last_pid_computation_;
+  unsigned long last_pid_computation_{0};
 
   /// Tracks the last time a `Commands::kSetMotorsSpeed` command was received.
-  static unsigned long last_set_motors_speed_cmd_;
+  unsigned long last_set_motors_speed_cmd_{0};
 
   /// Tracks whether there is an IMU sensor connected.
-  static bool is_imu_connected;
+  bool is_imu_connected{false};
 };
 
 }  // namespace andino
