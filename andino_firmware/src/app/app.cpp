@@ -62,7 +62,7 @@
 // CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
 // OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-#include "app.h"
+#include "andino/app/app.h"
 
 #include <Adafruit_BNO055.h>
 #include <Adafruit_Sensor.h>
@@ -70,17 +70,17 @@
 #include <Wire.h>
 #include <utility/imumaths.h>
 
-#include "commands.h"
-#include "constants.h"
+#include "andino/app/commands.h"
+#include "andino/app/constants.h"
 #include "andino/bsp/digital_out_arduino.h"
 #include "andino/drivers/encoder.h"
-#include "hw.h"
+#include "andino/app/hw.h"
 #include "andino/bsp/interrupt_in_arduino.h"
 #include "andino/drivers/motor.h"
-#include "pid.h"
+#include "andino/app/pid.h"
 #include "andino/bsp/pwm_out_arduino.h"
 #include "andino/bsp/serial_stream_arduino.h"
-#include "shell.h"
+#include "andino/app/shell.h"
 
 namespace andino {
 
