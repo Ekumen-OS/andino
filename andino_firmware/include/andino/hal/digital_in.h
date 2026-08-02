@@ -34,11 +34,6 @@ namespace andino {
 /// @brief This class defines an interface for digital inputs.
 class DigitalIn {
  public:
-  /// @brief Constructs a DigitalIn using the specified GPIO pin.
-  ///
-  /// @param gpio_pin GPIO pin.
-  explicit DigitalIn(const int gpio_pin) : gpio_pin_(gpio_pin) {}
-
   /// @brief Destructs the digital input.
   virtual ~DigitalIn() = default;
 
@@ -49,10 +44,6 @@ class DigitalIn {
   ///
   /// @return Digital input value.
   virtual int read() const = 0;
-
- protected:
-  /// GPIO pin.
-  const int gpio_pin_;
 };
 
 }  // namespace andino

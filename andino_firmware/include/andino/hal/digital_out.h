@@ -34,11 +34,6 @@ namespace andino {
 /// @brief This class defines an interface for digital outputs.
 class DigitalOut {
  public:
-  /// @brief Constructs a DigitalOut using the specified GPIO pin.
-  ///
-  /// @param gpio_pin GPIO pin.
-  explicit DigitalOut(const int gpio_pin) : gpio_pin_(gpio_pin) {}
-
   /// @brief Destructs the digital output.
   virtual ~DigitalOut() = default;
 
@@ -49,10 +44,6 @@ class DigitalOut {
   ///
   /// @param value Digital output value.
   virtual void write(int value) const = 0;
-
- protected:
-  /// GPIO pin.
-  const int gpio_pin_;
 };
 
 }  // namespace andino

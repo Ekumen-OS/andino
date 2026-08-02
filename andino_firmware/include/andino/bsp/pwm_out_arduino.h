@@ -39,11 +39,15 @@ class PwmOutArduino : public PwmOut {
   /// @brief Constructs a PwmOutArduino using the specified GPIO pin.
   ///
   /// @param gpio_pin GPIO pin.
-  explicit PwmOutArduino(const int gpio_pin) : PwmOut(gpio_pin) {}
+  explicit PwmOutArduino(const int gpio_pin) : gpio_pin_(gpio_pin) {}
 
   void begin() const override;
 
   void write(int value) const override;
+
+ private:
+  /// GPIO pin.
+  const int gpio_pin_;
 };
 
 }  // namespace andino

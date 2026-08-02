@@ -41,23 +41,23 @@ namespace {
 
 class MockDigitalOut : public andino::DigitalOut {
  public:
-  MockDigitalOut(const int gpio_pin) : andino::DigitalOut(gpio_pin) {}
+  MockDigitalOut() = default;
   MOCK_METHOD(void, begin, (), (const, override));
   MOCK_METHOD(void, write, (int value), (const, override));
 };
 
 class MockPwmOut : public andino::PwmOut {
  public:
-  MockPwmOut(const int gpio_pin) : andino::PwmOut(gpio_pin) {}
+  MockPwmOut() = default;
   MOCK_METHOD(void, begin, (), (const, override));
   MOCK_METHOD(void, write, (int value), (const, override));
 };
 
 class MotorTest : public testing::Test {
  protected:
-  MockDigitalOut enable_digital_out_{0};
-  MockPwmOut forward_pwm_out_{0};
-  MockPwmOut backward_pwm_out_{0};
+  MockDigitalOut enable_digital_out_;
+  MockPwmOut forward_pwm_out_;
+  MockPwmOut backward_pwm_out_;
 };
 
 TEST_F(MotorTest, Initialize) {
