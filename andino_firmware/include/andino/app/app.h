@@ -38,6 +38,7 @@
 #include "andino/app/pid.h"
 #include "andino/bsp/pwm_out_arduino.h"
 #include "andino/bsp/serial_stream_arduino.h"
+#include "andino/bsp/clock_arduino.h"
 #include "andino/app/shell.h"
 
 namespace andino {
@@ -93,6 +94,9 @@ class App {
 
   /// Serial stream.
   static SerialStreamArduino serial_stream_;
+
+  /// System clock.
+  static ClockArduino clock_;
 
   /// Application command shell.
   static Shell shell_;
