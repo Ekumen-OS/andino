@@ -77,22 +77,22 @@ class ShellTest : public testing::Test {
     shell.register_command(kCommand3, cmd_3_cb);
   }
 
-  static void cmd_unknown_cb(int argc, char** argv) {
+  static void cmd_unknown_cb(void*, int argc, char** argv) {
     called_callback_ = 0;
     save_arguments(argc, argv);
   }
 
-  static void cmd_1_cb(int argc, char** argv) {
+  static void cmd_1_cb(void*, int argc, char** argv) {
     called_callback_ = 1;
     save_arguments(argc, argv);
   }
 
-  static void cmd_2_cb(int argc, char** argv) {
+  static void cmd_2_cb(void*, int argc, char** argv) {
     called_callback_ = 2;
     save_arguments(argc, argv);
   }
 
-  static void cmd_3_cb(int argc, char** argv) {
+  static void cmd_3_cb(void*, int argc, char** argv) {
     called_callback_ = 3;
     save_arguments(argc, argv);
   }

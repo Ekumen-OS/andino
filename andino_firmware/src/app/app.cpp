@@ -204,9 +204,9 @@ void App::stop_motors() {
   right_pid_controller_.disable();
 }
 
-void App::cmd_unknown_cb(int, char**) { Serial.println("Unknown command."); }
+void App::cmd_unknown_cb(void*, int, char**) { Serial.println("Unknown command."); }
 
-void App::cmd_read_analog_gpio_cb(int argc, char** argv) {
+void App::cmd_read_analog_gpio_cb(void*, int argc, char** argv) {
   if (argc < 2) {
     return;
   }
@@ -215,7 +215,7 @@ void App::cmd_read_analog_gpio_cb(int argc, char** argv) {
   Serial.println(analogRead(pin));
 }
 
-void App::cmd_read_digital_gpio_cb(int argc, char** argv) {
+void App::cmd_read_digital_gpio_cb(void*, int argc, char** argv) {
   if (argc < 2) {
     return;
   }
@@ -224,13 +224,13 @@ void App::cmd_read_digital_gpio_cb(int argc, char** argv) {
   Serial.println(digitalRead(pin));
 }
 
-void App::cmd_read_encoders_cb(int, char**) {
+void App::cmd_read_encoders_cb(void*, int, char**) {
   Serial.print(left_encoder_.read());
   Serial.print(" ");
   Serial.println(right_encoder_.read());
 }
 
-void App::cmd_reset_encoders_cb(int, char**) {
+void App::cmd_reset_encoders_cb(void*, int, char**) {
   left_encoder_.reset();
   right_encoder_.reset();
   left_pid_controller_.reset(left_encoder_.read());
@@ -238,7 +238,7 @@ void App::cmd_reset_encoders_cb(int, char**) {
   Serial.println("OK");
 }
 
-void App::cmd_set_motors_speed_cb(int argc, char** argv) {
+void App::cmd_set_motors_speed_cb(void*, int argc, char** argv) {
   if (argc < 3) {
     return;
   }
@@ -267,7 +267,7 @@ void App::cmd_set_motors_speed_cb(int argc, char** argv) {
   Serial.println("OK");
 }
 
-void App::cmd_set_motors_pwm_cb(int argc, char** argv) {
+void App::cmd_set_motors_pwm_cb(void*, int argc, char** argv) {
   if (argc < 3) {
     return;
   }
@@ -289,7 +289,7 @@ void App::cmd_set_motors_pwm_cb(int argc, char** argv) {
   Serial.println("OK");
 }
 
-void App::cmd_set_pid_tuning_gains_cb(int argc, char** argv) {
+void App::cmd_set_pid_tuning_gains_cb(void*, int argc, char** argv) {
   // TODO(jballoffet): Refactor to expect command multiple arguments.
   if (argc < 2) {
     return;
@@ -321,9 +321,9 @@ void App::cmd_set_pid_tuning_gains_cb(int argc, char** argv) {
   Serial.println("OK");
 }
 
-void App::cmd_get_is_imu_connected_cb(int, char**) { Serial.println(is_imu_connected); }
+void App::cmd_get_is_imu_connected_cb(void*, int, char**) { Serial.println(is_imu_connected); }
 
-void App::cmd_read_encoders_and_imu_cb(int, char**) {
+void App::cmd_read_encoders_and_imu_cb(void*, int, char**) {
   Serial.print(left_encoder_.read());
   Serial.print(" ");
   Serial.print(right_encoder_.read());

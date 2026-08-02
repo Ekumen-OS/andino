@@ -63,34 +63,34 @@ class App {
   static void stop_motors();
 
   /// Callback method for an unknown command (default).
-  static void cmd_unknown_cb(int argc, char** argv);
+  static void cmd_unknown_cb(void* context, int argc, char** argv);
 
   /// Callback method for the `Commands::kReadAnalogGpio` command.
-  static void cmd_read_analog_gpio_cb(int argc, char** argv);
+  static void cmd_read_analog_gpio_cb(void* context, int argc, char** argv);
 
   /// Callback method for the `Commands::kReadDigitalGpio` command.
-  static void cmd_read_digital_gpio_cb(int argc, char** argv);
+  static void cmd_read_digital_gpio_cb(void* context, int argc, char** argv);
 
   /// Callback method for the `Commands::kReadEncoders` command.
-  static void cmd_read_encoders_cb(int argc, char** argv);
+  static void cmd_read_encoders_cb(void* context, int argc, char** argv);
 
   /// Callback method for the `Commands::kResetEncoders` command.
-  static void cmd_reset_encoders_cb(int argc, char** argv);
+  static void cmd_reset_encoders_cb(void* context, int argc, char** argv);
 
   /// Callback method for the `Commands::kSetMotorsSpeed` command.
-  static void cmd_set_motors_speed_cb(int argc, char** argv);
+  static void cmd_set_motors_speed_cb(void* context, int argc, char** argv);
 
   /// Callback method for the `Commands::kSetMotorsPwm` command.
-  static void cmd_set_motors_pwm_cb(int argc, char** argv);
+  static void cmd_set_motors_pwm_cb(void* context, int argc, char** argv);
 
   /// Callback method for the `Commands::kSetPidsTuningGains` command.
-  static void cmd_set_pid_tuning_gains_cb(int argc, char** argv);
+  static void cmd_set_pid_tuning_gains_cb(void* context, int argc, char** argv);
 
   /// Callback method for the `Commands::kGetIsImuConnected` command.
-  static void cmd_get_is_imu_connected_cb(int argc, char** argv);
+  static void cmd_get_is_imu_connected_cb(void* context, int argc, char** argv);
 
   /// Callback method for the `Commands::kReadEncodersAndImu` command.
-  static void cmd_read_encoders_and_imu_cb(int argc, char** argv);
+  static void cmd_read_encoders_and_imu_cb(void* context, int argc, char** argv);
 
   /// Serial stream.
   static SerialStreamArduino serial_stream_;

@@ -37,7 +37,7 @@ void Shell::set_serial_stream(const SerialStream* serial_stream) { serial_stream
 
 void Shell::set_default_callback(CommandCallback callback) { default_callback_ = callback; }
 
-void Shell::register_command(const char* name, CommandCallback callback) {
+void Shell::register_command(const char* name, CommandCallback callback, void* context) {
   if (commands_count_ >= kCommandsMax) {
     return;
   }
@@ -45,6 +45,7 @@ void Shell::register_command(const char* name, CommandCallback callback) {
   Command command;
   strcpy(command.name, name);
   command.callback = callback;
+  command.context = context;
   commands_[commands_count_++] = command;
 }
 
@@ -91,14 +92,14 @@ void Shell::parse_message() {
 void Shell::execute_callback(int argc, char** argv) {
   for (size_t i = 0; i < commands_count_; i++) {
     if (!strcmp(argv[0], commands_[i].name)) {
-      commands_[i].callback(argc, argv);
+      commands_[i].callback(commands_[i].context, argc, argv);
       return;
     }
   }
 
   // Unknown command received, executing default callback.
   if (default_callback_ != nullptr) {
-    default_callback_(argc, argv);
+    default_callback_(nullptr, argc, argv);
   }
 }
 
