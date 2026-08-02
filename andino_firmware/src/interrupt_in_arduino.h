@@ -29,7 +29,7 @@
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #pragma once
 
-#include "interrupt_in.h"
+#include "andino/hal/interrupt_in.h"
 
 namespace andino {
 

@@ -31,7 +31,7 @@
 
 #include <stdio.h>
 
-#include "serial_stream.h"
+#include "andino/hal/serial_stream.h"
 
 namespace andino {
 

@@ -35,7 +35,7 @@
 #include <gmock/gmock.h>
 #include <gtest/gtest.h>
 
-#include "serial_stream.h"
+#include "andino/hal/serial_stream.h"
 
 namespace andino {
 namespace test {

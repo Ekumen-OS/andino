@@ -66,7 +66,7 @@
 
 #include <stdint.h>
 
-#include "interrupt_in.h"
+#include "andino/hal/interrupt_in.h"
 
 namespace andino {
 
