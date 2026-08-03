@@ -32,7 +32,7 @@
 #include <gmock/gmock.h>
 #include <gtest/gtest.h>
 
-#include "interrupt_in.h"
+#include "andino/hal/interrupt_in.h"
 
 namespace andino {
 namespace test {

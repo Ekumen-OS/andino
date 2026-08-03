@@ -32,8 +32,8 @@
 #include <gmock/gmock.h>
 #include <gtest/gtest.h>
 
-#include "digital_out.h"
-#include "pwm_out.h"
+#include "andino/hal/digital_out.h"
+#include "andino/hal/pwm_out.h"
 
 namespace andino {
 namespace test {

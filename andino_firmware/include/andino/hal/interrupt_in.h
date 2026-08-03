@@ -29,7 +29,7 @@
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #pragma once
 
-#include "digital_in.h"
+#include "andino/hal/digital_in.h"
 
 namespace andino {
 
