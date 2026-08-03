@@ -29,6 +29,7 @@
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "andino/app/shell.h"
 
+#include <stdio.h>
 #include <string.h>
 
 namespace andino {
@@ -47,7 +48,7 @@ void Shell::register_command(const char* name, CommandCallback callback, void* c
   }
 
   Command command;
-  strcpy(command.name, name);
+  snprintf(command.name, sizeof(command.name), "%s", name);
   command.callback = callback;
   command.context = context;
   commands_[commands_count_++] = command;
@@ -84,10 +85,11 @@ void Shell::process_input() {
 void Shell::parse_message() {
   char* argv[kCommandArgMax];
   int argc = 0;
+  char* saveptr = nullptr;
 
-  argv[argc] = strtok(message_buffer_, " ");
+  argv[argc] = strtok_r(message_buffer_, " ", &saveptr);
   while (argv[argc] != NULL && argc < (kCommandArgMax - 1)) {
-    argv[++argc] = strtok(NULL, " ");
+    argv[++argc] = strtok_r(NULL, " ", &saveptr);
   }
 
   execute_callback(argc, argv);

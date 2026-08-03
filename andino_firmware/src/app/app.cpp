@@ -64,6 +64,8 @@
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "andino/app/app.h"
 
+#include <stdio.h>
+
 #include <Adafruit_BNO055.h>
 #include <Adafruit_Sensor.h>
 #include <Arduino.h>
@@ -239,7 +241,7 @@ void App::cmd_set_pid_tuning_gains_cb(void* context, int argc, char** argv) {
   int pid_args[kSizePidArgs]{0, 0, 0, 0};
 
   // Example: "u 30:20:10:50".
-  strcpy(arg, argv[1]);
+  snprintf(arg, sizeof(arg), "%s", argv[1]);
   char* p = arg;
   while ((str = strtok_r(p, ":", &p)) != NULL && i < kSizePidArgs) {
     pid_args[i] = atoi(str);
