@@ -72,14 +72,14 @@
 
 #include "commands.h"
 #include "constants.h"
-#include "digital_out_arduino.h"
+#include "andino/bsp/digital_out_arduino.h"
 #include "encoder.h"
 #include "hw.h"
-#include "interrupt_in_arduino.h"
+#include "andino/bsp/interrupt_in_arduino.h"
 #include "motor.h"
 #include "pid.h"
-#include "pwm_out_arduino.h"
-#include "serial_stream_arduino.h"
+#include "andino/bsp/pwm_out_arduino.h"
+#include "andino/bsp/serial_stream_arduino.h"
 #include "shell.h"
 
 namespace andino {
