@@ -86,6 +86,8 @@ namespace andino {
 
 SerialStreamArduino App::serial_stream_;
 
+ClockArduino App::clock_;
+
 Shell App::shell_;
 
 DigitalOutArduino App::left_motor_enable_digital_out_(Hw::kLeftMotorEnableGpioPin);
@@ -165,14 +167,14 @@ void App::loop() {
   shell_.process_input();
 
   // Compute PID output at the configured rate.
-  if ((millis() - last_pid_computation_) > Constants::kPidPeriod) {
-    last_pid_computation_ = millis();
+  if ((clock_.millis() - last_pid_computation_) > Constants::kPidPeriod) {
+    last_pid_computation_ = clock_.millis();
     adjust_motors_speed();
   }
 
   // Stop the motors if auto-stop interval has been reached.
-  if ((millis() - last_set_motors_speed_cmd_) > Constants::kAutoStopWindow) {
-    last_set_motors_speed_cmd_ = millis();
+  if ((clock_.millis() - last_set_motors_speed_cmd_) > Constants::kAutoStopWindow) {
+    last_set_motors_speed_cmd_ = clock_.millis();
     stop_motors();
   }
 
@@ -245,7 +247,7 @@ void App::cmd_set_motors_speed_cb(int argc, char** argv) {
   const int right_motor_speed = atoi(argv[2]);
 
   // Reset the auto stop timer.
-  last_set_motors_speed_cmd_ = millis();
+  last_set_motors_speed_cmd_ = clock_.millis();
   if (left_motor_speed == 0 && right_motor_speed == 0) {
     left_motor_.set_speed(0);
     right_motor_.set_speed(0);
@@ -280,7 +282,7 @@ void App::cmd_set_motors_pwm_cb(int argc, char** argv) {
   right_pid_controller_.disable();
 
   // Reset the auto stop timer.
-  last_set_motors_speed_cmd_ = millis();
+  last_set_motors_speed_cmd_ = clock_.millis();
 
   left_motor_.set_speed(left_motor_pwm);
   right_motor_.set_speed(right_motor_pwm);
