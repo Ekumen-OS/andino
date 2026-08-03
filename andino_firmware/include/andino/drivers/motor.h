@@ -83,7 +83,8 @@ class Motor {
         const PwmOut* backward_pwm_out)
       : enable_digital_out_(enable_digital_out),
         forward_pwm_out_(forward_pwm_out),
-        backward_pwm_out_(backward_pwm_out) {}
+        backward_pwm_out_(backward_pwm_out) {
+  }
 
   /// @brief Initializes the motor.
   void begin();

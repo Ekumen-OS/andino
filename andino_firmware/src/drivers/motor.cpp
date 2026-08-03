@@ -75,7 +75,9 @@ void Motor::begin() {
   backward_pwm_out_->begin();
 }
 
-void Motor::enable(bool enabled) { enable_digital_out_->write(enabled ? 1 : 0); }
+void Motor::enable(bool enabled) {
+  enable_digital_out_->write(enabled ? 1 : 0);
+}
 
 void Motor::set_speed(int speed) {
   bool forward = true;

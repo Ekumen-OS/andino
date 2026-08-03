@@ -45,7 +45,8 @@ using ::testing::Return;
 
 class MockSerialStream : public andino::SerialStream {
  public:
-  MockSerialStream() : andino::SerialStream() {}
+  MockSerialStream() : andino::SerialStream() {
+  }
   MOCK_METHOD(void, begin, (unsigned long baud), (const, override));
   MOCK_METHOD(int, available, (), (const, override));
   MOCK_METHOD(int, read, (), (const, override));

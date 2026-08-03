@@ -39,7 +39,8 @@ class DigitalOutArduino : public DigitalOut {
   /// @brief Constructs a DigitalOutArduino using the specified GPIO pin.
   ///
   /// @param gpio_pin GPIO pin.
-  explicit DigitalOutArduino(const int gpio_pin) : gpio_pin_(gpio_pin) {}
+  explicit DigitalOutArduino(const int gpio_pin) : gpio_pin_(gpio_pin) {
+  }
 
   void begin() const override;
 

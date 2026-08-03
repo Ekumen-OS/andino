@@ -81,7 +81,8 @@ class Encoder {
   /// @param channel_b_interrupt_in Digital interrupt input connected to encoder channel B pin.
   Encoder(const InterruptIn* channel_a_interrupt_in, const InterruptIn* channel_b_interrupt_in)
       : channel_a_interrupt_in_(channel_a_interrupt_in),
-        channel_b_interrupt_in_(channel_b_interrupt_in) {}
+        channel_b_interrupt_in_(channel_b_interrupt_in) {
+  }
 
   /// @brief Initializes the encoder.
   void begin();

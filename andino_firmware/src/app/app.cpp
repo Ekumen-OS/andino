@@ -134,7 +134,9 @@ void App::loop() {
   }
 }
 
-void App::cmd_unknown_cb(void*, int, char**) { Serial.println("Unknown command."); }
+void App::cmd_unknown_cb(void*, int, char**) {
+  Serial.println("Unknown command.");
+}
 
 void App::cmd_read_analog_gpio_cb(void*, int argc, char** argv) {
   if (argc < 2) {
@@ -295,7 +297,8 @@ void App::cmd_read_encoders_and_imu_cb(void* context, int, char**) {
   // Retrieve linear acceleration (m/s^2). See
   // https://learn.adafruit.com/adafruit-bno055-absolute-orientation-sensor/overview for further
   // information.
-  imu::Vector<3> linear_acceleration = app->bno055_imu_.getVector(Adafruit_BNO055::VECTOR_LINEARACCEL);
+  imu::Vector<3> linear_acceleration =
+      app->bno055_imu_.getVector(Adafruit_BNO055::VECTOR_LINEARACCEL);
   Serial.print(linear_acceleration.x());
   Serial.print(" ");
   Serial.print(linear_acceleration.y());

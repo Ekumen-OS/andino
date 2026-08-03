@@ -43,7 +43,8 @@ class Pid {
   /// @param output_min Output minimum limit.
   /// @param output_max Output maximum limit.
   Pid(int kp, int kd, int ki, int ko, int output_min, int output_max)
-      : kp_(kp), kd_(kd), ki_(ki), ko_(ko), output_min_(output_min), output_max_(output_max) {}
+      : kp_(kp), kd_(kd), ki_(ki), ko_(ko), output_min_(output_min), output_max_(output_max) {
+  }
 
   /// @brief Resets the PID controller.
   ///

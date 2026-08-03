@@ -82,13 +82,19 @@ void Pid::reset(int encoder_count) {
 }
 
 /// @brief Enable PID
-void Pid::enable() { enabled_ = true; }
+void Pid::enable() {
+  enabled_ = true;
+}
 
 /// @brief Is the PID controller enabled?
-bool Pid::enabled() { return enabled_; }
+bool Pid::enabled() {
+  return enabled_;
+}
 
 /// @brief Disable PID
-void Pid::disable() { enabled_ = false; }
+void Pid::disable() {
+  enabled_ = false;
+}
 
 void Pid::compute(int encoder_count, int& computed_output) {
   if (!enabled_) {
@@ -123,7 +129,9 @@ void Pid::compute(int encoder_count, int& computed_output) {
   last_output_ = output;
 }
 
-void Pid::set_setpoint(int setpoint) { setpoint_ = setpoint; }
+void Pid::set_setpoint(int setpoint) {
+  setpoint_ = setpoint;
+}
 
 void Pid::set_tunings(int kp, int kd, int ki, int ko) {
   kp_ = kp;

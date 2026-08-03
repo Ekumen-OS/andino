@@ -54,7 +54,7 @@ The Docker Compose configuration is set up with:
 - `/dev:/dev` mount
 - `network_mode: host`
 
-This allows the container full access to USB devices connected to the host machine. 
+This allows the container full access to USB devices connected to the host machine.
 
 To upload/flash your firmware to the Arduino board:
 

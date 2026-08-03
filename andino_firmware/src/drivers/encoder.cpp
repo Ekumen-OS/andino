@@ -105,9 +105,13 @@ void Encoder::begin() {
   instance_count_++;
 }
 
-long Encoder::read() { return count_; }
+long Encoder::read() {
+  return count_;
+}
 
-void Encoder::reset() { count_ = 0L; }
+void Encoder::reset() {
+  count_ = 0L;
+}
 
 void Encoder::callback() {
   // Read the current channels state into the lowest 2 bits of the encoder state.

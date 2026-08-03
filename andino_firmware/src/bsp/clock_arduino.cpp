@@ -33,8 +33,12 @@
 
 namespace andino {
 
-unsigned long ClockArduino::millis() const { return ::millis(); }
+unsigned long ClockArduino::millis() const {
+  return ::millis();
+}
 
-void ClockArduino::delay(unsigned long ms) const { ::delay(ms); }
+void ClockArduino::delay(unsigned long ms) const {
+  ::delay(ms);
+}
 
 }  // namespace andino

@@ -60,9 +60,13 @@ namespace andino {
 /// Map between ports and Pin Change Mask registers.
 static constexpr volatile uint8_t* kPortToPCMask[]{&PCMSK0, &PCMSK1, &PCMSK2};
 
-void InterruptInArduino::begin() const { pinMode(gpio_pin_, INPUT_PULLUP); }
+void InterruptInArduino::begin() const {
+  pinMode(gpio_pin_, INPUT_PULLUP);
+}
 
-int InterruptInArduino::read() const { return digitalRead(gpio_pin_); }
+int InterruptInArduino::read() const {
+  return digitalRead(gpio_pin_);
+}
 
 void InterruptInArduino::attach(InterruptCallback callback) const {
   uint8_t bit_mask = digitalPinToBitMask(gpio_pin_);
