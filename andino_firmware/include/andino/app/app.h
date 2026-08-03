@@ -35,10 +35,10 @@
 #include "andino/drivers/encoder.h"
 #include "andino/bsp/interrupt_in_arduino.h"
 #include "andino/drivers/motor.h"
-#include "pid.h"
+#include "andino/app/pid.h"
 #include "andino/bsp/pwm_out_arduino.h"
 #include "andino/bsp/serial_stream_arduino.h"
-#include "shell.h"
+#include "andino/app/shell.h"
 
 namespace andino {
 
