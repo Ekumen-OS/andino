@@ -34,11 +34,6 @@ namespace andino {
 /// @brief This class defines an interface for PWM outputs.
 class PwmOut {
  public:
-  /// @brief Constructs a PwmOut using the specified GPIO pin.
-  ///
-  /// @param gpio_pin GPIO pin.
-  explicit PwmOut(const int gpio_pin) : gpio_pin_(gpio_pin) {}
-
   /// @brief Destructs the PWM output.
   virtual ~PwmOut() {}
 
@@ -50,10 +45,6 @@ class PwmOut {
   /// @param value PWM value.
   // TODO(jballoffet): Change this API to expect values from 0 to 100 (%).
   virtual void write(int value) const = 0;
-
- protected:
-  /// GPIO pin.
-  const int gpio_pin_;
 };
 
 }  // namespace andino

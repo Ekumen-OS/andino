@@ -43,7 +43,7 @@ using ::testing::Return;
 
 class MockInterruptIn : public andino::InterruptIn {
  public:
-  MockInterruptIn(const int gpio_pin) : andino::InterruptIn(gpio_pin) {}
+  MockInterruptIn() = default;
   MOCK_METHOD(void, begin, (), (const, override));
   MOCK_METHOD(int, read, (), (const, override));
   MOCK_METHOD(void, attach, (andino::InterruptIn::InterruptCallback callback), (const, override));
@@ -51,8 +51,8 @@ class MockInterruptIn : public andino::InterruptIn {
 
 class EncoderTest : public testing::Test {
  protected:
-  MockInterruptIn channel_a_interrupt_in_{0};
-  MockInterruptIn channel_b_interrupt_in_{0};
+  MockInterruptIn channel_a_interrupt_in_;
+  MockInterruptIn channel_b_interrupt_in_;
   andino::Encoder encoder_{&channel_a_interrupt_in_, &channel_b_interrupt_in_};
 };
 

@@ -39,13 +39,17 @@ class InterruptInArduino : public InterruptIn {
   /// @brief Constructs a InterruptInArduino using the specified GPIO pin.
   ///
   /// @param gpio_pin GPIO pin.
-  explicit InterruptInArduino(const int gpio_pin) : InterruptIn(gpio_pin) {}
+  explicit InterruptInArduino(const int gpio_pin) : gpio_pin_(gpio_pin) {}
 
   void begin() const override;
 
   int read() const override;
 
   void attach(InterruptCallback callback) const override;
+
+ private:
+  /// GPIO pin.
+  const int gpio_pin_;
 };
 
 }  // namespace andino

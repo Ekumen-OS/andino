@@ -39,11 +39,6 @@ class InterruptIn : public DigitalIn {
   /// @brief Interrupt callback type.
   typedef void (*InterruptCallback)();
 
-  /// @brief Constructs a InterruptIn using the specified GPIO pin.
-  ///
-  /// @param gpio_pin GPIO pin.
-  explicit InterruptIn(const int gpio_pin) : DigitalIn(gpio_pin) {}
-
   /// @brief Destructs the digital interrupt input.
   virtual ~InterruptIn() = default;
 
