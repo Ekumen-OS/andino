@@ -39,7 +39,7 @@ namespace andino {
 class Shell {
  public:
   /// @brief Command callback type.
-  typedef void (*CommandCallback)(int argc, char** argv);
+  typedef void (*CommandCallback)(void* context, int argc, char** argv);
 
   /// @brief Sets the serial stream to use.
   ///
@@ -55,7 +55,8 @@ class Shell {
   ///
   /// @param name Command name.
   /// @param callback Callback function.
-  void register_command(const char* name, CommandCallback callback);
+  /// @param context Context pointer to pass to the callback.
+  void register_command(const char* name, CommandCallback callback, void* context = nullptr);
 
   /// @brief Processes the available input at the command prompt (if any). Meant to be called
   /// continously.
@@ -71,6 +72,8 @@ class Shell {
     char name[kCommandNameLengthMax];
     /// Callback function.
     CommandCallback callback;
+    /// Context pointer.
+    void* context;
   };
 
   /// Maximum number of commands that can be registered.
