@@ -1,5 +1,5 @@
 // Code in this file is inspired by:
-// https://github.com/hbrobotics/ros_arduino_bridge/blob/indigo-devel/ros_arduino_firmware/src/libraries/ROSArduinoBridge/encoder_driver.ino
+// https://github.com/hbrobotics/ros_arduino_bridge/blob/indigo-devel/ros_arduino_firmware/src/libraries/ROSArduinoBridge/motor_driver.ino
 //
 // ----------------------------------------------------------------------------
 // ros_arduino_bridge's license follows:
@@ -62,60 +62,40 @@
 // CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
 // OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-#include "encoder.h"
+#include "andino/drivers/motor.h"
 
-#include <stdint.h>
-
-#include "andino/hal/interrupt_in.h"
+#include "andino/hal/digital_out.h"
+#include "andino/hal/pwm_out.h"
 
 namespace andino {
 
-constexpr int8_t Encoder::kTicksDelta[];
-
-const InterruptIn::InterruptCallback Encoder::kCallbacks[kInstancesMax] = {callback_0, callback_1};
-
-void Encoder::callback_0() {
-  if (Encoder::instances_[0] != nullptr) {
-    Encoder::instances_[0]->callback();
-  }
+void Motor::begin() {
+  enable_digital_out_->begin();
+  forward_pwm_out_->begin();
+  backward_pwm_out_->begin();
 }
 
-void Encoder::callback_1() {
-  if (Encoder::instances_[1] != nullptr) {
-    Encoder::instances_[1]->callback();
+void Motor::enable(bool enabled) { enable_digital_out_->write(enabled ? 1 : 0); }
+
+void Motor::set_speed(int speed) {
+  bool forward = true;
+
+  if (speed < kMinSpeed) {
+    speed = -speed;
+    forward = false;
   }
-}
-
-Encoder* Encoder::instances_[kInstancesMax] = {nullptr, nullptr};
-int Encoder::instance_count_ = 0;
-
-void Encoder::begin() {
-  // The current implementation only supports two instances of this class to be constructed. This
-  // prevents reaching a buffer overflow.
-  if (instance_count_ == kInstancesMax) {
-    return;
+  if (speed > kMaxSpeed) {
+    speed = kMaxSpeed;
   }
 
-  channel_a_interrupt_in_->begin();
-  channel_a_interrupt_in_->attach(kCallbacks[instance_count_]);
-  channel_b_interrupt_in_->begin();
-  channel_b_interrupt_in_->attach(kCallbacks[instance_count_]);
-
-  instances_[instance_count_] = this;
-  instance_count_++;
-}
-
-long Encoder::read() { return count_; }
-
-void Encoder::reset() { count_ = 0L; }
-
-void Encoder::callback() {
-  // Read the current channels state into the lowest 2 bits of the encoder state.
-  state_ <<= 2;
-  state_ |= (channel_b_interrupt_in_->read() << 1) | channel_a_interrupt_in_->read();
-
-  // Update the encoder count accordingly.
-  count_ += kTicksDelta[(state_ & 0x0F)];
+  // The motor speed is controlled by sending a PWM wave to the corresponding pin.
+  if (forward) {
+    forward_pwm_out_->write(speed);
+    backward_pwm_out_->write(0);
+  } else {
+    backward_pwm_out_->write(speed);
+    forward_pwm_out_->write(0);
+  }
 }
 
 }  // namespace andino
