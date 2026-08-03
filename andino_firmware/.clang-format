@@ -4,6 +4,13 @@
 BasedOnStyle:  Google
 ColumnLimit: 100
 
+BreakBeforeBraces: Attach
+AllowShortBlocksOnASingleLine: Never
+AllowShortFunctionsOnASingleLine: None
+AllowShortLoopsOnASingleLine: false
+AllowShortIfStatementsOnASingleLine: Never
+InsertBraces: true
+
 DerivePointerAlignment: false
 PointerAlignment: Left
 
