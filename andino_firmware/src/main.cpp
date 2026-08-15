@@ -27,9 +27,6 @@
 // CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
 // OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-#include <Adafruit_BNO055.h>
-#include <Wire.h>
-
 #include "andino/app/app.h"
 #include "andino/app/hw.h"
 #include "andino/bsp/clock_arduino.h"
@@ -51,13 +48,12 @@ static andino::InterruptInArduino left_encoder_a(andino::Hw::kLeftEncoderChannel
 static andino::InterruptInArduino left_encoder_b(andino::Hw::kLeftEncoderChannelBGpioPin);
 static andino::InterruptInArduino right_encoder_a(andino::Hw::kRightEncoderChannelAGpioPin);
 static andino::InterruptInArduino right_encoder_b(andino::Hw::kRightEncoderChannelBGpioPin);
-static Adafruit_BNO055 bno055_imu(55, BNO055_ADDRESS_A, &Wire);
 
 // Main application.
 static andino::App app(sys_clock, serial_stream, left_motor_enable, left_motor_forward,
                        left_motor_backward, right_motor_enable, right_motor_forward,
                        right_motor_backward, left_encoder_a, left_encoder_b, right_encoder_a,
-                       right_encoder_b, bno055_imu);
+                       right_encoder_b);
 
 /// @brief Application entry point.
 ///
