@@ -49,7 +49,8 @@ class Shell {
   /// @brief Sets the default callback for unknown commands.
   ///
   /// @param callback Callback function.
-  void set_default_callback(CommandCallback callback);
+  /// @param context Context pointer to pass to the callback.
+  void set_default_callback(CommandCallback callback, void* context = nullptr);
 
   /// @brief Adds a command registry entry to the shell.
   ///
@@ -96,6 +97,9 @@ class Shell {
 
   /// Default callback for unknown commands.
   CommandCallback default_callback_{nullptr};
+
+  /// Context pointer to pass to the default callback.
+  void* default_callback_context_{nullptr};
 
   /// Command registry.
   Command commands_[kCommandsMax];
