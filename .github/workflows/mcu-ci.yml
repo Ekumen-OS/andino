@@ -58,6 +58,9 @@ jobs:
       - name: Build application
         working-directory: ./andino_firmware
         run: pio run
+      - name: Run static analysis
+        working-directory: ./andino_firmware
+        run: pio check --fail-on-defect=medium
       - name: Run unit tests
         working-directory: ./andino_firmware
         run: pio test --environment=desktop

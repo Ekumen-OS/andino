@@ -98,13 +98,13 @@ class Shell {
   CommandCallback default_callback_{nullptr};
 
   /// Command registry.
-  Command commands_[kCommandsMax];
+  Command commands_[kCommandsMax]{};
 
   /// Number of registered commands.
   size_t commands_count_{0};
 
   /// Command prompt message.
-  char message_buffer_[kCommandPromptLengthMax];
+  char message_buffer_[kCommandPromptLengthMax]{};
 
   /// Command prompt message index.
   int message_index_{0};
