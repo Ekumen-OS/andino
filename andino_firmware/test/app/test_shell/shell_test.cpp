@@ -129,14 +129,14 @@ TEST_F(ShellTest, ProcessInputMessageSingleCharacterCommandSingleArg) {
   const std::string input_message{"a\r"};
   const std::vector<std::string> expected_argv{"a"};
 
-  int available_call_count = input_message.size() + 1;
+  int available_call_count = static_cast<int>(input_message.size()) + 1;
   EXPECT_CALL(serial_stream_, available()).Times(available_call_count);
   ON_CALL(serial_stream_, available())
       .WillByDefault(
           testing::Invoke([&available_call_count]() -> int { return --available_call_count; }));
 
-  int input_index = 0;
-  EXPECT_CALL(serial_stream_, read()).Times(input_message.size());
+  size_t input_index = 0;
+  EXPECT_CALL(serial_stream_, read()).Times(static_cast<int>(input_message.size()));
   ON_CALL(serial_stream_, read())
       .WillByDefault(testing::Invoke(
           [input_message, &input_index]() -> int { return input_message.at(input_index++); }));
@@ -152,14 +152,14 @@ TEST_F(ShellTest, ProcessInputMessageUnknownCommand) {
   const std::string input_message{"z\r"};
   const std::vector<std::string> expected_argv{"z"};
 
-  int available_call_count = input_message.size() + 1;
+  int available_call_count = static_cast<int>(input_message.size()) + 1;
   EXPECT_CALL(serial_stream_, available()).Times(available_call_count);
   ON_CALL(serial_stream_, available())
       .WillByDefault(
           testing::Invoke([&available_call_count]() -> int { return --available_call_count; }));
 
-  int input_index = 0;
-  EXPECT_CALL(serial_stream_, read()).Times(input_message.size());
+  size_t input_index = 0;
+  EXPECT_CALL(serial_stream_, read()).Times(static_cast<int>(input_message.size()));
   ON_CALL(serial_stream_, read())
       .WillByDefault(testing::Invoke(
           [input_message, &input_index]() -> int { return input_message.at(input_index++); }));
@@ -175,14 +175,14 @@ TEST_F(ShellTest, ProcessInputMessageTwoCharacterCommandSingleArg) {
   const std::string input_message{"ab\r"};
   const std::vector<std::string> expected_argv{"ab"};
 
-  int available_call_count = input_message.size() + 1;
+  int available_call_count = static_cast<int>(input_message.size()) + 1;
   EXPECT_CALL(serial_stream_, available()).Times(available_call_count);
   ON_CALL(serial_stream_, available())
       .WillByDefault(
           testing::Invoke([&available_call_count]() -> int { return --available_call_count; }));
 
-  int input_index = 0;
-  EXPECT_CALL(serial_stream_, read()).Times(input_message.size());
+  size_t input_index = 0;
+  EXPECT_CALL(serial_stream_, read()).Times(static_cast<int>(input_message.size()));
   ON_CALL(serial_stream_, read())
       .WillByDefault(testing::Invoke(
           [input_message, &input_index]() -> int { return input_message.at(input_index++); }));
@@ -198,14 +198,14 @@ TEST_F(ShellTest, ProcessInputMessageThreeCharacterCommandSingleArg) {
   const std::string input_message{"cde\r"};
   const std::vector<std::string> expected_argv{"cde"};
 
-  int available_call_count = input_message.size() + 1;
+  int available_call_count = static_cast<int>(input_message.size()) + 1;
   EXPECT_CALL(serial_stream_, available()).Times(available_call_count);
   ON_CALL(serial_stream_, available())
       .WillByDefault(
           testing::Invoke([&available_call_count]() -> int { return --available_call_count; }));
 
-  int input_index = 0;
-  EXPECT_CALL(serial_stream_, read()).Times(input_message.size());
+  size_t input_index = 0;
+  EXPECT_CALL(serial_stream_, read()).Times(static_cast<int>(input_message.size()));
   ON_CALL(serial_stream_, read())
       .WillByDefault(testing::Invoke(
           [input_message, &input_index]() -> int { return input_message.at(input_index++); }));
@@ -221,14 +221,14 @@ TEST_F(ShellTest, ProcessInputMessageTwoArgs) {
   const std::string input_message{"a 12\r"};
   const std::vector<std::string> expected_argv{"a", "12"};
 
-  int available_call_count = input_message.size() + 1;
+  int available_call_count = static_cast<int>(input_message.size()) + 1;
   EXPECT_CALL(serial_stream_, available()).Times(available_call_count);
   ON_CALL(serial_stream_, available())
       .WillByDefault(
           testing::Invoke([&available_call_count]() -> int { return --available_call_count; }));
 
-  int input_index = 0;
-  EXPECT_CALL(serial_stream_, read()).Times(input_message.size());
+  size_t input_index = 0;
+  EXPECT_CALL(serial_stream_, read()).Times(static_cast<int>(input_message.size()));
   ON_CALL(serial_stream_, read())
       .WillByDefault(testing::Invoke(
           [input_message, &input_index]() -> int { return input_message.at(input_index++); }));
@@ -244,14 +244,14 @@ TEST_F(ShellTest, ProcessInputMessageThreeArgs) {
   const std::string input_message{"ab 12 3\r"};
   const std::vector<std::string> expected_argv{"ab", "12", "3"};
 
-  int available_call_count = input_message.size() + 1;
+  int available_call_count = static_cast<int>(input_message.size()) + 1;
   EXPECT_CALL(serial_stream_, available()).Times(available_call_count);
   ON_CALL(serial_stream_, available())
       .WillByDefault(
           testing::Invoke([&available_call_count]() -> int { return --available_call_count; }));
 
-  int input_index = 0;
-  EXPECT_CALL(serial_stream_, read()).Times(input_message.size());
+  size_t input_index = 0;
+  EXPECT_CALL(serial_stream_, read()).Times(static_cast<int>(input_message.size()));
   ON_CALL(serial_stream_, read())
       .WillByDefault(testing::Invoke(
           [input_message, &input_index]() -> int { return input_message.at(input_index++); }));
@@ -267,14 +267,14 @@ TEST_F(ShellTest, ProcessInputMessageFourArgs) {
   const std::string input_message{"cde 12 3 456\r"};
   const std::vector<std::string> expected_argv{"cde", "12", "3", "456"};
 
-  int available_call_count = input_message.size() + 1;
+  int available_call_count = static_cast<int>(input_message.size()) + 1;
   EXPECT_CALL(serial_stream_, available()).Times(available_call_count);
   ON_CALL(serial_stream_, available())
       .WillByDefault(
           testing::Invoke([&available_call_count]() -> int { return --available_call_count; }));
 
-  int input_index = 0;
-  EXPECT_CALL(serial_stream_, read()).Times(input_message.size());
+  size_t input_index = 0;
+  EXPECT_CALL(serial_stream_, read()).Times(static_cast<int>(input_message.size()));
   ON_CALL(serial_stream_, read())
       .WillByDefault(testing::Invoke(
           [input_message, &input_index]() -> int { return input_message.at(input_index++); }));
