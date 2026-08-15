@@ -56,7 +56,9 @@ void Shell::register_command(const char* name, CommandCallback callback, void* c
 
 void Shell::process_input() {
   while (serial_stream_->available() > 0) {
-    const char input = serial_stream_->read();
+    // read() only returns -1 when no data is available, which the available() check above rules
+    // out, so the returned byte always fits in a char.
+    const char input = static_cast<char>(serial_stream_->read());
 
     switch (input) {
       case '\r':
@@ -88,7 +90,7 @@ void Shell::parse_message() {
   char* saveptr = nullptr;
 
   argv[argc] = strtok_r(message_buffer_, " ", &saveptr);
-  while (argv[argc] != NULL && argc < (kCommandArgMax - 1)) {
+  while (argc < (kCommandArgMax - 1) && argv[argc] != NULL) {
     argv[++argc] = strtok_r(NULL, " ", &saveptr);
   }
 

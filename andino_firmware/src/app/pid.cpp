@@ -71,7 +71,7 @@ namespace andino {
 //  - http://brettbeauregard.com/blog/2011/04/improving-the-beginner%E2%80%99s-pid-derivative-kick/
 //  - http://brettbeauregard.com/blog/2011/04/improving-the-beginner%E2%80%99s-pid-tuning-changes/
 
-void Pid::reset(int encoder_count) {
+void Pid::reset(long encoder_count) {
   // Since we can assume that the PID is only turned on when going from stop to moving, we can init
   // everything on zero.
   setpoint_ = 0;
@@ -96,7 +96,7 @@ void Pid::disable() {
   enabled_ = false;
 }
 
-void Pid::compute(int encoder_count, int& computed_output) {
+void Pid::compute(long encoder_count, int& computed_output) {
   if (!enabled_) {
     // Reset PID once to prevent startup spikes.
     if (last_input_ != 0) {
@@ -105,7 +105,9 @@ void Pid::compute(int encoder_count, int& computed_output) {
     return;
   }
 
-  int input = encoder_count - last_encoder_count_;
+  // The tick count itself is unbounded, but the delta between two consecutive PID cycles is
+  // always small (a few dozen ticks at most), so it safely fits back into an int.
+  int input = static_cast<int>(encoder_count - last_encoder_count_);
   long error = setpoint_ - input;
 
   long output = (kp_ * error - kd_ * (input - last_input_) + integral_term_) / ko_;
@@ -117,11 +119,14 @@ void Pid::compute(int encoder_count, int& computed_output) {
   } else if (output <= output_min_) {
     output = output_min_;
   } else {
-    integral_term_ += ki_ * error;
+    // ki_ * error safely fits into an int: it is only accumulated while output (which is
+    // derived from the same magnitudes) is within the int-sized output_min_/output_max_ bounds.
+    integral_term_ += static_cast<int>(ki_ * error);
   }
 
-  // Set the computed output accordingly.
-  computed_output = output;
+  // output is clamped to output_min_/output_max_ above, both of which are int, so this narrowing
+  // is safe.
+  computed_output = static_cast<int>(output);
 
   // Store obtained values.
   last_encoder_count_ = encoder_count;

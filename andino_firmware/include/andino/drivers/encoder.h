@@ -127,9 +127,12 @@ class Encoder {
   static const InterruptIn::InterruptCallback kCallbacks[kInstancesMax];
 
   /// Static wrapper that redirects to the first instance callback method.
+  // cppcheck-suppress unusedPrivateFunction
+  // Referenced only through the kCallbacks function pointer table, which cppcheck can't trace.
   static void callback_0();
 
   /// Static wrapper that redirects to the second instance callback method.
+  // cppcheck-suppress unusedPrivateFunction
   static void callback_1();
 
   /// Channels interrupt callback.

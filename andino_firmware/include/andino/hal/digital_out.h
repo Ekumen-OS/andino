@@ -29,6 +29,8 @@
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #pragma once
 
+#include <stdint.h>
+
 namespace andino {
 
 /// @brief This class defines an interface for digital outputs.
@@ -43,7 +45,7 @@ class DigitalOut {
   /// @brief Sets the digital output value (0 or 1).
   ///
   /// @param value Digital output value.
-  virtual void write(int value) const = 0;
+  virtual void write(uint8_t value) const = 0;
 };
 
 }  // namespace andino

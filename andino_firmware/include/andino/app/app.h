@@ -29,7 +29,14 @@
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #pragma once
 
+#if defined(__GNUC__)
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wconversion"
+#endif
 #include <Adafruit_BNO055.h>
+#if defined(__GNUC__)
+#pragma GCC diagnostic pop
+#endif
 
 #include "andino/app/constants.h"
 #include "andino/app/pid.h"
@@ -79,7 +86,8 @@ class App {
         left_pid_controller_(Constants::kPidKp, Constants::kPidKd, Constants::kPidKi,
                              Constants::kPidKo, -Constants::kPwmMax, Constants::kPwmMax),
         right_pid_controller_(Constants::kPidKp, Constants::kPidKd, Constants::kPidKi,
-                              Constants::kPidKo, -Constants::kPwmMax, Constants::kPwmMax) {
+                              Constants::kPidKo, -Constants::kPwmMax, Constants::kPwmMax),
+        shell_() {
   }
 
   // Delete copy and move operations to enforce unique reference ownership.

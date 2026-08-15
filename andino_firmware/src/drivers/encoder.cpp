@@ -114,9 +114,12 @@ void Encoder::reset() {
 }
 
 void Encoder::callback() {
-  // Read the current channels state into the lowest 2 bits of the encoder state.
-  state_ <<= 2;
-  state_ |= (channel_b_interrupt_in_->read() << 1) | channel_a_interrupt_in_->read();
+  // Read the current channels state into the lowest 2 bits of the encoder state. The shifted and
+  // OR'd bits are masked down to the lookup table's 4-bit range below, so the narrowing back to
+  // uint8_t after integer promotion doesn't drop any bits we care about.
+  state_ = static_cast<uint8_t>(state_ << 2);
+  state_ = static_cast<uint8_t>(state_ | (channel_b_interrupt_in_->read() << 1) |
+                                channel_a_interrupt_in_->read());
 
   // Update the encoder count accordingly.
   count_ += kTicksDelta[(state_ & 0x0F)];
