@@ -65,6 +65,8 @@
 #include "andino/app/app.h"
 
 #include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
 
 #include <Adafruit_BNO055.h>
 #include <Adafruit_Sensor.h>
@@ -78,9 +80,6 @@
 namespace andino {
 
 void App::setup() {
-  // Required by Arduino libraries to work.
-  init();
-
   serial_stream_.begin(Constants::kBaudrate);
 
   left_encoder_.begin();
@@ -96,7 +95,7 @@ void App::setup() {
 
   // Initialize command shell.
   shell_.set_serial_stream(&serial_stream_);
-  shell_.set_default_callback(cmd_unknown_cb);
+  shell_.set_default_callback(cmd_unknown_cb, this);
   shell_.register_command(Commands::kReadAnalogGpio, cmd_read_analog_gpio_cb, this);
   shell_.register_command(Commands::kReadDigitalGpio, cmd_read_digital_gpio_cb, this);
   shell_.register_command(Commands::kReadEncoders, cmd_read_encoders_cb, this);
@@ -129,40 +128,38 @@ void App::loop() {
     last_set_motors_speed_cmd_ = clock_.millis();
     stop_motors();
   }
-
-  // Required by Arduino libraries to work.
-  if (serialEventRun) {
-    serialEventRun();
-  }
 }
 
-void App::cmd_unknown_cb(void*, int, char**) {
-  Serial.println("Unknown command.");
+void App::cmd_unknown_cb(void* context, int, char**) {
+  App* app = static_cast<App*>(context);
+  app->serial_stream_.println("Unknown command.");
 }
 
-void App::cmd_read_analog_gpio_cb(void*, int argc, char** argv) {
+void App::cmd_read_analog_gpio_cb(void* context, int argc, char** argv) {
   if (argc < 2) {
     return;
   }
 
+  App* app = static_cast<App*>(context);
   const int pin = atoi(argv[1]);
-  Serial.println(analogRead(pin));
+  app->serial_stream_.println(analogRead(pin));
 }
 
-void App::cmd_read_digital_gpio_cb(void*, int argc, char** argv) {
+void App::cmd_read_digital_gpio_cb(void* context, int argc, char** argv) {
   if (argc < 2) {
     return;
   }
 
+  App* app = static_cast<App*>(context);
   const int pin = atoi(argv[1]);
-  Serial.println(digitalRead(pin));
+  app->serial_stream_.println(digitalRead(pin));
 }
 
 void App::cmd_read_encoders_cb(void* context, int, char**) {
   App* app = static_cast<App*>(context);
-  Serial.print(app->left_encoder_.read());
-  Serial.print(" ");
-  Serial.println(app->right_encoder_.read());
+  app->serial_stream_.print(app->left_encoder_.read());
+  app->serial_stream_.print(" ");
+  app->serial_stream_.println(app->right_encoder_.read());
 }
 
 void App::cmd_reset_encoders_cb(void* context, int, char**) {
@@ -171,7 +168,7 @@ void App::cmd_reset_encoders_cb(void* context, int, char**) {
   app->right_encoder_.reset();
   app->left_pid_controller_.reset(app->left_encoder_.read());
   app->right_pid_controller_.reset(app->right_encoder_.read());
-  Serial.println("OK");
+  app->serial_stream_.println("OK");
 }
 
 void App::cmd_set_motors_speed_cb(void* context, int argc, char** argv) {
@@ -201,7 +198,7 @@ void App::cmd_set_motors_speed_cb(void* context, int argc, char** argv) {
   // Constants::kPidRate.
   app->left_pid_controller_.set_setpoint(left_motor_speed / Constants::kPidRate);
   app->right_pid_controller_.set_setpoint(right_motor_speed / Constants::kPidRate);
-  Serial.println("OK");
+  app->serial_stream_.println("OK");
 }
 
 void App::cmd_set_motors_pwm_cb(void* context, int argc, char** argv) {
@@ -224,7 +221,7 @@ void App::cmd_set_motors_pwm_cb(void* context, int argc, char** argv) {
 
   app->left_motor_.set_speed(left_motor_pwm);
   app->right_motor_.set_speed(right_motor_pwm);
-  Serial.println("OK");
+  app->serial_stream_.println("OK");
 }
 
 void App::cmd_set_pid_tuning_gains_cb(void* context, int argc, char** argv) {
@@ -249,63 +246,63 @@ void App::cmd_set_pid_tuning_gains_cb(void* context, int argc, char** argv) {
   }
   app->left_pid_controller_.set_tunings(pid_args[0], pid_args[1], pid_args[2], pid_args[3]);
   app->right_pid_controller_.set_tunings(pid_args[0], pid_args[1], pid_args[2], pid_args[3]);
-  Serial.print("PID Updated: ");
-  Serial.print(pid_args[0]);
-  Serial.print(" ");
-  Serial.print(pid_args[1]);
-  Serial.print(" ");
-  Serial.print(pid_args[2]);
-  Serial.print(" ");
-  Serial.println(pid_args[3]);
-  Serial.println("OK");
+  app->serial_stream_.print("PID Updated: ");
+  app->serial_stream_.print(pid_args[0]);
+  app->serial_stream_.print(" ");
+  app->serial_stream_.print(pid_args[1]);
+  app->serial_stream_.print(" ");
+  app->serial_stream_.print(pid_args[2]);
+  app->serial_stream_.print(" ");
+  app->serial_stream_.println(pid_args[3]);
+  app->serial_stream_.println("OK");
 }
 
 void App::cmd_get_is_imu_connected_cb(void* context, int, char**) {
   App* app = static_cast<App*>(context);
-  Serial.println(app->is_imu_connected);
+  app->serial_stream_.println(app->is_imu_connected);
 }
 
 void App::cmd_read_encoders_and_imu_cb(void* context, int, char**) {
   App* app = static_cast<App*>(context);
-  Serial.print(app->left_encoder_.read());
-  Serial.print(" ");
-  Serial.print(app->right_encoder_.read());
-  Serial.print(" ");
+  app->serial_stream_.print(app->left_encoder_.read());
+  app->serial_stream_.print(" ");
+  app->serial_stream_.print(app->right_encoder_.read());
+  app->serial_stream_.print(" ");
 
   // Retrieve absolute orientation (quaternion). See
   // https://learn.adafruit.com/adafruit-bno055-absolute-orientation-sensor/overview for further
   // information.
   imu::Quaternion orientation = app->bno055_imu_.getQuat();
-  Serial.print(orientation.x(), 4);
-  Serial.print(" ");
-  Serial.print(orientation.y(), 4);
-  Serial.print(" ");
-  Serial.print(orientation.z(), 4);
-  Serial.print(" ");
-  Serial.print(orientation.w(), 4);
-  Serial.print(" ");
+  app->serial_stream_.print(orientation.x(), 4);
+  app->serial_stream_.print(" ");
+  app->serial_stream_.print(orientation.y(), 4);
+  app->serial_stream_.print(" ");
+  app->serial_stream_.print(orientation.z(), 4);
+  app->serial_stream_.print(" ");
+  app->serial_stream_.print(orientation.w(), 4);
+  app->serial_stream_.print(" ");
 
   // Retrieve angular velocity (rad/s). See
   // https://learn.adafruit.com/adafruit-bno055-absolute-orientation-sensor/overview for further
   // information.
   imu::Vector<3> angular_velocity = app->bno055_imu_.getVector(Adafruit_BNO055::VECTOR_GYROSCOPE);
-  Serial.print(angular_velocity.x());
-  Serial.print(" ");
-  Serial.print(angular_velocity.y());
-  Serial.print(" ");
-  Serial.print(angular_velocity.z());
-  Serial.print(" ");
+  app->serial_stream_.print(angular_velocity.x());
+  app->serial_stream_.print(" ");
+  app->serial_stream_.print(angular_velocity.y());
+  app->serial_stream_.print(" ");
+  app->serial_stream_.print(angular_velocity.z());
+  app->serial_stream_.print(" ");
 
   // Retrieve linear acceleration (m/s^2). See
   // https://learn.adafruit.com/adafruit-bno055-absolute-orientation-sensor/overview for further
   // information.
   imu::Vector<3> linear_acceleration =
       app->bno055_imu_.getVector(Adafruit_BNO055::VECTOR_LINEARACCEL);
-  Serial.print(linear_acceleration.x());
-  Serial.print(" ");
-  Serial.print(linear_acceleration.y());
-  Serial.print(" ");
-  Serial.print(linear_acceleration.z());
+  app->serial_stream_.print(linear_acceleration.x());
+  app->serial_stream_.print(" ");
+  app->serial_stream_.print(linear_acceleration.y());
+  app->serial_stream_.print(" ");
+  app->serial_stream_.print(linear_acceleration.z());
 }
 
 void App::adjust_motors_speed() {

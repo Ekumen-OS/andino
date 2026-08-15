@@ -38,8 +38,9 @@ void Shell::set_serial_stream(const SerialStream* serial_stream) {
   serial_stream_ = serial_stream;
 }
 
-void Shell::set_default_callback(CommandCallback callback) {
+void Shell::set_default_callback(CommandCallback callback, void* context) {
   default_callback_ = callback;
+  default_callback_context_ = context;
 }
 
 void Shell::register_command(const char* name, CommandCallback callback, void* context) {
@@ -105,7 +106,7 @@ void Shell::execute_callback(int argc, char** argv) {
 
   // Unknown command received, executing default callback.
   if (default_callback_ != nullptr) {
-    default_callback_(nullptr, argc, argv);
+    default_callback_(default_callback_context_, argc, argv);
   }
 }
 

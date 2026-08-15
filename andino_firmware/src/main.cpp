@@ -28,6 +28,7 @@
 // OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <Adafruit_BNO055.h>
+#include <Arduino.h>
 #include <Wire.h>
 
 #include "andino/app/app.h"
@@ -63,12 +64,20 @@ static andino::App app(sys_clock, serial_stream, left_motor_enable, left_motor_f
 ///
 /// @return Execution final status (never reached).
 int main(void) {
+  // Required by Arduino libraries to work.
+  init();
+
   // Application configuration.
   app.setup();
 
   // Application main run loop.
   while (1) {
     app.loop();
+
+    // Required by Arduino libraries to work.
+    if (serialEventRun) {
+      serialEventRun();
+    }
   }
 
   return 0;
