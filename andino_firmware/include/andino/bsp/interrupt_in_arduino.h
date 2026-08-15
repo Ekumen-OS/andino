@@ -29,6 +29,8 @@
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #pragma once
 
+#include <stdint.h>
+
 #include "andino/hal/interrupt_in.h"
 
 namespace andino {
@@ -39,7 +41,7 @@ class InterruptInArduino : public InterruptIn {
   /// @brief Constructs a InterruptInArduino using the specified GPIO pin.
   ///
   /// @param gpio_pin GPIO pin.
-  explicit InterruptInArduino(const int gpio_pin) : gpio_pin_(gpio_pin) {
+  explicit InterruptInArduino(const uint8_t gpio_pin) : gpio_pin_(gpio_pin) {
   }
 
   void begin() const override;
@@ -50,7 +52,7 @@ class InterruptInArduino : public InterruptIn {
 
  private:
   /// GPIO pin.
-  const int gpio_pin_;
+  const uint8_t gpio_pin_;
 };
 
 }  // namespace andino

@@ -43,7 +43,7 @@ class MockDigitalOut : public andino::DigitalOut {
  public:
   MockDigitalOut() = default;
   MOCK_METHOD(void, begin, (), (const, override));
-  MOCK_METHOD(void, write, (int value), (const, override));
+  MOCK_METHOD(void, write, (uint8_t value), (const, override));
 };
 
 class MockPwmOut : public andino::PwmOut {
