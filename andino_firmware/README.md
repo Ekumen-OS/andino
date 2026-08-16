@@ -69,7 +69,7 @@ A serial port connection must be created at 57600 bauds. You can use the serial 
 | Command | Description | Args | Example | Result |
 | --- | --- | --- | --- | --- |
 | `a` | Read Analog GPIO pin | pin_number | `a 0` |  |
-| `d` | Read Digital GPIO pin | pin_number | `d 2` |  |
+| `d` | Read encoder digital input value | encoder (0: left, 1: right) channel (0: A, 1: B) | `d 0 0` | `0` or `1` |
 | `e` | Get encoder tick values |  | `e` | `<left> <right>` |
 | `r` | Reset encoder values |  | `r` |  |
 | `m` | Set closed-loop speed for the motors[ticks/sec] | left_tps right_tps | `m 700 700` |  |

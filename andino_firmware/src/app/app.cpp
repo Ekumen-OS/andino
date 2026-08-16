@@ -149,13 +149,18 @@ void App::cmd_read_analog_gpio_cb(void*, int argc, char** argv) {
   Serial.println(analogRead(pin));
 }
 
-void App::cmd_read_digital_gpio_cb(void*, int argc, char** argv) {
-  if (argc < 2) {
+void App::cmd_read_digital_gpio_cb(void* context, int argc, char** argv) {
+  if (argc < 3) {
     return;
   }
 
-  const int pin = atoi(argv[1]);
-  Serial.println(digitalRead(pin));
+  App* app = static_cast<App*>(context);
+  const int encoder = atoi(argv[1]);
+  const int channel = atoi(argv[2]);
+  Encoder& selected_encoder = (encoder == 0) ? app->left_encoder_ : app->right_encoder_;
+  const int value =
+      (channel == 0) ? selected_encoder.read_channel_a() : selected_encoder.read_channel_b();
+  Serial.println(value);
 }
 
 void App::cmd_read_encoders_cb(void* context, int, char**) {
