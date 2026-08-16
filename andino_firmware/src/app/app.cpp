@@ -228,35 +228,27 @@ void App::cmd_set_motors_pwm_cb(void* context, int argc, char** argv) {
 }
 
 void App::cmd_set_pid_tuning_gains_cb(void* context, int argc, char** argv) {
-  // TODO(jballoffet): Refactor to expect command multiple arguments.
-  if (argc < 2) {
+  if (argc < 5) {
     return;
   }
 
   App* app = static_cast<App*>(context);
-  static constexpr int kSizePidArgs{4};
-  int i = 0;
-  char arg[20];
-  char* str;
-  int pid_args[kSizePidArgs]{0, 0, 0, 0};
+  const int kp = atoi(argv[1]);
+  const int kd = atoi(argv[2]);
+  const int ki = atoi(argv[3]);
+  const int ko = atoi(argv[4]);
 
-  // Example: "u 30:20:10:50".
-  snprintf(arg, sizeof(arg), "%s", argv[1]);
-  char* p = arg;
-  while ((str = strtok_r(p, ":", &p)) != NULL && i < kSizePidArgs) {
-    pid_args[i] = atoi(str);
-    i++;
-  }
-  app->left_pid_controller_.set_tunings(pid_args[0], pid_args[1], pid_args[2], pid_args[3]);
-  app->right_pid_controller_.set_tunings(pid_args[0], pid_args[1], pid_args[2], pid_args[3]);
+  // Example: "u 30 20 10 50".
+  app->left_pid_controller_.set_tunings(kp, kd, ki, ko);
+  app->right_pid_controller_.set_tunings(kp, kd, ki, ko);
   Serial.print("PID Updated: ");
-  Serial.print(pid_args[0]);
+  Serial.print(kp);
   Serial.print(" ");
-  Serial.print(pid_args[1]);
+  Serial.print(kd);
   Serial.print(" ");
-  Serial.print(pid_args[2]);
+  Serial.print(ki);
   Serial.print(" ");
-  Serial.println(pid_args[3]);
+  Serial.println(ko);
   Serial.println("OK");
 }
 
