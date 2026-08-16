@@ -95,6 +95,16 @@ class Encoder {
   /// @brief Sets the ticks count value to zero.
   void reset();
 
+  /// @brief Gets the channel A digital input value.
+  ///
+  /// @return Channel A digital input value (0 or 1).
+  int read_channel_a() const;
+
+  /// @brief Gets the channel B digital input value.
+  ///
+  /// @return Channel B digital input value (0 or 1).
+  int read_channel_b() const;
+
  private:
   /// Ticks delta lookup table. Its content is defined as follows:
   ///   +--------+-----+-----+--------+-----------+

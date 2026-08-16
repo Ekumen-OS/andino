@@ -70,7 +70,8 @@ namespace andino {
 struct Commands {
   /// @brief Reads an analog GPIO.
   static constexpr const char* kReadAnalogGpio{"a"};
-  /// @brief Reads a digital GPIO.
+  /// @brief Reads an encoder digital input value [format: "encoder channel", encoder: 0 (left) or
+  /// 1 (right), channel: 0 (A) or 1 (B)].
   static constexpr const char* kReadDigitalGpio{"d"};
   /// @brief Reads the encoders tick count values.
   static constexpr const char* kReadEncoders{"e"};

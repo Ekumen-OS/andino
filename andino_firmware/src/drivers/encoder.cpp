@@ -113,6 +113,14 @@ void Encoder::reset() {
   count_ = 0L;
 }
 
+int Encoder::read_channel_a() const {
+  return channel_a_interrupt_in_->read();
+}
+
+int Encoder::read_channel_b() const {
+  return channel_b_interrupt_in_->read();
+}
+
 void Encoder::callback() {
   // Read the current channels state into the lowest 2 bits of the encoder state. The shifted and
   // OR'd bits are masked down to the lookup table's 4-bit range below, so the narrowing back to
