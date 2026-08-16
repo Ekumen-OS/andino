@@ -98,9 +98,6 @@ class App {
   /// Callback method for an unknown command (default).
   static void cmd_unknown_cb(void* context, int argc, char** argv);
 
-  /// Callback method for the `Commands::kReadAnalogGpio` command.
-  static void cmd_read_analog_gpio_cb(void* context, int argc, char** argv);
-
   /// Callback method for the `Commands::kReadDigitalGpio` command.
   static void cmd_read_digital_gpio_cb(void* context, int argc, char** argv);
 

@@ -97,7 +97,6 @@ void App::setup() {
   // Initialize command shell.
   shell_.set_serial_stream(&serial_stream_);
   shell_.set_default_callback(cmd_unknown_cb);
-  shell_.register_command(Commands::kReadAnalogGpio, cmd_read_analog_gpio_cb, this);
   shell_.register_command(Commands::kReadDigitalGpio, cmd_read_digital_gpio_cb, this);
   shell_.register_command(Commands::kReadEncoders, cmd_read_encoders_cb, this);
   shell_.register_command(Commands::kResetEncoders, cmd_reset_encoders_cb, this);
@@ -138,15 +137,6 @@ void App::loop() {
 
 void App::cmd_unknown_cb(void*, int, char**) {
   Serial.println("Unknown command.");
-}
-
-void App::cmd_read_analog_gpio_cb(void*, int argc, char** argv) {
-  if (argc < 2) {
-    return;
-  }
-
-  const int pin = atoi(argv[1]);
-  Serial.println(analogRead(pin));
 }
 
 void App::cmd_read_digital_gpio_cb(void*, int argc, char** argv) {
