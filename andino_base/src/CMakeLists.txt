@@ -1,13 +1,13 @@
-add_library(motor_driver SHARED motor_driver.cpp)
+add_library(serial_mcu SHARED serial_mcu.cpp)
 
-target_include_directories(motor_driver
+target_include_directories(serial_mcu
   PUBLIC
     $<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}/include>
     $<INSTALL_INTERFACE:include>)
 
 # Reference: See libserial example project for integration with CMake
-target_include_directories(motor_driver PUBLIC ${SERIAL_INCLUDE_DIRS})
-target_link_libraries(motor_driver PUBLIC ${SERIAL_LDFLAGS} ${CMAKE_THREAD_LIBS_INIT})
+target_include_directories(serial_mcu PUBLIC ${SERIAL_INCLUDE_DIRS})
+target_link_libraries(serial_mcu PUBLIC ${SERIAL_LDFLAGS} ${CMAKE_THREAD_LIBS_INIT})
 
 
 add_library(diffdrive_andino SHARED diffdrive_andino.cpp wheel.cpp)
@@ -24,10 +24,10 @@ ament_target_dependencies(diffdrive_andino
     rclcpp
 )
 
-target_link_libraries(diffdrive_andino PUBLIC motor_driver)
+target_link_libraries(diffdrive_andino PUBLIC serial_mcu)
 
 install(
-  TARGETS diffdrive_andino motor_driver
+  TARGETS diffdrive_andino serial_mcu
   EXPORT ${PROJECT_NAME}-targets
   ARCHIVE DESTINATION lib
   LIBRARY DESTINATION lib

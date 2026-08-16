@@ -40,7 +40,7 @@
 #include <rclcpp_lifecycle/node_interfaces/lifecycle_node_interface.hpp>
 #include <rclcpp_lifecycle/state.hpp>
 
-#include "andino_base/motor_driver.h"
+#include "andino_base/serial_mcu.h"
 #include "andino_base/wheel.h"
 
 namespace andino_base {
@@ -92,8 +92,8 @@ class DiffDriveAndino : public hardware_interface::SystemInterface {
 
   // Configuration parameters.
   Config config_;
-  // Communication with the firmware in charge of controlling the motors.
-  MotorDriver motor_driver_;
+  // Communication with the microcontroller running andino_firmware.
+  SerialMcu serial_mcu_;
   // Left wheel of the robot.
   Wheel left_wheel_;
   // Right wheel of the robot.
