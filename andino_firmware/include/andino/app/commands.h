@@ -80,7 +80,7 @@ struct Commands {
   static constexpr const char* kSetMotorsSpeed{"m"};
   /// @brief Sets the motors PWM value [duty range: 0-255].
   static constexpr const char* kSetMotorsPwm{"o"};
-  /// @brief Sets the PIDs tuning gains [format: "kp:kd:ki:ko"].
+  /// @brief Sets the PIDs tuning gains [format: "kp kd ki ko"].
   static constexpr const char* kSetPidsTuningGains{"u"};
   /// @brief Gets whether there is an IMU sensor connected.
   static constexpr const char* kGetIsImuConnected{"h"};

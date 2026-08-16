@@ -88,7 +88,7 @@ void MotorDriver::SetMotorValues(int val_1, int val_2) {
 
 void MotorDriver::SetPidValues(float k_p, float k_d, float k_i, float k_o) {
   std::stringstream ss;
-  ss << "u " << k_p << ":" << k_d << ":" << k_i << ":" << k_o;
+  ss << "u " << k_p << " " << k_d << " " << k_i << " " << k_o;
   SendMsg(ss.str());
 }
 
