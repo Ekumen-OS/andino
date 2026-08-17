@@ -84,8 +84,8 @@ hardware_interface::CallbackReturn DiffDriveAndino::on_init(const hardware_inter
 hardware_interface::CallbackReturn DiffDriveAndino::on_configure(const rclcpp_lifecycle::State& /*previous_state*/) {
   RCLCPP_INFO(logger_, "On configure...");
 
-  // Set up communication with motor driver controller.
-  motor_driver_.Setup(config_.serial_device, config_.baud_rate, config_.timeout);
+  // Set up communication with the microcontroller.
+  serial_mcu_.setup(config_.serial_device, config_.baud_rate, config_.timeout);
 
   RCLCPP_INFO(logger_, "Finished Configuration");
 
@@ -140,12 +140,12 @@ hardware_interface::CallbackReturn DiffDriveAndino::on_deactivate(const rclcpp_l
 hardware_interface::return_type DiffDriveAndino::read(const rclcpp::Time& /* time */, const rclcpp::Duration& period) {
   const double delta_secs = period.seconds();
 
-  if (!motor_driver_.is_connected()) {
-    RCLCPP_ERROR(logger_, "Motor driver is not connected.");
+  if (!serial_mcu_.is_connected()) {
+    RCLCPP_ERROR(logger_, "MCU is not connected.");
     return hardware_interface::return_type::ERROR;
   }
 
-  const MotorDriver::Encoders encoders = motor_driver_.ReadEncoderValues();
+  const SerialMcu::EncodersData encoders = serial_mcu_.read_encoders();
 
   left_wheel_.enc_ = encoders[0];
   right_wheel_.enc_ = encoders[1];
@@ -163,8 +163,8 @@ hardware_interface::return_type DiffDriveAndino::read(const rclcpp::Time& /* tim
 
 hardware_interface::return_type DiffDriveAndino::write(const rclcpp::Time& /* time */,
                                                        const rclcpp::Duration& /* period */) {
-  if (!motor_driver_.is_connected()) {
-    RCLCPP_ERROR(logger_, "Motor driver is not connected.");
+  if (!serial_mcu_.is_connected()) {
+    RCLCPP_ERROR(logger_, "MCU is not connected.");
     return hardware_interface::return_type::ERROR;
   }
 
@@ -174,7 +174,7 @@ hardware_interface::return_type DiffDriveAndino::write(const rclcpp::Time& /* ti
 
   const int left_value_target = static_cast<int>(left_wheel_.cmd_ / left_wheel_.rads_per_tick_);
   const int right_value_target = static_cast<int>(right_wheel_.cmd_ / right_wheel_.rads_per_tick_);
-  motor_driver_.SetMotorValues(left_value_target, right_value_target);
+  serial_mcu_.set_motors_speed(left_value_target, right_value_target);
 
   return hardware_interface::return_type::OK;
 }
