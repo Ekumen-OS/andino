@@ -1,6 +1,6 @@
 [general]
 board = "nano"
-serial-baudrate = 9600
+serial-baudrate = 57600
 open-console = true
 port = "/dev/ttyUSB0"
 output-mode = "ascii"

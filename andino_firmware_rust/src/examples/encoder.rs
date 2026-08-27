@@ -48,7 +48,7 @@ fn main() -> ! {
     let pins = arduino_hal::pins!(dp);
     let mut exint = dp.EXINT;
 
-    let serial = arduino_hal::default_serial!(dp, pins, 9600);
+    let serial = arduino_hal::default_serial!(dp, pins, 57600);
     let mut serial_stream = SerialStream::new(serial);
 
     let channel_a_interrupt_in = pins.d2.into_interrupt();

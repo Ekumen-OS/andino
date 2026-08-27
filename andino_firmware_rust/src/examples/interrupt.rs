@@ -53,7 +53,7 @@ fn main() -> ! {
     });
 
     // Create serial interface
-    let serial = arduino_hal::default_serial!(dp, pins, 9600);
+    let serial = arduino_hal::default_serial!(dp, pins, 57600);
     let mut serial_stream = SerialStream::new(serial);
 
     // Attach callback and enable interrupt

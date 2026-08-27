@@ -56,7 +56,7 @@ cargo run --bin <example_name> --release
 
 ## Description 
 
-Once flashed, the robot communicates over serial at the configured baud rate (ravedude is configured at 9600 baud). Commands are single-letter strings, optionally followed by space-separated integer arguments, terminated with a newline.
+Once flashed, the robot communicates over serial at the configured baud rate (ravedude is configured at 57600 baud). Commands are single-letter strings, optionally followed by space-separated integer arguments, terminated with a newline.
 
 | Command | String | Args | Description |
 |---------|--------|------|-------------|

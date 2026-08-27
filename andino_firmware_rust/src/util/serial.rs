@@ -26,7 +26,7 @@ static mut SERIAL_QUEUE_PRODUCER: Option<Producer<'static, u8>> = None;
 /// ```rust
 /// let dp = arduino_hal::Peripherals::take().unwrap();
 /// let pins = arduino_hal::pins!(dp);
-/// let serial = arduino_hal::default_serial!(dp, pins, 9600);
+/// let serial = arduino_hal::default_serial!(dp, pins, 57600);
 /// let mut serial_stream = SerialStream::new(serial);
 ///
 /// // Enable global interrupts

@@ -6,7 +6,7 @@ pub const PID_PERIOD_MS: u32 = 1000 / PID_RATE;
 pub const AUTO_STOP_WINDOW: u32 = 3000;
 
 /// Serial port baud rate.
-pub const BAUDRATE: u32 = 9600;
+pub const BAUDRATE: u32 = 57600;
 
 /// PID default tuning proportional gain.
 pub const PID_KP: i32 = 30;

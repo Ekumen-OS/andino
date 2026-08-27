@@ -7,7 +7,7 @@
 //! # Hardware Setup
 //! - Arduino Nano (ATmega328p)
 //! - Built-in LED on pin D13
-//! - Serial connection at 9600 baud
+//! - Serial connection at 57600 baud
 //!
 //! # What This Example Shows
 //! - Initializing the TC0 timer for millisecond counting
@@ -37,7 +37,7 @@ fn main() -> ! {
     let mut dp = arduino_hal::Peripherals::take().unwrap();
     let pins = arduino_hal::pins!(dp);
 
-    let serial = arduino_hal::default_serial!(dp, pins, 9600);
+    let serial = arduino_hal::default_serial!(dp, pins, 57600);
     let mut serial_stream = SerialStream::new(serial);
 
     millis_init(&mut dp.TC2);

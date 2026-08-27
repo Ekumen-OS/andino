@@ -20,7 +20,7 @@ type RegisteredCmdsMap = FnvIndexMap<CommandNameString, usize, MAX_NUMBER_OF_COM
 ///
 /// ```rust
 /// // Initialize serial communication
-/// let serial = arduino_hal::default_serial!(dp, pins, 9600);
+/// let serial = arduino_hal::default_serial!(dp, pins, 57600);
 /// let mut serial_stream = SerialStream::new(serial);
 ///
 /// // Define command callbacks
