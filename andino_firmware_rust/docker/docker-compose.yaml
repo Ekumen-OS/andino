@@ -1,0 +1,9 @@
+services:
+  rust:
+    build:
+      dockerfile: docker/Dockerfile
+      context: ..
+    volumes:
+      - ../:/home/docker/andino_firmware
+    devices:
+      - /dev/ttyUSB0
