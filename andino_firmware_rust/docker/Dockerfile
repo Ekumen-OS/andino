@@ -1,4 +1,4 @@
-FROM ubuntu:22.04 AS base
+FROM ubuntu:24.04 AS base
 
 ENV USER ubuntu 
 
@@ -26,4 +26,4 @@ RUN cargo +stable install ravedude
 # RUN --mount=type=bind,source=./,target=/home/${USER}/andino_firmware_temp cp -r andino_firmware_temp andino_firmware_t && cd andino_firmware_t && cargo update
 WORKDIR /home/${USER}/andino_firmware
 COPY --chown=${USER}:${USER} . . 
-RUN cargo build
+RUN cargo build --release

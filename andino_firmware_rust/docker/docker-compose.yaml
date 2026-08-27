@@ -4,6 +4,6 @@ services:
       dockerfile: docker/Dockerfile
       context: ..
     volumes:
-      - ../:/home/docker/andino_firmware
-    devices:
-      - /dev/ttyUSB0
+      - ../:/home/ubuntu/andino_firmware
+    # devices:
+    #   - /dev/ttyUSB0

@@ -1,4 +1,4 @@
-//! Non-blocking serial interface using interrupt-driven I/O.
+//! Serial interface with non-blocking, interrupt-driven reads and blocking writes.
 
 use core::{cell::RefCell, convert::Infallible};
 
@@ -6,19 +6,19 @@ use arduino_hal::prelude::*;
 use avr_device::interrupt::{self, Mutex};
 use heapless::spsc::{Consumer, Producer, Queue};
 
-use super::{SerialString, SerialType, SERIAL_STRING_SIZE};
+use super::{SerialReaderType, SerialString, SerialType, SerialWriterType, SERIAL_STRING_SIZE};
 
 /// Global storage for the USART Serial peripheral, accessible from the ISR.
-static SERIAL: Mutex<RefCell<Option<SerialType>>> = Mutex::new(RefCell::new(None));
+static SERIAL: Mutex<RefCell<Option<SerialReaderType>>> = Mutex::new(RefCell::new(None));
 
 /// Producer end of the queue, used by the ISR to enqueue received bytes.
 static mut SERIAL_QUEUE_PRODUCER: Option<Producer<'static, u8>> = None;
 
-/// A non-blocking wrapper for Arduino's USART (Serial) interface using interrupt-driven I/O.
+/// A wrapper for Arduino's USART (Serial) interface with non-blocking reads and blocking writes.
 ///
 /// `SerialStream` receives data in the background via interrupts, storing incoming bytes
 /// in a lock-free queue. This allows the main program to check for available data and read
-/// it without blocking.
+/// it without blocking. Writing blocks until the bytes are sent.
 ///
 /// When the 64-byte receive buffer is full, new incoming data is dropped.
 ///
@@ -43,6 +43,7 @@ pub struct SerialStream {
     /// Consumer end of the queue for reading received bytes.
     consumer: Consumer<'static, u8>,
     cache: SerialString,
+    serial_writer: SerialWriterType,
 }
 
 impl SerialStream {
@@ -62,9 +63,11 @@ impl SerialStream {
         // Enable RX complete interrupt on the USART peripheral
         serial.listen(arduino_hal::hal::usart::Event::RxComplete);
 
+        let (serial_reader, serial_writer) = serial.split();
+
         // Store the serial peripheral for ISR access
         interrupt::free(|cs| {
-            SERIAL.borrow(cs).replace(Some(serial));
+            SERIAL.borrow(cs).replace(Some(serial_reader));
         });
 
         // Create a function-scoped static queue
@@ -79,6 +82,7 @@ impl SerialStream {
         Self {
             consumer,
             cache: SerialString::new(),
+            serial_writer,
         }
     }
 
@@ -118,10 +122,7 @@ impl SerialStream {
             .filter(|s| !s.is_empty())
     }
 
-    /// Writes a string to the serial interface.
-    ///
-    /// This is a blocking write operation that temporarily disables interrupts
-    /// to safely access the shared USART peripheral.
+    /// Writes a string to the serial interface, blocking until all bytes are sent.
     ///
     /// # Arguments
     /// * `s` - The string slice to write to the serial interface.
@@ -129,13 +130,7 @@ impl SerialStream {
     /// # Returns
     /// `Result<(), Infallible>` Result of writing operation.
     pub fn write(&mut self, s: &str) -> Result<(), Infallible> {
-        let mut result = Ok(());
-        interrupt::free(|cs| {
-            if let Some(serial) = SERIAL.borrow(cs).borrow_mut().as_mut() {
-                result = serial.write_str(s)
-            }
-        });
-        result
+        self.serial_writer.write_str(s)
     }
 }
 
