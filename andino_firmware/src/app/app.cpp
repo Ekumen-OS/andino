@@ -66,11 +66,7 @@
 
 #include <stdio.h>
 
-#include <Adafruit_BNO055.h>
-#include <Adafruit_Sensor.h>
 #include <Arduino.h>
-#include <Wire.h>
-#include <utility/imumaths.h>
 
 #include "andino/app/commands.h"
 #include "andino/app/constants.h"
@@ -108,10 +104,7 @@ void App::setup() {
   shell_.register_command(Commands::kReadEncodersAndImu, cmd_read_encoders_and_imu_cb, this);
 
   // Initialize IMU sensor.
-  if (bno055_imu_.begin()) {
-    bno055_imu_.setExtCrystalUse(true);
-    is_imu_connected = true;
-  }
+  is_imu_connected = imu_.begin();
 }
 
 void App::loop() {
@@ -272,40 +265,33 @@ void App::cmd_read_encoders_and_imu_cb(void* context, int, char**) {
   Serial.print(app->right_encoder_.read());
   Serial.print(" ");
 
-  // Retrieve absolute orientation (quaternion). See
-  // https://learn.adafruit.com/adafruit-bno055-absolute-orientation-sensor/overview for further
-  // information.
-  imu::Quaternion orientation = app->bno055_imu_.getQuat();
-  Serial.print(orientation.x(), 4);
+  // Retrieve absolute orientation (quaternion).
+  Imu::Orientation orientation = app->imu_.get_orientation();
+  Serial.print(orientation.x, 4);
   Serial.print(" ");
-  Serial.print(orientation.y(), 4);
+  Serial.print(orientation.y, 4);
   Serial.print(" ");
-  Serial.print(orientation.z(), 4);
+  Serial.print(orientation.z, 4);
   Serial.print(" ");
-  Serial.print(orientation.w(), 4);
+  Serial.print(orientation.w, 4);
   Serial.print(" ");
 
-  // Retrieve angular velocity (rad/s). See
-  // https://learn.adafruit.com/adafruit-bno055-absolute-orientation-sensor/overview for further
-  // information.
-  imu::Vector<3> angular_velocity = app->bno055_imu_.getVector(Adafruit_BNO055::VECTOR_GYROSCOPE);
-  Serial.print(angular_velocity.x());
+  // Retrieve angular velocity (rad/s).
+  Imu::Vector3 angular_velocity = app->imu_.get_angular_velocity();
+  Serial.print(angular_velocity.x);
   Serial.print(" ");
-  Serial.print(angular_velocity.y());
+  Serial.print(angular_velocity.y);
   Serial.print(" ");
-  Serial.print(angular_velocity.z());
+  Serial.print(angular_velocity.z);
   Serial.print(" ");
 
-  // Retrieve linear acceleration (m/s^2). See
-  // https://learn.adafruit.com/adafruit-bno055-absolute-orientation-sensor/overview for further
-  // information.
-  imu::Vector<3> linear_acceleration =
-      app->bno055_imu_.getVector(Adafruit_BNO055::VECTOR_LINEARACCEL);
-  Serial.print(linear_acceleration.x());
+  // Retrieve linear acceleration (m/s^2).
+  Imu::Vector3 linear_acceleration = app->imu_.get_linear_acceleration();
+  Serial.print(linear_acceleration.x);
   Serial.print(" ");
-  Serial.print(linear_acceleration.y());
+  Serial.print(linear_acceleration.y);
   Serial.print(" ");
-  Serial.print(linear_acceleration.z());
+  Serial.print(linear_acceleration.z);
 }
 
 void App::adjust_motors_speed() {
