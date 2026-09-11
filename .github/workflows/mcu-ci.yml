@@ -32,13 +32,26 @@ name: MCU CI
 on:
   push:
     branches:
-      - humble
+      - main
   pull_request:
     branches:
-      - humble
+      - main
   workflow_dispatch:
 
 jobs:
+  lint:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-python@v4
+        with:
+          python-version: '3.9'
+      - name: Run pre-commit checks (formatting and style linting)
+        run: |
+          pip install pre-commit
+          pre-commit run --show-diff-on-failure --files $(git ls-files andino_firmware)
+
   build_and_test:
     runs-on: ubuntu-latest
 
