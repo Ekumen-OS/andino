@@ -32,13 +32,13 @@
 
 #include <gflags/gflags.h>
 
-#include "andino_base/motor_driver.h"
+#include "andino_base/serial_mcu.h"
 
 DEFINE_string(serial_port, "/dev/ttyUSB0", "Serial port");
 DEFINE_int32(baud_rate, 57600, "Baud rate");
 DEFINE_int32(timeout_ms, 1000, "Timeout in milliseconds for receiving a response from the Microcontroller");
 
-DEFINE_string(msg, "e", "Motor driver message(default read encoders)");
+DEFINE_string(msg, "e", "MCU message(default read encoders)");
 
 namespace andino_base {
 namespace applications {
@@ -46,9 +46,9 @@ namespace applications {
 // Returns a string with the usage message.
 std::string GetUsageMessage() {
   std::stringstream ss;
-  ss << "CLI for easy test of the MotorDriver class" << std::endl << std::endl;
-  ss << "  motor_driver_demo --serial_port=/dev/ttyUSB0 --msg='e' " << std::endl << std::endl;
-  ss << "  motor_driver_demo --msg='o 255 255' " << std::endl << std::endl;
+  ss << "CLI for easy test of the SerialMcu class" << std::endl << std::endl;
+  ss << "  serial_mcu_demo --serial_port=/dev/ttyUSB0 --msg='e' " << std::endl << std::endl;
+  ss << "  serial_mcu_demo --msg='o 255 255' " << std::endl << std::endl;
   return ss.str();
 }
 
@@ -56,15 +56,16 @@ int Main(int argc, char* argv[]) {
   gflags::SetUsageMessage(GetUsageMessage());
   gflags::ParseCommandLineFlags(&argc, &argv, true);
 
-  MotorDriver motor_driver;
-  motor_driver.Setup(FLAGS_serial_port, FLAGS_baud_rate, FLAGS_timeout_ms);
+  SerialMcu serial_mcu;
+  serial_mcu.setup(FLAGS_serial_port, FLAGS_baud_rate, FLAGS_timeout_ms);
 
-  std::cout << "Motor driver is connected: " << (motor_driver.is_connected() ? "True" : "False") << std::endl;
+  std::cout << "MCU is connected: " << (serial_mcu.is_connected() ? "True" : "False") << std::endl;
 
   // Send message
-  std::cout << "Sending message: " << FLAGS_msg << std::endl;
-  const std::string response = motor_driver.SendMsg(FLAGS_msg);
-  std::cout << "Response: " << response << std::endl;
+  // TODO(jballoffet): Change to use public API.
+  // std::cout << "Sending message: " << FLAGS_msg << std::endl;
+  // const std::string response = serial_mcu.SendMsg(FLAGS_msg);
+  // std::cout << "Response: " << response << std::endl;
   return 0;
 }
 

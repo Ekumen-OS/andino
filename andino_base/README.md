@@ -7,8 +7,8 @@ The hardware-software-ros interaction in the `andino` project is developed using
 This package:
  - Implements `andino`'s [hardware interface](https://control.ros.org/master/doc/ros2_control/hardware_interface/doc/writing_new_hardware_interface.html).
  - Provides a communication with microcontroller:
-   - `andino_base::MotorDriver` class is in charge of the Serial communication for commanding the motors.
-     - An application is provided for evaluating the communication: Check `applications/motor_driver_demo.cpp`. To use this application simply execute `motor_driver_demo --help` to see the options.
+   - `andino_base::SerialMcu` class (implementing the `andino_base::Mcu` interface) is in charge of the Serial communication with `andino_firmware`, exposing its full command set (motors, encoders, PID tuning, GPIOs and IMU).
+     - An application is provided for evaluating the communication: Check `applications/serial_mcu_demo.cpp`. To use this application simply execute `serial_mcu_demo --help` to see the options.
    - This communication module is used by the hardware interface implementation.
 
 ## Hardware Interface
@@ -40,12 +40,12 @@ This hardware interface uses the following command interfaces per joint (for lef
  - *Velocity*: The velocity received (rad/s) is traduced to microcontroller's velocity nomenclature for the motors.
 
 
-## Motor Driver Application
+## Serial MCU Application
 
 An application for testing the connection with the microcontroller is provided.
-After installing this package the application called `motor_driver_demo` can be used.
+After installing this package the application called `serial_mcu_demo` can be used.
 ```
-motor_driver_demo --help
+serial_mcu_demo --help
 ```
 
 This application allows verifying the communication with the microcontroller for controlling the motors. Commands for reading the encoders or individually setting a velocity for the motors is some of the possibilities.

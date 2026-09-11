@@ -27,7 +27,7 @@
 // CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
 // OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-#include "andino_base/motor_driver.h"
+#include "andino_base/serial_mcu.h"
 
 #include <chrono>
 #include <cstdlib>
@@ -37,7 +37,7 @@
 
 namespace andino_base {
 
-void MotorDriver::Setup(const std::string& serial_device, int32_t baud_rate, int32_t timeout_ms) {
+void SerialMcu::setup(const std::string& serial_device, int32_t baud_rate, int32_t timeout_ms) {
   timeout_ms_ = timeout_ms;
   try {
     serial_port_.Open(serial_device);
@@ -66,39 +66,64 @@ void MotorDriver::Setup(const std::string& serial_device, int32_t baud_rate, int
   serial_port_.FlushIOBuffers();
 }
 
-bool MotorDriver::is_connected() const { return serial_port_.IsOpen(); }
+bool SerialMcu::is_connected() const { return serial_port_.IsOpen(); }
 
-void MotorDriver::SendEmptyMsg() { std::string response = SendMsg(""); }
+void SerialMcu::reset_encoders() { send_message("r"); }
 
-MotorDriver::Encoders MotorDriver::ReadEncoderValues() {
+SerialMcu::EncodersData SerialMcu::read_encoders() {
   static const std::string delimiter = " ";
 
-  const std::string response = SendMsg("e");
+  const std::string response = send_message("e");
   const size_t del_pos = response.find(delimiter);
   const std::string token_1 = response.substr(0, del_pos).c_str();
   const std::string token_2 = response.substr(del_pos + delimiter.length()).c_str();
   return {std::atoi(token_1.c_str()), std::atoi(token_2.c_str())};
 }
 
-void MotorDriver::SetMotorValues(int val_1, int val_2) {
-  std::stringstream ss;
-  ss << "m " << val_1 << " " << val_2;
-  SendMsg(ss.str());
+bool SerialMcu::is_imu_available() { return std::atoi(send_message("h").c_str()) != 0; }
+
+SerialMcu::EncodersAndImuData SerialMcu::read_encoders_and_imu() {
+  static const std::string delimiter = " ";
+
+  const std::string response = send_message("i");
+
+  std::istringstream iss(response);
+  EncodersAndImuData encoders_and_imu_data;
+  iss >> encoders_and_imu_data.encoders_data[0] >> encoders_and_imu_data.encoders_data[1];
+  iss >> encoders_and_imu_data.imu_data.orientation[0] >> encoders_and_imu_data.imu_data.orientation[1] >>
+      encoders_and_imu_data.imu_data.orientation[2] >> encoders_and_imu_data.imu_data.orientation[3];
+  iss >> encoders_and_imu_data.imu_data.angular_velocity[0] >> encoders_and_imu_data.imu_data.angular_velocity[1] >>
+      encoders_and_imu_data.imu_data.angular_velocity[2];
+  iss >> encoders_and_imu_data.imu_data.linear_acceleration[0] >>
+      encoders_and_imu_data.imu_data.linear_acceleration[1] >> encoders_and_imu_data.imu_data.linear_acceleration[2];
+  return encoders_and_imu_data;
 }
 
-void MotorDriver::SetPidValues(float k_p, float k_d, float k_i, float k_o) {
+void SerialMcu::set_motors_speed(int left_motor_speed, int right_motor_speed) {
   std::stringstream ss;
-  ss << "u " << k_p << ":" << k_d << ":" << k_i << ":" << k_o;
-  SendMsg(ss.str());
+  ss << "m " << left_motor_speed << " " << right_motor_speed;
+  send_message(ss.str());
 }
 
-std::string MotorDriver::SendMsg(const std::string& msg) {
+void SerialMcu::set_motors_pwm(int left_motor_pwm, int right_motor_pwm) {
+  std::stringstream ss;
+  ss << "o " << left_motor_pwm << " " << right_motor_pwm;
+  send_message(ss.str());
+}
+
+void SerialMcu::set_pid_tuning_gains(float kp, float kd, float ki, float ko) {
+  std::stringstream ss;
+  ss << "u " << kp << ":" << kd << ":" << ki << ":" << ko;
+  send_message(ss.str());
+}
+
+std::string SerialMcu::send_message(const std::string& msg) {
   // Add carriage return to the message.
   const std::string msg_to_send = msg + '\r';
   // Send the message.
   serial_port_.Write(msg_to_send);
 
-  // Get response from the motor driver.
+  // Get response from the microcontroller.
   std::string response;
   try {
     serial_port_.ReadLine(response, '\n', timeout_ms_);
