@@ -1,0 +1,14 @@
+# pkg-config file for libserial installed via apt (libserial-dev) on x86_64.
+#
+# This file uses hardcoded absolute paths because the conda-provided pkg-config
+# binary auto-rewrites 'prefix' based on the .pc file location, which yields
+# the wrong path for multiarch directories (/usr/lib/x86_64-linux-gnu/pkgconfig
+# → prefix=/usr/lib instead of /usr).
+#
+# activate.sh adds pkgconfig/x86_64/ to PKG_CONFIG_PATH on x86_64 hosts so
+# this file takes precedence over the system-installed one.
+Name: libserial
+Description: C++ Serial port library
+Version: 1.0.0
+Libs: -L/usr/lib/x86_64-linux-gnu -lserial
+Cflags: -I/usr/include

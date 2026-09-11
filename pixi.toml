@@ -1,0 +1,162 @@
+[workspace]
+name = "andino"
+version = "0.2.0"
+description = "ROS 2 open-source differential drive robot"
+channels = ["conda-forge"]
+platforms = ["linux-64", "linux-aarch64"]
+
+[activation]
+# Sources the colcon-generated workspace setup script when available.
+# Run `pixi run build` first; this is a no-op on a clean checkout.
+scripts = ["activate.sh"]
+
+# ---------------------------------------------------------------------------
+# Common build dependencies (distro-independent, non-Python)
+# Python-based build tools (colcon, cmake, compilers) are bundled in
+# ros-dev-tools inside each feature so they resolve under the same Python
+# constraint as the ROS distro (ros2-distro-mutex pins a specific Python
+# version per distro).
+# ---------------------------------------------------------------------------
+[dependencies]
+# gflags is used by the motor_driver_demo application in andino_base
+gflags = "*"
+# NOTE: libserial (libserial-dev) is NOT available in conda-forge.
+# Install it from your system package manager before running `pixi run build`:
+#   sudo apt install libserial-dev
+
+# ---------------------------------------------------------------------------
+# Tasks
+# ---------------------------------------------------------------------------
+[tasks]
+build = { cmd = "colcon build --symlink-install", inputs = [
+    "andino_base",
+    "andino_bringup",
+    "andino_control",
+    "andino_description",
+    "andino_firmware",
+    "andino_hardware",
+    "andino_navigation",
+    "andino_slam",
+] }
+test = { cmd = "colcon test --event-handlers console_cohesion+", depends-on = [
+    "build",
+] }
+bringup = "ros2 launch andino_bringup andino_robot.launch.py"
+teleop-keyboard = "ros2 launch andino_bringup teleop_keyboard.launch.py"
+teleop-joystick = "ros2 launch andino_bringup teleop_joystick.launch.py"
+view-description = "ros2 launch andino_description view_andino.launch.py"
+
+# ---------------------------------------------------------------------------
+# ROS 2 Humble feature
+# ---------------------------------------------------------------------------
+[feature.humble]
+channels = ["robostack-humble", "conda-forge"]
+
+[feature.humble.dependencies]
+# Pin the distro mutex so the solver selects only Humble packages even when
+# robostack-jazzy is also listed as a channel in the workspace.
+ros2-distro-mutex = "0.8.*"
+# ros-dev-tools bundles colcon, cmake, compilers, pkg-config, ninja, setuptools
+ros-dev-tools = "*"
+# Base desktop install
+ros-humble-desktop = "*"
+# andino_base
+ros-humble-hardware-interface = "*"
+ros-humble-rclcpp-lifecycle = "*"
+ros-humble-pluginlib = "*"
+ros-humble-controller-manager = "*"
+ros-humble-joint-state-broadcaster = "*"
+# andino_bringup
+ros-humble-rplidar-ros = "*"
+ros-humble-teleop-twist-joy = "*"
+ros-humble-teleop-twist-keyboard = "*"
+ros-humble-joy-linux = "*"
+ros-humble-v4l2-camera = "*"
+ros-humble-laser-filters = "*"
+ros-humble-rosbag2-storage-mcap = "*"
+ros-humble-twist-mux = "*"
+# andino_control
+ros-humble-diff-drive-controller = "*"
+ros-humble-ros2controlcli = "*"
+ros-humble-topic-tools = "*"
+# andino_description
+ros-humble-joint-state-publisher-gui = "*"
+ros-humble-robot-state-publisher = "*"
+ros-humble-ros2launch = "*"
+ros-humble-rviz2 = "*"
+ros-humble-xacro = "*"
+# andino_navigation
+ros-humble-launch-ros = "*"
+ros-humble-navigation2 = "*"
+ros-humble-nav2-bringup = "*"
+# andino_slam
+ros-humble-slam-toolbox = "*"
+# Test / lint dependencies
+ros-humble-ament-cmake-clang-format = "*"
+ros-humble-ament-lint-auto = "*"
+ros-humble-ament-lint-common = "*"
+ros-humble-ament-cmake-pytest = "*"
+ros-humble-ament-index-python = "*"
+
+# ---------------------------------------------------------------------------
+# ROS 2 Jazzy feature
+# ---------------------------------------------------------------------------
+[feature.jazzy]
+channels = ["robostack-jazzy", "conda-forge"]
+
+[feature.jazzy.dependencies]
+# Pin the distro mutex so the solver selects only Jazzy packages even when
+# robostack-humble is also listed as a channel in the workspace.
+ros2-distro-mutex = "0.14.*"
+# ros-dev-tools bundles colcon, cmake, compilers, pkg-config, ninja, setuptools
+ros-dev-tools = "*"
+# Base desktop install
+ros-jazzy-desktop = "*"
+# andino_base
+ros-jazzy-hardware-interface = "*"
+ros-jazzy-rclcpp-lifecycle = "*"
+ros-jazzy-pluginlib = "*"
+ros-jazzy-controller-manager = "*"
+ros-jazzy-joint-state-broadcaster = "*"
+# andino_bringup
+ros-jazzy-rplidar-ros = "*"
+ros-jazzy-teleop-twist-joy = "*"
+ros-jazzy-teleop-twist-keyboard = "*"
+ros-jazzy-joy-linux = "*"
+ros-jazzy-v4l2-camera = "*"
+ros-jazzy-laser-filters = "*"
+ros-jazzy-rosbag2-storage-mcap = "*"
+ros-jazzy-twist-mux = "*"
+# andino_control
+ros-jazzy-diff-drive-controller = "*"
+ros-jazzy-ros2controlcli = "*"
+ros-jazzy-topic-tools = "*"
+# andino_description
+ros-jazzy-joint-state-publisher-gui = "*"
+ros-jazzy-robot-state-publisher = "*"
+ros-jazzy-ros2launch = "*"
+ros-jazzy-rviz2 = "*"
+ros-jazzy-xacro = "*"
+# andino_navigation
+ros-jazzy-launch-ros = "*"
+ros-jazzy-navigation2 = "*"
+ros-jazzy-nav2-bringup = "*"
+# andino_slam
+ros-jazzy-slam-toolbox = "*"
+# Test / lint dependencies
+ros-jazzy-ament-cmake-clang-format = "*"
+ros-jazzy-ament-lint-auto = "*"
+ros-jazzy-ament-lint-common = "*"
+ros-jazzy-ament-cmake-pytest = "*"
+ros-jazzy-ament-index-python = "*"
+
+# ---------------------------------------------------------------------------
+# Environments
+# ---------------------------------------------------------------------------
+[environments]
+# Default environment uses ROS 2 Humble (matches the Docker default).
+# Use `pixi run -e jazzy <task>` to run tasks against Jazzy.
+# Each environment is in its own solve-group so the humble/jazzy
+# ros2-distro-mutex pins never conflict during dependency resolution.
+default = { features = ["humble"], solve-group = "humble" }
+jazzy = { features = ["jazzy"], solve-group = "jazzy" }
