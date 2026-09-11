@@ -29,6 +29,8 @@
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #pragma once
 
+#include <stdint.h>
+
 #include "andino/hal/digital_out.h"
 
 namespace andino {
@@ -39,16 +41,16 @@ class DigitalOutArduino : public DigitalOut {
   /// @brief Constructs a DigitalOutArduino using the specified GPIO pin.
   ///
   /// @param gpio_pin GPIO pin.
-  explicit DigitalOutArduino(const int gpio_pin) : gpio_pin_(gpio_pin) {
+  explicit DigitalOutArduino(const uint8_t gpio_pin) : gpio_pin_(gpio_pin) {
   }
 
   void begin() const override;
 
-  void write(int value) const override;
+  void write(uint8_t value) const override;
 
  private:
   /// GPIO pin.
-  const int gpio_pin_;
+  const uint8_t gpio_pin_;
 };
 
 }  // namespace andino

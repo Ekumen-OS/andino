@@ -145,7 +145,7 @@ void App::cmd_read_analog_gpio_cb(void*, int argc, char** argv) {
     return;
   }
 
-  const int pin = atoi(argv[1]);
+  const uint8_t pin = static_cast<uint8_t>(atoi(argv[1]));
   Serial.println(analogRead(pin));
 }
 
@@ -154,7 +154,7 @@ void App::cmd_read_digital_gpio_cb(void*, int argc, char** argv) {
     return;
   }
 
-  const int pin = atoi(argv[1]);
+  const uint8_t pin = static_cast<uint8_t>(atoi(argv[1]));
   Serial.println(digitalRead(pin));
 }
 

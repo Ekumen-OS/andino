@@ -77,7 +77,7 @@ void InterruptInArduino::attach(InterruptCallback callback) const {
   }
 
   // Ports B, C and D values are 2, 3 and 4 correspondingly.
-  port -= 2;
+  port = static_cast<uint8_t>(port - 2);
 
   // Set corresponding bit in the appropriate Pin Change Mask register.
   *(kPortToPCMask[port]) |= bit_mask;

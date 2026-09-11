@@ -27,7 +27,16 @@
 // CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
 // OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+// Silence warnings from this vendored, third-party header that we don't control (its templated
+// matrix/vector math implicitly narrows integer types).
+#if defined(__GNUC__)
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wconversion"
+#endif
 #include <Adafruit_BNO055.h>
+#if defined(__GNUC__)
+#pragma GCC diagnostic pop
+#endif
 #include <Wire.h>
 
 #include "andino/app/app.h"

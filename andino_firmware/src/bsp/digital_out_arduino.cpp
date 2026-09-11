@@ -37,7 +37,7 @@ void DigitalOutArduino::begin() const {
   pinMode(gpio_pin_, OUTPUT);
 }
 
-void DigitalOutArduino::write(int value) const {
+void DigitalOutArduino::write(uint8_t value) const {
   digitalWrite(gpio_pin_, value);
 }
 

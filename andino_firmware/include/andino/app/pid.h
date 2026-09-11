@@ -49,7 +49,7 @@ class Pid {
   /// @brief Resets the PID controller.
   ///
   /// @param encoder_count Current encoder value.
-  void reset(int encoder_count);
+  void reset(long encoder_count);
 
   /// @brief Returns if the PID controller is enabled or not.
   bool enabled();
@@ -64,7 +64,7 @@ class Pid {
   ///
   /// @param encoder_count Current encoder value.
   /// @param computed_output Computed output value.
-  void compute(int encoder_count, int& computed_output);
+  void compute(long encoder_count, int& computed_output);
 
   /// @brief Sets the setpoint.
   ///

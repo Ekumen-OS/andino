@@ -29,6 +29,8 @@
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #pragma once
 
+#include <stdint.h>
+
 #include "andino/hal/pwm_out.h"
 
 namespace andino {
@@ -39,7 +41,7 @@ class PwmOutArduino : public PwmOut {
   /// @brief Constructs a PwmOutArduino using the specified GPIO pin.
   ///
   /// @param gpio_pin GPIO pin.
-  explicit PwmOutArduino(const int gpio_pin) : gpio_pin_(gpio_pin) {
+  explicit PwmOutArduino(const uint8_t gpio_pin) : gpio_pin_(gpio_pin) {
   }
 
   void begin() const override;
@@ -48,7 +50,7 @@ class PwmOutArduino : public PwmOut {
 
  private:
   /// GPIO pin.
-  const int gpio_pin_;
+  const uint8_t gpio_pin_;
 };
 
 }  // namespace andino

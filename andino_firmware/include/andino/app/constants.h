@@ -49,7 +49,7 @@ struct Constants {
   /// @brief PID computation rate [Hz].
   static constexpr int kPidRate{30};
   /// @brief PID computation period [ms].
-  static constexpr double kPidPeriod{1000 / kPidRate};
+  static constexpr long kPidPeriod{1000 / kPidRate};
   /// @brief PID default tuning proportional gain.
   static constexpr int kPidKp{30};
   /// @brief PID default tuning derivative gain.
