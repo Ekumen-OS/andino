@@ -113,7 +113,7 @@ void SerialMcu::set_motors_pwm(int left_motor_pwm, int right_motor_pwm) {
 
 void SerialMcu::set_pid_tuning_gains(float kp, float kd, float ki, float ko) {
   std::stringstream ss;
-  ss << "u " << kp << ":" << kd << ":" << ki << ":" << ko;
+  ss << "u " << kp << " " << kd << " " << ki << " " << ko;
   send_message(ss.str());
 }
 
