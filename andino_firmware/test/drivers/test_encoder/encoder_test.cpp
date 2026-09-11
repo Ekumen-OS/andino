@@ -127,6 +127,14 @@ TEST_F(EncoderTest, ReadDecreasingTicksCount) {
   EXPECT_EQ(encoder_.read(), -3);
 }
 
+TEST_F(EncoderTest, ReadChannelsDigitalValues) {
+  EXPECT_CALL(channel_a_interrupt_in_, read()).Times(1).WillOnce(Return(1));
+  EXPECT_CALL(channel_b_interrupt_in_, read()).Times(1).WillOnce(Return(0));
+
+  EXPECT_EQ(encoder_.read_channel_a(), 1);
+  EXPECT_EQ(encoder_.read_channel_b(), 0);
+}
+
 TEST_F(EncoderTest, ResetTicksCount) {
   EXPECT_CALL(channel_a_interrupt_in_, read())
       .Times(3)
