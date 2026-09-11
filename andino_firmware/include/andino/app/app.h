@@ -86,7 +86,8 @@ class App {
         left_pid_controller_(Constants::kPidKp, Constants::kPidKd, Constants::kPidKi,
                              Constants::kPidKo, -Constants::kPwmMax, Constants::kPwmMax),
         right_pid_controller_(Constants::kPidKp, Constants::kPidKd, Constants::kPidKi,
-                              Constants::kPidKo, -Constants::kPwmMax, Constants::kPwmMax) {
+                              Constants::kPidKo, -Constants::kPwmMax, Constants::kPwmMax),
+        shell_() {
   }
 
   // Delete copy and move operations to enforce unique reference ownership.

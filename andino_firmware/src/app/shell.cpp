@@ -90,7 +90,7 @@ void Shell::parse_message() {
   char* saveptr = nullptr;
 
   argv[argc] = strtok_r(message_buffer_, " ", &saveptr);
-  while (argv[argc] != NULL && argc < (kCommandArgMax - 1)) {
+  while (argc < (kCommandArgMax - 1) && argv[argc] != NULL) {
     argv[++argc] = strtok_r(NULL, " ", &saveptr);
   }
 
