@@ -56,6 +56,8 @@ def generate_launch_description():
                 'image_size': [640, 480],
                 'camera_frame_id': 'camera_link',
                 'camera_info_url': LaunchConfiguration('intrinsic_params_file'),
+                'vertical_flip': False,
+                'horizontal_flip': False,
             }],
         )
     ])
