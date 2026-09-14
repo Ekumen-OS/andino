@@ -87,22 +87,36 @@ void Encoder::callback_1() {
 }
 
 Encoder* Encoder::instances_[kInstancesMax] = {nullptr, nullptr};
-int Encoder::instance_count_ = 0;
+
+Encoder::~Encoder() {
+  if (instance_index_ >= 0) {
+    instances_[instance_index_] = nullptr;
+  }
+}
 
 void Encoder::begin() {
-  // The current implementation only supports two instances of this class to be constructed. This
+  // Take the first free static callback wrapper, keeping the one already taken if this instance
+  // was initialized before. Initializing more instances than there are wrappers is a no-op, which
   // prevents reaching a buffer overflow.
-  if (instance_count_ == kInstancesMax) {
+  if (instance_index_ < 0) {
+    for (int i = 0; i < kInstancesMax; i++) {
+      if (instances_[i] == nullptr) {
+        instance_index_ = i;
+        break;
+      }
+    }
+  }
+
+  if (instance_index_ < 0) {
     return;
   }
 
   channel_a_interrupt_in_->begin();
-  channel_a_interrupt_in_->attach(kCallbacks[instance_count_]);
+  channel_a_interrupt_in_->attach(kCallbacks[instance_index_]);
   channel_b_interrupt_in_->begin();
-  channel_b_interrupt_in_->attach(kCallbacks[instance_count_]);
+  channel_b_interrupt_in_->attach(kCallbacks[instance_index_]);
 
-  instances_[instance_count_] = this;
-  instance_count_++;
+  instances_[instance_index_] = this;
 }
 
 long Encoder::read() {

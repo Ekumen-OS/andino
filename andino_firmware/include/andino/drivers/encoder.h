@@ -72,7 +72,9 @@ namespace andino {
 
 /// @brief This class allows to use a quadrature encoder by configuring it and then getting its
 /// ticks count value.
-/// @note The current implementation only supports two instances of this class to be constructed.
+/// @note The current implementation only supports two instances of this class to be initialized
+/// at a time, as the interrupt inputs take a plain function pointer and there is one static
+/// callback wrapper per supported instance. An instance releases its wrapper upon destruction.
 class Encoder {
  public:
   /// @brief Constructs a new Encoder object.
@@ -83,6 +85,15 @@ class Encoder {
       : channel_a_interrupt_in_(channel_a_interrupt_in),
         channel_b_interrupt_in_(channel_b_interrupt_in) {
   }
+
+  /// @brief Destructs the Encoder object, releasing its static callback wrapper.
+  ~Encoder();
+
+  // Delete copy and move operations, as instances register themselves in a static table.
+  Encoder(const Encoder&) = delete;
+  Encoder& operator=(const Encoder&) = delete;
+  Encoder(Encoder&&) = delete;
+  Encoder& operator=(Encoder&&) = delete;
 
   /// @brief Initializes the encoder.
   void begin();
@@ -148,11 +159,11 @@ class Encoder {
   /// Channels interrupt callback.
   void callback();
 
-  /// Holds references to the constructed Encoder instances.
+  /// Holds references to the initialized Encoder instances.
   static Encoder* instances_[kInstancesMax];
 
-  /// Number of constructed Encoder instances.
-  static int instance_count_;
+  /// Index of the static callback wrapper taken by this instance, or -1 if it holds none.
+  int instance_index_{-1};
 
   /// Digital interrupt input connected to encoder channel A pin.
   const InterruptIn* channel_a_interrupt_in_;

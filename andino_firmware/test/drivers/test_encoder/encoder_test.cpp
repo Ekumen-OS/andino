@@ -51,33 +51,71 @@ class MockInterruptIn : public andino::InterruptIn {
 
 class EncoderTest : public testing::Test {
  protected:
-  MockInterruptIn channel_a_interrupt_in_;
-  MockInterruptIn channel_b_interrupt_in_;
+  /// @brief Initializes the encoder and captures the callback attached to its channels, which the
+  /// tests invoke to simulate a channels transition.
+  void initialize_encoder() {
+    ON_CALL(channel_a_interrupt_in_, attach(_))
+        .WillByDefault(::testing::SaveArg<0>(&channel_callback_));
+    ON_CALL(channel_b_interrupt_in_, attach(_))
+        .WillByDefault(::testing::SaveArg<0>(&channel_callback_));
+
+    encoder_.begin();
+    ASSERT_NE(channel_callback_, nullptr);
+  }
+
+  ::testing::NiceMock<MockInterruptIn> channel_a_interrupt_in_;
+  ::testing::NiceMock<MockInterruptIn> channel_b_interrupt_in_;
   andino::Encoder encoder_{&channel_a_interrupt_in_, &channel_b_interrupt_in_};
+  andino::InterruptIn::InterruptCallback channel_callback_{nullptr};
 };
 
-static andino::InterruptIn::InterruptCallback channel_a_callback_{nullptr};
-static andino::InterruptIn::InterruptCallback channel_b_callback_{nullptr};
-
 TEST_F(EncoderTest, Initialize) {
+  andino::InterruptIn::InterruptCallback channel_a_callback{nullptr};
+  andino::InterruptIn::InterruptCallback channel_b_callback{nullptr};
+
   EXPECT_CALL(channel_a_interrupt_in_, begin()).Times(1);
   EXPECT_CALL(channel_b_interrupt_in_, begin()).Times(1);
   EXPECT_CALL(channel_a_interrupt_in_, attach(_))
       .Times(1)
-      .WillOnce(::testing::SaveArg<0>(&channel_a_callback_));
+      .WillOnce(::testing::SaveArg<0>(&channel_a_callback));
   EXPECT_CALL(channel_b_interrupt_in_, attach(_))
       .Times(1)
-      .WillOnce(::testing::SaveArg<0>(&channel_b_callback_));
+      .WillOnce(::testing::SaveArg<0>(&channel_b_callback));
 
   encoder_.begin();
 
   // Current implementation requires both channels to call the same callback function.
-  EXPECT_NE(channel_a_callback_, nullptr);
-  EXPECT_NE(channel_b_callback_, nullptr);
-  EXPECT_EQ(channel_a_callback_, channel_b_callback_);
+  EXPECT_NE(channel_a_callback, nullptr);
+  EXPECT_NE(channel_b_callback, nullptr);
+  EXPECT_EQ(channel_a_callback, channel_b_callback);
+}
+
+TEST_F(EncoderTest, ReleasesItsCallbackWrapperUponDestruction) {
+  // Only two instances can be initialized at a time, so an initialized instance going out of
+  // scope must release its callback wrapper for a later instance to take.
+  initialize_encoder();
+
+  {
+    ::testing::NiceMock<MockInterruptIn> second_channel_a;
+    ::testing::NiceMock<MockInterruptIn> second_channel_b;
+    andino::Encoder second_encoder{&second_channel_a, &second_channel_b};
+    second_encoder.begin();
+  }
+
+  ::testing::NiceMock<MockInterruptIn> third_channel_a;
+  ::testing::NiceMock<MockInterruptIn> third_channel_b;
+  andino::Encoder third_encoder{&third_channel_a, &third_channel_b};
+
+  // The wrapper released by the second instance is taken by the third one.
+  EXPECT_CALL(third_channel_a, attach(_)).Times(1);
+  EXPECT_CALL(third_channel_b, attach(_)).Times(1);
+
+  third_encoder.begin();
 }
 
 TEST_F(EncoderTest, ReadIncreasingTicksCount) {
+  initialize_encoder();
+
   EXPECT_CALL(channel_a_interrupt_in_, read())
       .Times(4)
       .WillOnce(Return(0))
@@ -92,17 +130,19 @@ TEST_F(EncoderTest, ReadIncreasingTicksCount) {
       .WillOnce(Return(1));
 
   EXPECT_EQ(encoder_.read(), 0);
-  channel_a_callback_();
+  channel_callback_();
   EXPECT_EQ(encoder_.read(), 0);
-  channel_a_callback_();
+  channel_callback_();
   EXPECT_EQ(encoder_.read(), 1);
-  channel_a_callback_();
+  channel_callback_();
   EXPECT_EQ(encoder_.read(), 2);
-  channel_a_callback_();
+  channel_callback_();
   EXPECT_EQ(encoder_.read(), 3);
 }
 
 TEST_F(EncoderTest, ReadDecreasingTicksCount) {
+  initialize_encoder();
+
   EXPECT_CALL(channel_a_interrupt_in_, read())
       .Times(4)
       .WillOnce(Return(0))
@@ -117,13 +157,13 @@ TEST_F(EncoderTest, ReadDecreasingTicksCount) {
       .WillOnce(Return(0));
 
   EXPECT_EQ(encoder_.read(), 0);
-  channel_a_callback_();
+  channel_callback_();
   EXPECT_EQ(encoder_.read(), 0);
-  channel_a_callback_();
+  channel_callback_();
   EXPECT_EQ(encoder_.read(), -1);
-  channel_a_callback_();
+  channel_callback_();
   EXPECT_EQ(encoder_.read(), -2);
-  channel_a_callback_();
+  channel_callback_();
   EXPECT_EQ(encoder_.read(), -3);
 }
 
@@ -136,6 +176,8 @@ TEST_F(EncoderTest, ReadChannelsDigitalValues) {
 }
 
 TEST_F(EncoderTest, ResetTicksCount) {
+  initialize_encoder();
+
   EXPECT_CALL(channel_a_interrupt_in_, read())
       .Times(3)
       .WillOnce(Return(0))
@@ -148,11 +190,11 @@ TEST_F(EncoderTest, ResetTicksCount) {
       .WillOnce(Return(1));
 
   EXPECT_EQ(encoder_.read(), 0);
-  channel_a_callback_();
+  channel_callback_();
   EXPECT_EQ(encoder_.read(), 0);
-  channel_a_callback_();
+  channel_callback_();
   EXPECT_EQ(encoder_.read(), 1);
-  channel_a_callback_();
+  channel_callback_();
   EXPECT_EQ(encoder_.read(), 2);
   encoder_.reset();
   EXPECT_EQ(encoder_.read(), 0);
