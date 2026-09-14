@@ -31,9 +31,8 @@
 
 namespace andino {
 
-/// @brief This class allows to use an IMU sensor by configuring it and then getting its
-/// orientation, angular velocity and linear acceleration readings. It is backed by an Adafruit
-/// BNO055 sensor.
+/// @brief This class defines an interface for IMU sensors, which provide orientation, angular
+/// velocity and linear acceleration readings.
 class Imu {
  public:
   /// @brief Absolute orientation as a quaternion.
@@ -75,25 +74,31 @@ class Imu {
     double z{0.0};
   };
 
+  /// @brief Constructs an Imu.
+  explicit Imu() = default;
+
+  /// @brief Destructs the Imu object.
+  virtual ~Imu() = default;
+
   /// @brief Initializes the IMU sensor.
   ///
   /// @return True if the IMU sensor was successfully initialized, false otherwise.
-  bool begin() const;
+  virtual bool begin() const = 0;
 
   /// @brief Gets the absolute orientation.
   ///
   /// @return Absolute orientation as a quaternion.
-  Orientation get_orientation() const;
+  virtual Orientation get_orientation() const = 0;
 
   /// @brief Gets the angular velocity.
   ///
   /// @return Angular velocity vector [rad/s].
-  Vector3 get_angular_velocity() const;
+  virtual Vector3 get_angular_velocity() const = 0;
 
   /// @brief Gets the linear acceleration.
   ///
   /// @return Linear acceleration vector [m/s^2].
-  Vector3 get_linear_acceleration() const;
+  virtual Vector3 get_linear_acceleration() const = 0;
 };
 
 }  // namespace andino
