@@ -33,10 +33,10 @@
 #include "andino/app/pid.h"
 #include "andino/app/shell.h"
 #include "andino/drivers/encoder.h"
-#include "andino/drivers/imu.h"
 #include "andino/drivers/motor.h"
 #include "andino/hal/clock.h"
 #include "andino/hal/digital_out.h"
+#include "andino/hal/imu.h"
 #include "andino/hal/interrupt_in.h"
 #include "andino/hal/pwm_out.h"
 #include "andino/hal/serial_stream.h"
@@ -61,13 +61,16 @@ class App {
    * @param left_encoder_b The left encoder channel B interrupt input.
    * @param right_encoder_a The right encoder channel A interrupt input.
    * @param right_encoder_b The right encoder channel B interrupt input.
+   * @param imu The IMU sensor.
    */
   App(const Clock& clock, SerialStream& serial_stream, DigitalOut& left_motor_enable,
       PwmOut& left_motor_forward, PwmOut& left_motor_backward, DigitalOut& right_motor_enable,
       PwmOut& right_motor_forward, PwmOut& right_motor_backward, InterruptIn& left_encoder_a,
-      InterruptIn& left_encoder_b, InterruptIn& right_encoder_a, InterruptIn& right_encoder_b)
+      InterruptIn& left_encoder_b, InterruptIn& right_encoder_a, InterruptIn& right_encoder_b,
+      Imu& imu)
       : clock_(clock),
         serial_stream_(serial_stream),
+        imu_(imu),
         left_motor_(&left_motor_enable, &left_motor_forward, &left_motor_backward),
         right_motor_(&right_motor_enable, &right_motor_forward, &right_motor_backward),
         left_encoder_(&left_encoder_a, &left_encoder_b),
@@ -129,6 +132,9 @@ class App {
 
   SerialStream& serial_stream_;
 
+  /// IMU sensor.
+  Imu& imu_;
+
   /// Left wheel motor.
   Motor left_motor_;
 
@@ -140,9 +146,6 @@ class App {
 
   /// Right wheel encoder.
   Encoder right_encoder_;
-
-  /// IMU sensor.
-  Imu imu_;
 
   /// PID controllers (one per wheel).
   Pid left_pid_controller_;

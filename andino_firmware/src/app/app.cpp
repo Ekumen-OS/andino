@@ -64,11 +64,7 @@
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "andino/app/app.h"
 
-#include <stdio.h>
 #include <stdlib.h>
-#include <string.h>
-
-#include <Arduino.h>
 
 #include "andino/app/commands.h"
 #include "andino/app/constants.h"

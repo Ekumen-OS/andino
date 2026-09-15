@@ -27,7 +27,7 @@
 // CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
 // OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-#include "andino/drivers/imu.h"
+#include "andino/bsp/imu_arduino.h"
 
 #if defined(__GNUC__)
 #pragma GCC diagnostic push
@@ -45,7 +45,7 @@ static Adafruit_BNO055 g_bno055_imu(55, BNO055_ADDRESS_A, &Wire);
 
 namespace andino {
 
-bool Imu::begin() const {
+bool ImuArduino::begin() const {
   if (!g_bno055_imu.begin()) {
     return false;
   }
@@ -53,21 +53,21 @@ bool Imu::begin() const {
   return true;
 }
 
-Imu::Orientation Imu::get_orientation() const {
+Imu::Orientation ImuArduino::get_orientation() const {
   // See https://learn.adafruit.com/adafruit-bno055-absolute-orientation-sensor/overview for
   // further information.
   imu::Quaternion orientation = g_bno055_imu.getQuat();
   return Orientation{orientation.x(), orientation.y(), orientation.z(), orientation.w()};
 }
 
-Imu::Vector3 Imu::get_angular_velocity() const {
+Imu::Vector3 ImuArduino::get_angular_velocity() const {
   // See https://learn.adafruit.com/adafruit-bno055-absolute-orientation-sensor/overview for
   // further information.
   imu::Vector<3> angular_velocity = g_bno055_imu.getVector(Adafruit_BNO055::VECTOR_GYROSCOPE);
   return Vector3{angular_velocity.x(), angular_velocity.y(), angular_velocity.z()};
 }
 
-Imu::Vector3 Imu::get_linear_acceleration() const {
+Imu::Vector3 ImuArduino::get_linear_acceleration() const {
   // See https://learn.adafruit.com/adafruit-bno055-absolute-orientation-sensor/overview for
   // further information.
   imu::Vector<3> linear_acceleration = g_bno055_imu.getVector(Adafruit_BNO055::VECTOR_LINEARACCEL);
