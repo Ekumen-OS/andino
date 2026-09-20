@@ -49,6 +49,7 @@ def generate_launch_description():
     joy_linux_node = Node(
             package='joy_linux',
             executable='joy_linux_node',
+            name='joy_linux_node',
             parameters=[joystick_config],
          )
 
@@ -57,7 +58,7 @@ def generate_launch_description():
             executable='teleop_node',
             name='teleop_node',
             parameters=[joystick_config],
-            remappings=[('/cmd_vel', cmd_vel_topic)]
+            remappings=[('cmd_vel', cmd_vel_topic)]
          )
 
     return LaunchDescription([

@@ -28,6 +28,9 @@
 # OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 # OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
+import os
+
+from ament_index_python import get_package_share_directory
 from launch import LaunchDescription
 from launch.actions import DeclareLaunchArgument
 from launch.conditions import IfCondition, UnlessCondition
@@ -37,6 +40,8 @@ from launch_ros.actions import Node
 
 
 def generate_launch_description():
+    keyboard_config = os.path.join(get_package_share_directory('andino_bringup'),'config','keyboard.yaml')
+    
     stamped_arg = DeclareLaunchArgument(
         'stamped',
         default_value='true',
@@ -51,7 +56,7 @@ def generate_launch_description():
             name='teleop_twist_keyboard_node',
             output='screen',
             prefix='xterm -e',
-            parameters=[{'stamped': True}],
+            parameters=[{'stamped': True}, keyboard_config],
             remappings=[('/cmd_vel', 'cmd_vel_stamped')],
             condition=IfCondition(stamped),
          )
@@ -62,7 +67,7 @@ def generate_launch_description():
             name='teleop_twist_keyboard_node',
             output='screen',
             prefix='xterm -e',
-            parameters=[{'stamped': False}],
+            parameters=[{'stamped': False}, keyboard_config],
             remappings=[('/cmd_vel', 'cmd_vel')],
             condition=UnlessCondition(stamped),
          )
