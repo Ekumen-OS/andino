@@ -1,0 +1,97 @@
+[package]
+name = "andino_firmware_rust"
+version = "0.1.0"
+edition = "2021"
+
+[lib]
+name = "andino_firmware_rust"
+test = false
+bench = false
+
+[[bin]]
+name = "blink"
+path = "src/examples/blink.rs"
+test = false
+bench = false
+
+[[bin]]
+name = "button"
+path = "src/examples/button.rs"
+test = false
+bench = false
+
+[[bin]]
+name = "fade"
+path = "src/examples/fade.rs"
+test = false
+bench = false
+
+[[bin]]
+name = "interrupt"
+path = "src/examples/interrupt.rs"
+test = false
+bench = false
+
+[[bin]]
+name = "millis"
+path = "src/examples/millis.rs"
+test = false
+bench = false
+
+[[bin]]
+name = "serial"
+path = "src/examples/serial.rs"
+test = false
+bench = false
+
+[[bin]]
+name = "motor"
+path = "src/examples/motor.rs"
+test = false
+bench = false
+
+[[bin]]
+name = "shell"
+path = "src/examples/shell.rs"
+test = false
+bench = false
+
+[[bin]]
+name = "encoder"
+path = "src/examples/encoder.rs"
+test = false
+bench = false
+
+[[bin]]
+name = "app"
+path = "src/bin/app.rs"
+test = false
+bench = false
+
+[dependencies]
+avr-device = "0.7.0"
+heapless = { version = "0.9", features = ["portable-atomic"] }
+panic-halt = "1.0.0"
+ufmt = "0.2.0"
+nb = "1.1.0"
+embedded-hal = "1.0"
+portable-atomic = "1.11.1"
+
+[dependencies.arduino-hal]
+git = "https://github.com/rahix/avr-hal"
+features = ["arduino-nano"]
+
+[build-dependencies.proc-macro2]
+version = "=1.0.79"
+
+[profile.dev]
+panic = "abort"
+lto = true
+opt-level = "s"
+
+[profile.release]
+panic = "abort"
+codegen-units = 1
+debug = true
+lto = true
+opt-level = "s"
