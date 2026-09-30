@@ -1,0 +1,15 @@
+# pkg-config file for libserial installed via apt (libserial-dev) on aarch64
+# (Raspberry Pi 3/4/5 running a 64-bit OS).
+#
+# This file uses hardcoded absolute paths because the conda-provided pkg-config
+# binary auto-rewrites 'prefix' based on the .pc file location, which yields
+# the wrong path for multiarch directories (/usr/lib/aarch64-linux-gnu/pkgconfig
+# → prefix=/usr/lib instead of /usr).
+#
+# activate.sh adds pkgconfig/aarch64/ to PKG_CONFIG_PATH on aarch64 hosts so
+# this file takes precedence over the system-installed one.
+Name: libserial
+Description: C++ Serial port library
+Version: 1.0.0
+Libs: -L/usr/lib/aarch64-linux-gnu -lserial
+Cflags: -I/usr/include

@@ -1,0 +1,40 @@
+name: pixi build & test
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+  workflow_dispatch:
+
+# Cancel previously running PR jobs
+concurrency:
+  group: '${{ github.workflow }} @ ${{ github.event.pull_request.head.label || github.head_ref || github.ref }}'
+  cancel-in-progress: true
+
+jobs:
+  build_and_test:
+    name: Build and test (${{ matrix.environment }})
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        environment: [default, jazzy]
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install system dependencies
+        run: sudo apt-get install -y libserial-dev
+
+      - uses: prefix-dev/setup-pixi@v0.8.0
+        with:
+          pixi-version: v0.63.2
+          cache: true
+
+      - name: Build
+        run: pixi run -e ${{ matrix.environment }} build
+
+      - name: Test
+        run: pixi run -e ${{ matrix.environment }} test
