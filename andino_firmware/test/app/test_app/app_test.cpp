@@ -416,6 +416,11 @@ TEST_F(AppTest, CommandsWithInvalidArgumentsReplyWithError) {
   // The output gain is a divisor, so zero and negative values are rejected.
   EXPECT_EQ(run_command("setpid 30 20 10 0"), expected);
   EXPECT_EQ(run_command("setpid 30 20 10 -1"), expected);
+  // Values outside the 16-bit range would wrap around on the target MCU.
+  EXPECT_EQ(run_command("setspd 32768 0"), expected);
+  EXPECT_EQ(run_command("setspd 0 -32769"), expected);
+  EXPECT_EQ(run_command("setpwm 70000 0"), expected);
+  EXPECT_EQ(run_command("setpid 40000 20 10 50"), expected);
 }
 
 TEST_F(AppTest, LoopStopsMotorsOnceAutoStopWindowElapses) {
