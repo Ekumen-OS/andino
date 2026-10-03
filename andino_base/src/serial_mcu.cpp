@@ -68,24 +68,24 @@ void SerialMcu::setup(const std::string& serial_device, int32_t baud_rate, int32
 
 bool SerialMcu::is_connected() const { return serial_port_.IsOpen(); }
 
-void SerialMcu::reset_encoders() { send_message("r"); }
+void SerialMcu::reset_encoders() { send_message("rstenc"); }
 
 SerialMcu::EncodersData SerialMcu::read_encoders() {
   static const std::string delimiter = " ";
 
-  const std::string response = send_message("e");
+  const std::string response = send_message("getenc");
   const size_t del_pos = response.find(delimiter);
   const std::string token_1 = response.substr(0, del_pos).c_str();
   const std::string token_2 = response.substr(del_pos + delimiter.length()).c_str();
   return {std::atoi(token_1.c_str()), std::atoi(token_2.c_str())};
 }
 
-bool SerialMcu::is_imu_available() { return std::atoi(send_message("h").c_str()) != 0; }
+bool SerialMcu::is_imu_available() { return std::atoi(send_message("hasimu").c_str()) != 0; }
 
 SerialMcu::EncodersAndImuData SerialMcu::read_encoders_and_imu() {
   static const std::string delimiter = " ";
 
-  const std::string response = send_message("i");
+  const std::string response = send_message("getencimu");
 
   std::istringstream iss(response);
   EncodersAndImuData encoders_and_imu_data;
@@ -101,19 +101,19 @@ SerialMcu::EncodersAndImuData SerialMcu::read_encoders_and_imu() {
 
 void SerialMcu::set_motors_speed(int left_motor_speed, int right_motor_speed) {
   std::stringstream ss;
-  ss << "m " << left_motor_speed << " " << right_motor_speed;
+  ss << "setspd " << left_motor_speed << " " << right_motor_speed;
   send_message(ss.str());
 }
 
 void SerialMcu::set_motors_pwm(int left_motor_pwm, int right_motor_pwm) {
   std::stringstream ss;
-  ss << "o " << left_motor_pwm << " " << right_motor_pwm;
+  ss << "setpwm " << left_motor_pwm << " " << right_motor_pwm;
   send_message(ss.str());
 }
 
 void SerialMcu::set_pid_tuning_gains(float kp, float kd, float ki, float ko) {
   std::stringstream ss;
-  ss << "u " << kp << " " << kd << " " << ki << " " << ko;
+  ss << "setpid " << kp << " " << kd << " " << ki << " " << ko;
   send_message(ss.str());
 }
 
@@ -129,6 +129,11 @@ std::string SerialMcu::send_message(const std::string& msg) {
     serial_port_.ReadLine(response, '\n', timeout_ms_);
   } catch (LibSerial::ReadTimeout&) {
     std::cerr << "Response to " << msg << " timed out." << std::endl;
+  }
+  // Error responses have the form "[ERROR] <description>". Report them and return no data.
+  if (response.rfind("[ERROR]", 0) == 0) {
+    std::cerr << "Command " << msg << " failed: " << response;
+    return "";
   }
   return response;
 }

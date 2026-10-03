@@ -65,7 +65,7 @@ class Shell {
 
  private:
   /// Maximum command name length.
-  static constexpr int kCommandNameLengthMax{8};
+  static constexpr int kCommandNameLengthMax{10};
 
   /// Command registry entry definition.
   struct Command {
