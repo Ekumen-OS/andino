@@ -29,6 +29,8 @@
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #pragma once
 
+#include <stdint.h>
+
 namespace andino {
 
 /// @brief This class provides a simple PID controller implementation.
@@ -42,14 +44,14 @@ class Pid {
   /// @param ko Tuning output gain.
   /// @param output_min Output minimum limit.
   /// @param output_max Output maximum limit.
-  Pid(int kp, int kd, int ki, int ko, int output_min, int output_max)
+  Pid(int16_t kp, int16_t kd, int16_t ki, int16_t ko, int16_t output_min, int16_t output_max)
       : kp_(kp), kd_(kd), ki_(ki), ko_(ko), output_min_(output_min), output_max_(output_max) {
   }
 
   /// @brief Resets the PID controller.
   ///
   /// @param encoder_count Current encoder value.
-  void reset(long encoder_count);
+  void reset(int32_t encoder_count);
 
   /// @brief Returns if the PID controller is enabled or not.
   bool enabled();
@@ -64,12 +66,12 @@ class Pid {
   ///
   /// @param encoder_count Current encoder value.
   /// @param computed_output Computed output value.
-  void compute(long encoder_count, int& computed_output);
+  void compute(int32_t encoder_count, int16_t& computed_output);
 
   /// @brief Sets the setpoint.
   ///
   /// @param setpoint Desired setpoint value.
-  void set_setpoint(int setpoint);
+  void set_setpoint(int16_t setpoint);
 
   /// @brief Sets the tuning gains.
   ///
@@ -77,36 +79,36 @@ class Pid {
   /// @param kd Tuning derivative gain.
   /// @param ki Tuning integral gain.
   /// @param ko Tuning output gain.
-  void set_tunings(int kp, int kd, int ki, int ko);
+  void set_tunings(int16_t kp, int16_t kd, int16_t ki, int16_t ko);
 
  private:
   /// Tuning proportional gain.
-  int kp_{0};
+  int16_t kp_{0};
   /// Tuning derivative gain.
-  int kd_{0};
+  int16_t kd_{0};
   /// Tuning integral gain.
-  int ki_{0};
+  int16_t ki_{0};
   /// Tuning output gain.
-  int ko_{0};
+  int16_t ko_{0};
 
   /// Output minimum limit.
-  int output_min_{0};
+  int16_t output_min_{0};
   /// Output maximum limit.
-  int output_max_{0};
+  int16_t output_max_{0};
 
   /// True if the PID is enabled, false otherwise.
   bool enabled_{false};
 
   /// Setpoint value.
-  int setpoint_{0};
+  int16_t setpoint_{0};
   /// Accumulated integral term.
-  int integral_term_{0};
+  int16_t integral_term_{0};
   /// Last received encoder value.
-  long last_encoder_count_{0};
+  int32_t last_encoder_count_{0};
   /// Last computed input value.
-  int last_input_{0};
+  int16_t last_input_{0};
   /// Last computed output value.
-  long last_output_{0};
+  int32_t last_output_{0};
 };
 
 }  // namespace andino

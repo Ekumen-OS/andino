@@ -64,6 +64,7 @@
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "andino/app/app.h"
 
+#include <stdint.h>
 #include <stdlib.h>
 
 #include "andino/app/commands.h"
@@ -118,13 +119,13 @@ void App::loop() {
   }
 }
 
-bool App::parse_int(const char* str, int& value) {
+bool App::parse_int(const char* str, int16_t& value) {
   char* end = nullptr;
   const long parsed = strtol(str, &end, 10);
-  if (end == str || *end != '\0') {
+  if (end == str || *end != '\0' || parsed < INT16_MIN || parsed > INT16_MAX) {
     return false;
   }
-  value = static_cast<int>(parsed);
+  value = static_cast<int16_t>(parsed);
   return true;
 }
 
@@ -135,8 +136,8 @@ void App::cmd_unknown_cb(void* context, int, char**) {
 
 void App::cmd_read_encoder_channel_cb(void* context, int argc, char** argv) {
   App* app = static_cast<App*>(context);
-  int encoder = 0;
-  int channel = 0;
+  int16_t encoder = 0;
+  int16_t channel = 0;
   if (argc != 3 || !parse_int(argv[1], encoder) || !parse_int(argv[2], channel) ||
       (encoder != 0 && encoder != 1) || (channel != 0 && channel != 1)) {
     app->reply_error("Invalid arguments");
@@ -167,8 +168,8 @@ void App::cmd_reset_encoders_cb(void* context, int, char**) {
 
 void App::cmd_set_motors_speed_cb(void* context, int argc, char** argv) {
   App* app = static_cast<App*>(context);
-  int left_motor_speed = 0;
-  int right_motor_speed = 0;
+  int16_t left_motor_speed = 0;
+  int16_t right_motor_speed = 0;
   if (argc != 3 || !parse_int(argv[1], left_motor_speed) ||
       !parse_int(argv[2], right_motor_speed)) {
     app->reply_error("Invalid arguments");
@@ -191,15 +192,17 @@ void App::cmd_set_motors_speed_cb(void* context, int argc, char** argv) {
 
   // The target speeds are in ticks per second, so we need to convert them to ticks per
   // Constants::kPidRate.
-  app->left_pid_controller_.set_setpoint(left_motor_speed / Constants::kPidRate);
-  app->right_pid_controller_.set_setpoint(right_motor_speed / Constants::kPidRate);
+  app->left_pid_controller_.set_setpoint(
+      static_cast<int16_t>(left_motor_speed / Constants::kPidRate));
+  app->right_pid_controller_.set_setpoint(
+      static_cast<int16_t>(right_motor_speed / Constants::kPidRate));
   app->reply_ok();
 }
 
 void App::cmd_set_motors_pwm_cb(void* context, int argc, char** argv) {
   App* app = static_cast<App*>(context);
-  int left_motor_pwm = 0;
-  int right_motor_pwm = 0;
+  int16_t left_motor_pwm = 0;
+  int16_t right_motor_pwm = 0;
   if (argc != 3 || !parse_int(argv[1], left_motor_pwm) || !parse_int(argv[2], right_motor_pwm)) {
     app->reply_error("Invalid arguments");
     return;
@@ -221,10 +224,10 @@ void App::cmd_set_motors_pwm_cb(void* context, int argc, char** argv) {
 
 void App::cmd_set_pid_gains_cb(void* context, int argc, char** argv) {
   App* app = static_cast<App*>(context);
-  int kp = 0;
-  int kd = 0;
-  int ki = 0;
-  int ko = 0;
+  int16_t kp = 0;
+  int16_t kd = 0;
+  int16_t ki = 0;
+  int16_t ko = 0;
   if (argc != 5 || !parse_int(argv[1], kp) || !parse_int(argv[2], kd) || !parse_int(argv[3], ki) ||
       !parse_int(argv[4], ko)) {
     app->reply_error("Invalid arguments");
@@ -293,8 +296,8 @@ void App::reply_error(const char* reason) {
 }
 
 void App::adjust_motors_speed() {
-  int left_motor_speed = 0;
-  int right_motor_speed = 0;
+  int16_t left_motor_speed = 0;
+  int16_t right_motor_speed = 0;
   left_pid_controller_.compute(left_encoder_.read(), left_motor_speed);
   right_pid_controller_.compute(right_encoder_.read(), right_motor_speed);
   if (left_pid_controller_.enabled()) {
