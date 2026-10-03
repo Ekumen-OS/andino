@@ -63,9 +63,15 @@ void Shell::process_input() {
 
     switch (input) {
       case '\r':
-        // Terminate command prompt message and parse it.
-        message_buffer_[message_index_++] = '\0';
-        parse_message();
+        if (discarding_) {
+          // The message overflowed the buffer, so it was dropped.
+          serial_stream_->println("Command too long.");
+          discarding_ = false;
+        } else {
+          // Terminate command prompt message and parse it.
+          message_buffer_[message_index_++] = '\0';
+          parse_message();
+        }
         // Reset message buffer.
         message_index_ = 0;
         break;
@@ -75,11 +81,17 @@ void Shell::process_input() {
         break;
 
       default:
-        message_buffer_[message_index_++] = input;
-        // Prevent buffer overflow.
-        if (message_index_ >= kCommandPromptLengthMax) {
-          message_index_ = 0;
+        if (discarding_) {
+          break;
         }
+        // Prevent buffer overflow, keeping room for the null terminator. The rest of the message
+        // is discarded up to the next command terminator.
+        if (message_index_ >= kCommandPromptLengthMax - 1) {
+          discarding_ = true;
+          message_index_ = 0;
+          break;
+        }
+        message_buffer_[message_index_++] = input;
         break;
     }
   }
@@ -93,6 +105,11 @@ void Shell::parse_message() {
   argv[argc] = strtok_r(message_buffer_, " ", &saveptr);
   while (argc < (kCommandArgMax - 1) && argv[argc] != NULL) {
     argv[++argc] = strtok_r(NULL, " ", &saveptr);
+  }
+
+  // Ignore empty messages.
+  if (argc == 0) {
+    return;
   }
 
   execute_callback(argc, argv);
