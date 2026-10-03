@@ -87,7 +87,7 @@ void Pid::enable() {
 }
 
 /// @brief Is the PID controller enabled?
-bool Pid::enabled() {
+bool Pid::enabled() const {
   return enabled_;
 }
 
