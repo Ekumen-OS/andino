@@ -226,7 +226,8 @@ void App::cmd_set_pid_gains_cb(void* context, int argc, char** argv) {
   int ki = 0;
   int ko = 0;
   if (argc != 5 || !parse_int(argv[1], kp) || !parse_int(argv[2], kd) || !parse_int(argv[3], ki) ||
-      !parse_int(argv[4], ko)) {
+      !parse_int(argv[4], ko) || ko <= 0) {
+    // The output gain is used as a divisor by the PID, so it must be strictly positive.
     app->reply_error("Invalid arguments");
     return;
   }
