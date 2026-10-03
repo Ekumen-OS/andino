@@ -101,7 +101,7 @@ class Encoder {
   /// @brief Gets the ticks count value.
   ///
   /// @return Ticks count value.
-  long read();
+  long read() const;
 
   /// @brief Sets the ticks count value to zero.
   void reset();

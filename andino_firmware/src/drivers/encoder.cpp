@@ -119,7 +119,7 @@ void Encoder::begin() {
   instances_[instance_index_] = this;
 }
 
-long Encoder::read() {
+long Encoder::read() const {
   return count_;
 }
 

@@ -143,6 +143,12 @@ class App {
   /// Stops the motors and disables the PID.
   void stop_motors();
 
+  /// Resets both PID controllers using the current encoders count.
+  void reset_pids();
+
+  /// Disables both PID controllers.
+  void disable_pids();
+
   const Clock& clock_;
 
   SerialStream& serial_stream_;
@@ -176,7 +182,7 @@ class App {
   unsigned long last_set_motors_speed_cmd_{0};
 
   /// Tracks whether there is an IMU sensor connected.
-  bool is_imu_connected{false};
+  bool is_imu_connected_{false};
 };
 
 }  // namespace andino
