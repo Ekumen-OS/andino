@@ -101,7 +101,7 @@ class Encoder {
   /// @brief Gets the ticks count value.
   ///
   /// @return Ticks count value.
-  long read();
+  int32_t read();
 
   /// @brief Sets the ticks count value to zero.
   void reset();
@@ -180,7 +180,7 @@ class Encoder {
   uint8_t state_{0x00};
 
   /// Ticks count.
-  volatile long count_{0L};
+  volatile int32_t count_{0};
 };
 
 }  // namespace andino

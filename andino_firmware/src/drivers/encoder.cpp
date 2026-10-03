@@ -119,12 +119,12 @@ void Encoder::begin() {
   instances_[instance_index_] = this;
 }
 
-long Encoder::read() {
+int32_t Encoder::read() {
   return count_;
 }
 
 void Encoder::reset() {
-  count_ = 0L;
+  count_ = 0;
 }
 
 int Encoder::read_channel_a() const {

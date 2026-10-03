@@ -37,7 +37,7 @@ namespace {
 
 TEST(PidTest, Initialize) {
   andino::Pid pid_controller(1, 0, 0, 1, -100, 100);
-  int output = 0;
+  int16_t output = 0;
 
   // Controller is disabled by default, so output variable should remain unchanged.
   pid_controller.compute(5, output);
@@ -46,7 +46,7 @@ TEST(PidTest, Initialize) {
 
 TEST(PidTest, ComputeOutputProportionalGain) {
   andino::Pid pid_controller(3, 0, 0, 1, -100, 100);
-  int output = 0;
+  int16_t output = 0;
   pid_controller.set_setpoint(15);
   pid_controller.enable();
 
@@ -59,7 +59,7 @@ TEST(PidTest, ComputeOutputProportionalGain) {
 
 TEST(PidTest, ComputeOutputProportionalAndDerivativeGain) {
   andino::Pid pid_controller(3, 2, 0, 1, -100, 100);
-  int output = 0;
+  int16_t output = 0;
   pid_controller.set_setpoint(15);
   pid_controller.enable();
 
@@ -72,7 +72,7 @@ TEST(PidTest, ComputeOutputProportionalAndDerivativeGain) {
 
 TEST(PidTest, ComputeOutputProportionalAndIntegralGain) {
   andino::Pid pid_controller(3, 0, 1, 1, -100, 100);
-  int output = 0;
+  int16_t output = 0;
   pid_controller.set_setpoint(15);
   pid_controller.enable();
 
@@ -85,7 +85,7 @@ TEST(PidTest, ComputeOutputProportionalAndIntegralGain) {
 
 TEST(PidTest, ComputeOutputProportionalDerivativeAndIntegralGain) {
   andino::Pid pid_controller(3, 2, 1, 1, -100, 100);
-  int output = 0;
+  int16_t output = 0;
   pid_controller.set_setpoint(15);
   pid_controller.enable();
 
@@ -98,7 +98,7 @@ TEST(PidTest, ComputeOutputProportionalDerivativeAndIntegralGain) {
 
 TEST(PidTest, Reset) {
   andino::Pid pid_controller(3, 0, 0, 1, -100, 100);
-  int output = 0;
+  int16_t output = 0;
   pid_controller.set_setpoint(15);
   pid_controller.enable();
 
@@ -114,7 +114,7 @@ TEST(PidTest, Reset) {
 
 TEST(PidTest, SetTunings) {
   andino::Pid pid_controller(3, 0, 0, 1, -100, 100);
-  int output = 0;
+  int16_t output = 0;
   pid_controller.set_setpoint(15);
   pid_controller.enable();
 
