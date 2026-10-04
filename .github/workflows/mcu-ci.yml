@@ -77,3 +77,6 @@ jobs:
       - name: Run unit tests
         working-directory: ./andino_firmware
         run: pio test --environment=desktop
+      - name: Run tools unit tests
+        working-directory: ./andino_firmware
+        run: python -m unittest discover -s tools
