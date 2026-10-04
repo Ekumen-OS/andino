@@ -124,28 +124,12 @@ class FakeSerialStream : public andino::SerialStream {
     return append(std::string(c));
   }
 
-  size_t print(char c) const override {
-    return append(std::string(1, c));
+  size_t print(int16_t num) const override {
+    return append(std::to_string(num));
   }
 
-  size_t print(unsigned char b, int base) const override {
-    return append(to_string(static_cast<unsigned long>(b), base));
-  }
-
-  size_t print(int num, int base) const override {
-    return append(to_string(static_cast<long>(num), base));
-  }
-
-  size_t print(unsigned int num, int base) const override {
-    return append(to_string(static_cast<unsigned long>(num), base));
-  }
-
-  size_t print(long num, int base) const override {
-    return append(to_string(num, base));
-  }
-
-  size_t print(unsigned long num, int base) const override {
-    return append(to_string(num, base));
+  size_t print(int32_t num) const override {
+    return append(std::to_string(num));
   }
 
   size_t print(double num, int digits) const override {
@@ -156,28 +140,12 @@ class FakeSerialStream : public andino::SerialStream {
     return append(std::string(c) + "\n");
   }
 
-  size_t println(char c) const override {
-    return append(std::string(1, c) + "\n");
+  size_t println(int16_t num) const override {
+    return append(std::to_string(num) + "\n");
   }
 
-  size_t println(unsigned char b, int base) const override {
-    return append(to_string(static_cast<unsigned long>(b), base) + "\n");
-  }
-
-  size_t println(int num, int base) const override {
-    return append(to_string(static_cast<long>(num), base) + "\n");
-  }
-
-  size_t println(unsigned int num, int base) const override {
-    return append(to_string(static_cast<unsigned long>(num), base) + "\n");
-  }
-
-  size_t println(long num, int base) const override {
-    return append(to_string(num, base) + "\n");
-  }
-
-  size_t println(unsigned long num, int base) const override {
-    return append(to_string(num, base) + "\n");
+  size_t println(int32_t num) const override {
+    return append(std::to_string(num) + "\n");
   }
 
   size_t println(double num, int digits) const override {
@@ -185,18 +153,6 @@ class FakeSerialStream : public andino::SerialStream {
   }
 
  private:
-  static std::string to_string(long num, int base) {
-    char buffer[34]{};
-    snprintf(buffer, sizeof(buffer), (base == kHex) ? "%lx" : "%ld", num);
-    return std::string(buffer);
-  }
-
-  static std::string to_string(unsigned long num, int base) {
-    char buffer[34]{};
-    snprintf(buffer, sizeof(buffer), (base == kHex) ? "%lx" : "%lu", num);
-    return std::string(buffer);
-  }
-
   static std::string to_string(double num, int digits) {
     char buffer[64]{};
     snprintf(buffer, sizeof(buffer), "%.*f", digits, num);

@@ -29,6 +29,7 @@
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #pragma once
 
+#include <stdint.h>
 #include <stdio.h>
 
 namespace andino {
@@ -36,14 +37,6 @@ namespace andino {
 /// @brief This class defines an interface for serial streams.
 class SerialStream {
  public:
-  /// @brief Supported numeral systems.
-  enum Base {
-    kBin = 2,
-    kOct = 8,
-    kDec = 10,
-    kHex = 16,
-  };
-
   /// @brief Constructs a SerialStream.
   explicit SerialStream() = default;
 
@@ -73,103 +66,45 @@ class SerialStream {
 
   /// @brief Sends data as human-readable ASCII text.
   ///
-  /// @param c Character to send.
+  /// @param num Number to send.
   /// @return Number of bytes sent.
-  virtual size_t print(char c) const = 0;
-
-  /// @brief Sends data as human-readable ASCII text.
-  ///
-  /// @param b Byte to send.
-  /// @param base Numeral system to use for the representation.
-  /// @return Number of bytes sent.
-  virtual size_t print(unsigned char b, int base = kDec) const = 0;
+  virtual size_t print(int16_t num) const = 0;
 
   /// @brief Sends data as human-readable ASCII text.
   ///
   /// @param num Number to send.
-  /// @param base Numeral system to use for the representation.
   /// @return Number of bytes sent.
-  virtual size_t print(int num, int base = kDec) const = 0;
+  virtual size_t print(int32_t num) const = 0;
 
   /// @brief Sends data as human-readable ASCII text.
   ///
   /// @param num Number to send.
-  /// @param base Numeral system to use for the representation.
-  /// @return Number of bytes sent.
-  virtual size_t print(unsigned int num, int base = kDec) const = 0;
-
-  /// @brief Sends data as human-readable ASCII text.
-  ///
-  /// @param num Number to send.
-  /// @param base Numeral system to use for the representation.
-  /// @return Number of bytes sent.
-  virtual size_t print(long num, int base = kDec) const = 0;
-
-  /// @brief Sends data as human-readable ASCII text.
-  ///
-  /// @param num Number to send.
-  /// @param base Numeral system to use for the representation.
-  /// @return Number of bytes sent.
-  virtual size_t print(unsigned long num, int base = kDec) const = 0;
-
-  /// @brief Sends data as human-readable ASCII text.
-  ///
-  /// @param num Number to send.
-  /// @param digits Number of decimal places to use.
+  /// @param digits Number of digits after the decimal point.
   /// @return Number of bytes sent.
   virtual size_t print(double num, int digits = 2) const = 0;
 
-  /// @brief Sends data as human-readable ASCII text.
+  /// @brief Sends data as human-readable ASCII text, followed by a newline.
   ///
   /// @param c String to send.
   /// @return Number of bytes sent.
   virtual size_t println(const char* c) const = 0;
 
-  /// @brief Sends data as human-readable ASCII text.
-  ///
-  /// @param c Character to send.
-  /// @return Number of bytes sent.
-  virtual size_t println(char c) const = 0;
-
-  /// @brief Sends data as human-readable ASCII text.
-  ///
-  /// @param b Byte to send.
-  /// @param base Numeral system to use for the representation.
-  /// @return Number of bytes sent.
-  virtual size_t println(unsigned char b, int base = kDec) const = 0;
-
-  /// @brief Sends data as human-readable ASCII text.
+  /// @brief Sends data as human-readable ASCII text, followed by a newline.
   ///
   /// @param num Number to send.
-  /// @param base Numeral system to use for the representation.
   /// @return Number of bytes sent.
-  virtual size_t println(int num, int base = kDec) const = 0;
+  virtual size_t println(int16_t num) const = 0;
 
-  /// @brief Sends data as human-readable ASCII text.
+  /// @brief Sends data as human-readable ASCII text, followed by a newline.
   ///
   /// @param num Number to send.
-  /// @param base Numeral system to use for the representation.
   /// @return Number of bytes sent.
-  virtual size_t println(unsigned int num, int base = kDec) const = 0;
+  virtual size_t println(int32_t num) const = 0;
 
-  /// @brief Sends data as human-readable ASCII text.
+  /// @brief Sends data as human-readable ASCII text, followed by a newline.
   ///
   /// @param num Number to send.
-  /// @param base Numeral system to use for the representation.
-  /// @return Number of bytes sent.
-  virtual size_t println(long num, int base = kDec) const = 0;
-
-  /// @brief Sends data as human-readable ASCII text.
-  ///
-  /// @param num Number to send.
-  /// @param base Numeral system to use for the representation.
-  /// @return Number of bytes sent.
-  virtual size_t println(unsigned long num, int base = kDec) const = 0;
-
-  /// @brief Sends data as human-readable ASCII text.
-  ///
-  /// @param num Number to send.
-  /// @param digits Number of decimal places to use.
+  /// @param digits Number of digits after the decimal point.
   /// @return Number of bytes sent.
   virtual size_t println(double num, int digits = 2) const = 0;
 };
