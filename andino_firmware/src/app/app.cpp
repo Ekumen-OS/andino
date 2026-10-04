@@ -88,14 +88,18 @@ void App::setup() {
   // Initialize command shell.
   shell_.set_serial_stream(&serial_stream_);
   shell_.set_default_callback(cmd_unknown_cb, this);
-  shell_.register_command(Commands::kReadEncoderChannel, cmd_read_encoder_channel_cb, this);
-  shell_.register_command(Commands::kReadEncoders, cmd_read_encoders_cb, this);
-  shell_.register_command(Commands::kResetEncoders, cmd_reset_encoders_cb, this);
-  shell_.register_command(Commands::kSetMotorsSpeed, cmd_set_motors_speed_cb, this);
-  shell_.register_command(Commands::kSetMotorsPwm, cmd_set_motors_pwm_cb, this);
-  shell_.register_command(Commands::kSetPidGains, cmd_set_pid_gains_cb, this);
-  shell_.register_command(Commands::kIsImuConnected, cmd_is_imu_connected_cb, this);
-  shell_.register_command(Commands::kReadEncodersAndImu, cmd_read_encoders_and_imu_cb, this);
+  const bool commands_registered =
+      shell_.register_command(Commands::kReadEncoderChannel, cmd_read_encoder_channel_cb, this) &&
+      shell_.register_command(Commands::kReadEncoders, cmd_read_encoders_cb, this) &&
+      shell_.register_command(Commands::kResetEncoders, cmd_reset_encoders_cb, this) &&
+      shell_.register_command(Commands::kSetMotorsSpeed, cmd_set_motors_speed_cb, this) &&
+      shell_.register_command(Commands::kSetMotorsPwm, cmd_set_motors_pwm_cb, this) &&
+      shell_.register_command(Commands::kSetPidGains, cmd_set_pid_gains_cb, this) &&
+      shell_.register_command(Commands::kIsImuConnected, cmd_is_imu_connected_cb, this) &&
+      shell_.register_command(Commands::kReadEncodersAndImu, cmd_read_encoders_and_imu_cb, this);
+  if (!commands_registered) {
+    reply_error("Failed to register commands");
+  }
 
   // Initialize IMU sensor.
   is_imu_connected = imu_.begin();
