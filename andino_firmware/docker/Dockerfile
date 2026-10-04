@@ -17,8 +17,9 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     doxygen \
     && rm -rf /var/lib/apt/lists/*
 
-# Install PlatformIO and gcovr.
-RUN pip install --no-cache-dir -U platformio gcovr
+# Install Python dependencies.
+COPY docker/requirements.txt /tmp/requirements.txt
+RUN pip install --no-cache-dir -r /tmp/requirements.txt && rm /tmp/requirements.txt
 
 # Pre-create the PlatformIO cache directory with open permissions so that the
 # named volume mounted here is writable by any host UID/GID at runtime.
