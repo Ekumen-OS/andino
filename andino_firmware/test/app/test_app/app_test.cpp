@@ -37,6 +37,7 @@
 #include <gtest/gtest.h>
 
 #include "andino/app/constants.h"
+#include "andino/app/version.h"
 #include "andino/hal/clock.h"
 #include "andino/hal/digital_out.h"
 #include "andino/hal/imu.h"
@@ -329,6 +330,13 @@ TEST_F(AppTest, ReadEncoderChannelCommand) {
   EXPECT_EQ(run_command("getch 0 1"), "0\n");
   EXPECT_EQ(run_command("getch 1 0"), "0\n");
   EXPECT_EQ(run_command("getch 1 1"), "1\n");
+}
+
+TEST_F(AppTest, GetVersionCommand) {
+  app_.setup();
+
+  EXPECT_EQ(run_command("ver"), std::string(Version::kFirmware) + "\n");
+  EXPECT_NE(std::string(Version::kFirmware), "");
 }
 
 TEST_F(AppTest, IsImuConnectedCommandWhenConnected) {
