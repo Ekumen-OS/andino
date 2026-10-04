@@ -1,85 +1,132 @@
 # andino_firmware
 
-Firmware code to be run in the arduino microcontroller for proper control of the motors of the robot.
+Firmware for the Arduino microcontroller that controls the Andino robot. It drives the two wheel motors with a closed-loop speed controller, counts the wheel encoder ticks, and reads an optional BNO055 IMU. It talks to the host computer over a simple text-based serial protocol (see [Serial Interface](#serial-interface)).
 
-## Connection
+---
 
-Check `encoder_driver.h` and `motor_driver.h` files to check the expected pins for the connection.
+## Project Structure
 
-## Installation
+The project follows a layered architecture organized within the standard PlatformIO directory structure:
 
-### Arduino
-In Arduino IDE, go to `tools->Manage Libraries ...` and install:
-- "Adafruit BNO055"
-
-Verify and Upload `andino_firmware.ino` to your arduino board.
-
-### PlatformIO
-1. Install dependencies `sudo apt-get install python3.10-venv`
-2. Install platformio
+```text
+andino_firmware/
+├── include/andino/     # Header files organized by layer
+│   ├── app/            # Application logic
+│   ├── drivers/        # Hardware-independent drivers
+│   ├── hal/            # Hardware Abstraction Layer (interfaces)
+│   └── bsp/            # Board Support Package (Arduino specialization)
+├── src/                # Implementation files, mirroring the layers above
+│   └── main.cpp        # Wires the Arduino specializations into the App and runs it
+├── test/               # Unit tests organized by layer (run on the host)
+│   ├── app/
+│   └── drivers/
+├── docker/             # Containerized development environment
+├── platformio.ini      # Build system configuration
+└── README.md
 ```
-curl -fsSL -o /tmp/get-platformio.py https://raw.githubusercontent.com/platformio/platformio-core-installer/master/get-platformio.py
-python3 /tmp/get-platformio.py
-```
-3. Add platformio to your $PATH:
-```
-echo "PATH=\"\$PATH:\$HOME/.platformio/penv/bin\"" >> $HOME/.bashrc
-source $HOME/.bashrc
-```
-4. Build and upload the firmware
-   - If you're using an arduino uno `pio run --target upload -e uno`
-   - If you're using an arduino nano `pio run --target upload -e nanoatmega328`
 
-## Description
+The `app` and `drivers` layers only depend on the abstract `hal` interfaces, so they can be compiled and unit tested on a host machine. The `bsp` layer provides the Arduino specializations of those interfaces, and `src/main.cpp` is the only place where both are connected.
 
-Via `serial` connection (57600 baud) it is possible to interact with the microcontroller. The interface is described in the [commands.h](src/commands.h) file. Here are the most used commands:
+---
 
+## How it works
 
- - Get encoder values: `'getenc'`
- - Set open-loop speed for the motors[pwm] `'setpwm <left> <right>'`
-   - Example to move forward full speed: `'setpwm 255 255'`
-   - Range `[-255 -> 255]`
- - Set closed-loop speed for the motors[ticks/sec] `'setspd <left> <right>'`
-   - Important!: See the `Test it!` section.
- - Set PID values: `'setpid <kp> <kd> <ki> <offset>'`
+1. **Closed-loop control** – `setspd` enables a PID controller per wheel. Every 33 ms (`kPidRate`, 30 Hz) the controller compares the ticks counted in that period with the target and updates the motor PWM. The target is converted from ticks/s to ticks per period using integer division, so the speed resolution is `kPidRate` ticks/s. `setspd 0 0` stops the motors and disables the PID.
+2. **Open-loop control** – `setpwm` disables the PID and drives the motors with the given PWM value directly (positive values go forward, negative values backward).
+3. **Auto-stop** – If no `setspd` or `setpwm` command is received for `kAutoStopWindow` (3s), the motors are stopped and the PID is disabled, so a robot never keeps driving after losing its host. Keep sending the command periodically to keep the robot moving.
 
-Note: Remember the carriage return character at the end of the message.
+---
 
+## Building & Flashing
 
-## Test it!
+The firmware is built with [PlatformIO](https://platformio.org/). You can build, test, and flash it using the provided Docker image (recommended, no local setup needed). There are two firmware targets:
 
-A serial port connection must be created at 57600 bauds. You can use the serial monitor from Arduino IDE for example.
+| Board | PlatformIO environment |
+|-------|------------------------|
+| Arduino Uno | `uno` |
+| Arduino Nano | `nanoatmega328` |
 
-* Open loop verification:
-  - Send `setpwm 255 255` to go full speed
-  - Send `setpwm 0 0` to stop it.
+Only Docker and Docker Compose are required to be installed on your system, no local compilers or PlatformIO installations are needed. See the [Docker README](./docker/README.md) for instructions and further details.
 
-* Read the encoders
-  - Send `getenc` to get the encoders values.
+---
 
-* Get the ticks per revolution of your motor.
-  - First set the encoders to zero, (resetting with `rstenc`).
-  - Then rotate your motors as many revs you want,(say 10 for example) and then divide the encoder ticks per the number of revs. -> Then you get the ticks per revolution. Save this value, it is calibration for the control loop.
+## Hardware
 
-* Closed loop verification
-  - Send `setspd <tps> <tps>` where `tps` stands for `ticks per second`. For example if your motor-encoder system gets 700 ticks per revolution then sending `setspd 700 700` will rotate both motors at 1 rev per sec. (~3.14rad/sec)
+### Wiring
 
-## Commands
+The pin assignment is defined in [`include/andino/app/hw.h`](./include/andino/app/hw.h):
 
-Every command replies with exactly one line terminated by `\n`:
+| Function | Pin | Arduino pin |
+|----------|-----|-------------|
+| Left encoder, channel A | `PD2` | `2` |
+| Left encoder, channel B | `PD3` | `3` |
+| Right encoder, channel A | `PC2` | `A2` (`16`) |
+| Right encoder, channel B | `PC3` | `A3` (`17`) |
+| Left motor, backward (PWM) | `PD6` | `6` |
+| Left motor, forward (PWM) | `PB2` | `10` |
+| Left motor, enable | `PB5` | `13` |
+| Right motor, backward (PWM) | `PD5` | `5` |
+| Right motor, forward (PWM) | `PB1` | `9` |
+| Right motor, enable | `PB4` | `12` |
+| IMU, I2C SCL | `PC5` | `A5` (`19`) |
+| IMU, I2C SDA | `PC4` | `A4` (`18`) |
 
-* Read commands reply with their data, space-separated (see the table below).
-* Write commands reply with `[OK]`.
-* Any failure replies with `[ERROR] <description>`, e.g. `[ERROR] Unknown command`, `[ERROR] Invalid arguments` (missing, extra, non-numeric or out-of-range arguments) or `[ERROR] IMU unavailable`.
+*Note: the enable input of an L298N motor driver can be jumped directly to 5V if the board has a jumper for it.*
+
+The encoder inputs use pin change interrupts. The IMU is an optional Adafruit BNO055 on the I2C bus, the firmware works without it, and the `hasimu` command tells whether it was detected at boot.
+
+### Configuration
+
+Application constants are defined in [`include/andino/app/constants.h`](./include/andino/app/constants.h):
+
+| Constant | Default | Description |
+|----------|---------|-------------|
+| `kBaudrate` | `57600` | Serial port baud rate |
+| `kAutoStopWindow` | `3000` | Time without a motor command after which the motors are stopped [ms] |
+| `kPwmMax` | `255` | Maximum PWM duty cycle |
+| `kPidRate` | `30` | PID computation rate [Hz] |
+| `kPidKp` | `30` | Default PID proportional gain |
+| `kPidKd` | `10` | Default PID derivative gain |
+| `kPidKi` | `0` | Default PID integral gain |
+| `kPidKo` | `10` | Default PID output gain |
+
+---
+
+## Serial Interface
+
+The firmware is controlled through a text-based protocol over the serial port (57600 baud).
+
+### Commands
+
+The command names are defined in [`include/andino/app/commands.h`](./include/andino/app/commands.h).
 
 | Command | Description | Args | Example | Result |
 | --- | --- | --- | --- | --- |
-| `a` | Read Analog GPIO pin | pin_number | `a 0` |  |
-| `getch` | Read encoder digital input value | encoder (0: left, 1: right) channel (0: A, 1: B) | `getch 0 0` | `0` or `1` |
-| `getenc` | Get encoder tick values |  | `getenc` | `<left> <right>` |
-| `rstenc` | Reset encoder values |  | `rstenc` |  |
-| `setspd` | Set closed-loop speed for the motors[ticks/sec] | left_tps right_tps | `setspd 700 700` |  |
-| `setpwm` | Set open-loop speed for the motors[pwm] | left_pwm right_pwm | `setpwm 255 255` |  |
-| `setpid` | Set PID values | kp kd ki offset | `setpid 1.0 0.1 0.01 0` |  |
-| `hasimu` | Get if IMU is connected |  | `hasimu` | `0` if not connected, `1` if connected |
-| `getencimu` | Get IMU data and encoder tick values |  | `getencimu` | `<left> <right>  <orientation_X> <orientation_Y> <orientation_Z> <orientation_W> <angular_velocity_X> <angular_velocity_Y> <angular_velocity_Z> <linear_acceleration_X> <linear_acceleration_Y> <linear_acceleration_Z>` |
+| `getch` | Read an encoder digital input value | `encoder` (0: left, 1: right), `channel` (0: A, 1: B) | `getch 0 0` | `0` or `1` |
+| `getenc` | Get the encoder tick values |  | `getenc` | `<left> <right>` |
+| `rstenc` | Reset the encoder tick values to zero |  | `rstenc` | `[OK]` |
+| `setspd` | Set the closed-loop speed of the motors [ticks/s] | `left_tps` `right_tps` | `setspd 700 700` | `[OK]` |
+| `setpwm` | Set the open-loop speed of the motors [PWM, `-255` to `255`] | `left_pwm` `right_pwm` | `setpwm 255 255` | `[OK]` |
+| `setpid` | Set the PID tuning gains (`ko` must be greater than zero) | `kp` `kd` `ki` `ko` | `setpid 30 10 0 10` | `[OK]` |
+| `hasimu` | Get whether the IMU was detected |  | `hasimu` | `0` if not connected, `1` if connected |
+| `getencimu` | Get the encoder tick values and the IMU data |  | `getencimu` | `<left> <right> <orientation_x> <orientation_y> <orientation_z> <orientation_w> <angular_velocity_x> <angular_velocity_y> <angular_velocity_z> <linear_acceleration_x> <linear_acceleration_y> <linear_acceleration_z>` |
+
+The IMU values are the orientation as a quaternion, the angular velocity in rad/s and the linear acceleration in m/s². `getencimu` replies `[ERROR] IMU unavailable` if no IMU was detected.
+
+### Test it!
+
+Create a serial connection at 57600 baud, e.g. with the PlatformIO serial monitor (`pio device monitor`, or through Docker: `docker compose -f docker/compose.yaml run --rm dev pio device monitor`). Remember to terminate every message with a carriage return.
+
+* **Open loop verification**
+  - Send `setpwm 255 255` to go full speed.
+  - Send `setpwm 0 0` to stop it.
+
+* **Read the encoders**
+  - Send `getenc` to get the encoder values.
+
+* **Get the ticks per revolution of your motor**
+  - First, reset the encoders to zero with `rstenc`.
+  - Then rotate your motors as many revolutions as you want (say 10) and divide the encoder ticks by the number of revolutions. Save this value, it is the calibration for the control loop.
+
+* **Closed loop verification**
+  - Send `setspd <tps> <tps>`, where `tps` stands for ticks per second. For example, if your motor-encoder system gets 700 ticks per revolution, `setspd 700 700` rotates both motors at 1 revolution per second (~6.28 rad/s).
