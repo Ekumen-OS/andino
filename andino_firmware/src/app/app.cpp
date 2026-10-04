@@ -69,6 +69,7 @@
 
 #include "andino/app/commands.h"
 #include "andino/app/constants.h"
+#include "andino/app/version.h"
 
 namespace andino {
 
@@ -96,7 +97,8 @@ void App::setup() {
       shell_.register_command(Commands::kSetMotorsPwm, cmd_set_motors_pwm_cb, this) &&
       shell_.register_command(Commands::kSetPidGains, cmd_set_pid_gains_cb, this) &&
       shell_.register_command(Commands::kIsImuConnected, cmd_is_imu_connected_cb, this) &&
-      shell_.register_command(Commands::kReadEncodersAndImu, cmd_read_encoders_and_imu_cb, this);
+      shell_.register_command(Commands::kReadEncodersAndImu, cmd_read_encoders_and_imu_cb, this) &&
+      shell_.register_command(Commands::kGetVersion, cmd_get_version_cb, this);
   if (!commands_registered) {
     reply_error("Failed to register commands");
   }
@@ -294,6 +296,11 @@ void App::reply_ok() {
 void App::reply_error(const char* reason) {
   serial_stream_.print("[ERROR] ");
   serial_stream_.println(reason);
+}
+
+void App::cmd_get_version_cb(void* context, int, char**) {
+  App* app = static_cast<App*>(context);
+  app->serial_stream_.println(Version::kFirmware);
 }
 
 void App::adjust_motors_speed() {
