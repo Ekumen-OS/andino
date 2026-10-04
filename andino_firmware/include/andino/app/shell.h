@@ -57,7 +57,10 @@ class Shell {
   /// @param name Command name.
   /// @param callback Callback function.
   /// @param context Context pointer to pass to the callback.
-  void register_command(const char* name, CommandCallback callback, void* context = nullptr);
+  /// @return True if the command was registered. False if the registry is full, the name is empty
+  /// or doesn't fit in the registry (it is never truncated), the name is already registered, or
+  /// the callback is null.
+  bool register_command(const char* name, CommandCallback callback, void* context = nullptr);
 
   /// @brief Processes the available input at the command prompt (if any). Meant to be called
   /// continously.

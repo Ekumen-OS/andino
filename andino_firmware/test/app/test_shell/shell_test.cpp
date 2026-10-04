@@ -135,6 +135,51 @@ int ShellTest::called_callback_{-1};
 int ShellTest::argc_{0};
 std::vector<std::string> ShellTest::argv_;
 
+TEST_F(ShellTest, RegisterCommandSucceeds) {
+  EXPECT_TRUE(shell.register_command("new", cmd_1_cb));
+}
+
+TEST_F(ShellTest, RegisterCommandWithLongestNameSucceeds) {
+  // The name buffer is 10 bytes long, so the longest name has 9 characters.
+  EXPECT_TRUE(shell.register_command("123456789", cmd_1_cb));
+}
+
+TEST_F(ShellTest, RegisterCommandWithTooLongNameFails) {
+  EXPECT_FALSE(shell.register_command("1234567890", cmd_1_cb));
+  EXPECT_FALSE(shell.register_command("a_very_long_command_name", cmd_1_cb));
+}
+
+TEST_F(ShellTest, RegisterCommandWithInvalidArgumentsFails) {
+  EXPECT_FALSE(shell.register_command(nullptr, cmd_1_cb));
+  EXPECT_FALSE(shell.register_command("", cmd_1_cb));
+  EXPECT_FALSE(shell.register_command("new", nullptr));
+}
+
+TEST_F(ShellTest, RegisterCommandWithDuplicatedNameFails) {
+  EXPECT_FALSE(shell.register_command(kCommand1, cmd_2_cb));
+  EXPECT_FALSE(shell.register_command(kCommand3, cmd_1_cb));
+}
+
+TEST_F(ShellTest, RegisterCommandWithDuplicatedNameKeepsTheFirstCallback) {
+  EXPECT_FALSE(shell.register_command(kCommand1, cmd_3_cb));
+
+  feed(std::string(kCommand1) + "\r");
+
+  shell.process_input();
+
+  EXPECT_EQ(called_callback_, 1);
+}
+
+TEST_F(ShellTest, RegisterCommandFailsWhenRegistryIsFull) {
+  // Three commands are already registered by the fixture and the registry holds 16 commands.
+  for (int i = 3; i < 16; i++) {
+    const std::string name = "c" + std::to_string(i);
+    EXPECT_TRUE(shell.register_command(name.c_str(), cmd_1_cb)) << name;
+  }
+
+  EXPECT_FALSE(shell.register_command("extra", cmd_1_cb));
+}
+
 TEST_F(ShellTest, ProcessInputEmpty) {
   EXPECT_CALL(serial_stream_, available()).Times(1).WillOnce(Return(0));
 
