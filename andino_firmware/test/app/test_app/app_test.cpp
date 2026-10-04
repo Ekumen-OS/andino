@@ -301,23 +301,23 @@ TEST_F(AppTest, SetupInitializesImu) {
 TEST_F(AppTest, UnknownCommand) {
   app_.setup();
 
-  EXPECT_EQ(run_command("z"), "Unknown command.\n");
+  EXPECT_EQ(run_command("z"), "[ERROR] Unknown command\n");
 }
 
 TEST_F(AppTest, ReadEncodersCommand) {
   app_.setup();
 
-  EXPECT_EQ(run_command("e"), "0 0\n");
+  EXPECT_EQ(run_command("getenc"), "0 0\n");
 }
 
 TEST_F(AppTest, ResetEncodersCommand) {
   app_.setup();
 
-  EXPECT_EQ(run_command("r"), "OK\n");
-  EXPECT_EQ(run_command("e"), "0 0\n");
+  EXPECT_EQ(run_command("rstenc"), "[OK]\n");
+  EXPECT_EQ(run_command("getenc"), "0 0\n");
 }
 
-TEST_F(AppTest, ReadDigitalGpioCommand) {
+TEST_F(AppTest, ReadEncoderChannelCommand) {
   app_.setup();
 
   ON_CALL(left_encoder_a_, read()).WillByDefault(Return(1));
@@ -325,24 +325,24 @@ TEST_F(AppTest, ReadDigitalGpioCommand) {
   ON_CALL(right_encoder_a_, read()).WillByDefault(Return(0));
   ON_CALL(right_encoder_b_, read()).WillByDefault(Return(1));
 
-  EXPECT_EQ(run_command("d 0 0"), "1\n");
-  EXPECT_EQ(run_command("d 0 1"), "0\n");
-  EXPECT_EQ(run_command("d 1 0"), "0\n");
-  EXPECT_EQ(run_command("d 1 1"), "1\n");
+  EXPECT_EQ(run_command("getch 0 0"), "1\n");
+  EXPECT_EQ(run_command("getch 0 1"), "0\n");
+  EXPECT_EQ(run_command("getch 1 0"), "0\n");
+  EXPECT_EQ(run_command("getch 1 1"), "1\n");
 }
 
-TEST_F(AppTest, GetIsImuConnectedCommandWhenConnected) {
+TEST_F(AppTest, IsImuConnectedCommandWhenConnected) {
   EXPECT_CALL(imu_, begin()).WillOnce(Return(true));
   app_.setup();
 
-  EXPECT_EQ(run_command("h"), "1\n");
+  EXPECT_EQ(run_command("hasimu"), "1\n");
 }
 
-TEST_F(AppTest, GetIsImuConnectedCommandWhenNotConnected) {
+TEST_F(AppTest, IsImuConnectedCommandWhenNotConnected) {
   EXPECT_CALL(imu_, begin()).WillOnce(Return(false));
   app_.setup();
 
-  EXPECT_EQ(run_command("h"), "0\n");
+  EXPECT_EQ(run_command("hasimu"), "0\n");
 }
 
 TEST_F(AppTest, SetMotorsPwmCommand) {
@@ -354,7 +354,7 @@ TEST_F(AppTest, SetMotorsPwmCommand) {
   EXPECT_CALL(right_motor_backward_, write(150)).Times(1);
   EXPECT_CALL(right_motor_forward_, write(0)).Times(1);
 
-  EXPECT_EQ(run_command("o 100 -150"), "OK\n");
+  EXPECT_EQ(run_command("setpwm 100 -150"), "[OK]\n");
 }
 
 TEST_F(AppTest, SetMotorsSpeedCommandWithZeroSpeedStopsMotors) {
@@ -365,13 +365,13 @@ TEST_F(AppTest, SetMotorsSpeedCommandWithZeroSpeedStopsMotors) {
   EXPECT_CALL(right_motor_forward_, write(0)).Times(1);
   EXPECT_CALL(right_motor_backward_, write(0)).Times(1);
 
-  EXPECT_EQ(run_command("m 0 0"), "OK\n");
+  EXPECT_EQ(run_command("setspd 0 0"), "[OK]\n");
 }
 
-TEST_F(AppTest, SetPidsTuningGainsCommand) {
+TEST_F(AppTest, SetPidGainsCommand) {
   app_.setup();
 
-  EXPECT_EQ(run_command("u 30 20 10 50"), "PID Updated: 30 20 10 50\nOK\n");
+  EXPECT_EQ(run_command("setpid 30 20 10 50"), "[OK]\n");
 }
 
 TEST_F(AppTest, ReadEncodersAndImuCommand) {
@@ -384,7 +384,35 @@ TEST_F(AppTest, ReadEncodersAndImuCommand) {
       .WillByDefault(Return(andino::Imu::Vector3{4.5, 5.5, 6.5}));
 
   // Ticks count, orientation quaternion, angular velocity and linear acceleration.
-  EXPECT_EQ(run_command("i"), "0 0 0.1000 0.2000 0.3000 0.4000 1.50 2.50 3.50 4.50 5.50 6.50");
+  EXPECT_EQ(run_command("getencimu"),
+            "0 0 0.1000 0.2000 0.3000 0.4000 1.5000 2.5000 3.5000 4.5000 5.5000 6.5000\n");
+}
+
+TEST_F(AppTest, ReadEncodersAndImuCommandWhenImuNotConnected) {
+  EXPECT_CALL(imu_, begin()).WillOnce(Return(false));
+  app_.setup();
+
+  EXPECT_EQ(run_command("getencimu"), "[ERROR] IMU unavailable\n");
+}
+
+TEST_F(AppTest, CommandsWithInvalidArgumentsReplyWithError) {
+  app_.setup();
+
+  const std::string expected = "[ERROR] Invalid arguments\n";
+  // Missing, extra, non-numeric and out-of-range arguments.
+  EXPECT_EQ(run_command("getch"), expected);
+  EXPECT_EQ(run_command("getch 0"), expected);
+  EXPECT_EQ(run_command("getch 0 0 0"), expected);
+  EXPECT_EQ(run_command("getch 2 0"), expected);
+  EXPECT_EQ(run_command("getch 0 2"), expected);
+  EXPECT_EQ(run_command("getch a b"), expected);
+  EXPECT_EQ(run_command("setspd"), expected);
+  EXPECT_EQ(run_command("setspd 10"), expected);
+  EXPECT_EQ(run_command("setspd 10 abc"), expected);
+  EXPECT_EQ(run_command("setpwm 10"), expected);
+  EXPECT_EQ(run_command("setpwm 10 1x"), expected);
+  EXPECT_EQ(run_command("setpid 30 20 10"), expected);
+  EXPECT_EQ(run_command("setpid 30 20 10 abc"), expected);
 }
 
 TEST_F(AppTest, LoopStopsMotorsOnceAutoStopWindowElapses) {
@@ -417,7 +445,7 @@ TEST_F(AppTest, LoopKeepsMotorsRunningWithinAutoStopWindow) {
 
 TEST_F(AppTest, LoopDrivesMotorsWhilePidIsEnabled) {
   app_.setup();
-  run_command("m 100 100");
+  run_command("setspd 100 100");
 
   // The PID controllers are enabled by a non zero set motors speed command, so the computed output
   // reaches the motors once the PID computation period elapses.
