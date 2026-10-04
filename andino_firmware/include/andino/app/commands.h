@@ -85,6 +85,8 @@ struct Commands {
   static constexpr const char* kIsImuConnected{"hasimu"};
   /// @brief Reads the encoders tick count values and IMU sensor data.
   static constexpr const char* kReadEncodersAndImu{"getencimu"};
+  /// @brief Gets the firmware version.
+  static constexpr const char* kGetVersion{"ver"};
 };
 
 }  // namespace andino

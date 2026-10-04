@@ -129,6 +129,9 @@ class App {
   /// Callback method for the `Commands::kReadEncodersAndImu` command.
   static void cmd_read_encoders_and_imu_cb(void* context, int argc, char** argv);
 
+  /// Callback method for the `Commands::kGetVersion` command.
+  static void cmd_get_version_cb(void* context, int argc, char** argv);
+
   /// @brief Writes the success reply ("[OK]") to the serial stream.
   void reply_ok();
 
