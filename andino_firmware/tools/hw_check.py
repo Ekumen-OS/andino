@@ -76,8 +76,8 @@ ERROR_PREFIX = "[ERROR]"
 VERSION_PATTERN = re.compile(r"[\w.+-]+")
 
 # USB vendor IDs of the usual Arduino boards and USB-to-serial chips (Arduino, WCH CH340, FTDI,
-# Silicon Labs CP210x).
-KNOWN_USB_VENDOR_IDS = (0x2341, 0x2A03, 0x1A86, 0x0403, 0x10C4)
+# Silicon Labs CP210x) and of the USB serial port of the STM32 boards (STMicroelectronics).
+KNOWN_USB_VENDOR_IDS = (0x2341, 0x2A03, 0x1A86, 0x0403, 0x10C4, 0x0483)
 
 # Wheel names, by their index in the firmware commands.
 WHEELS = ("left", "right")
