@@ -31,9 +31,9 @@ The `app` and `drivers` layers only depend on the abstract `hal` interfaces, so 
 
 ## How it works
 
-1. **Closed-loop control** – `setspd` enables a PID controller per wheel. Every 33 ms (`kPidRate`, 30 Hz) the controller compares the ticks counted in that period with the target and updates the motor PWM. The target is converted from ticks/s to ticks per period using integer division, so the speed resolution is `kPidRate` ticks/s. `setspd 0 0` stops the motors and disables the PID.
+1. **Closed-loop control** – `setspd` enables a PID controller per wheel. Every 33 ms (`pid_rate_hz`, 30 Hz) the controller compares the ticks counted in that period with the target and updates the motor PWM. The target is converted from ticks/s to ticks per period using integer division, so the speed resolution is `pid_rate_hz` ticks/s. `setspd 0 0` stops the motors and disables the PID.
 2. **Open-loop control** – `setpwm` disables the PID and drives the motors with the given PWM value directly (positive values go forward, negative values backward).
-3. **Auto-stop** – If no `setspd` or `setpwm` command is received for `kAutoStopWindow` (3s), the motors are stopped and the PID is disabled, so a robot never keeps driving after losing its host. Keep sending the command periodically to keep the robot moving.
+3. **Auto-stop** – If no `setspd` or `setpwm` command is received for `auto_stop_window_ms` (3 s), the motors are stopped and the PID is disabled, so a robot never keeps driving after losing its host. Keep sending the command periodically to keep the robot moving.
 
 ---
 
@@ -77,16 +77,13 @@ The encoder inputs use pin change interrupts. The IMU is an optional Adafruit BN
 
 ### Configuration
 
-Application constants are defined in [`include/andino/app/constants.h`](./include/andino/app/constants.h):
+The application is configured with an `App::Config` (see [`include/andino/app/app.h`](./include/andino/app/app.h)), which is created in [`src/main.cpp`](./src/main.cpp) and passed to the `App`:
 
-| Constant | Default | Description |
-|----------|---------|-------------|
-| `kAutoStopWindow` | `3000` | Time without a motor command after which the motors are stopped [ms] |
-| `kPidRate` | `30` | PID computation rate [Hz] |
-| `kPidKp` | `30` | Default PID proportional gain |
-| `kPidKd` | `10` | Default PID derivative gain |
-| `kPidKi` | `0` | Default PID integral gain |
-| `kPidKo` | `10` | Default PID output gain |
+| Setting | Default | Description |
+|---------|---------|-------------|
+| `auto_stop_window_ms` | `3000` | Time without a motor command after which the motors are stopped [ms] |
+| `pid_rate_hz` | `30` | PID computation rate [Hz] |
+| `pid_gains` | `{30, 10, 0, 10}` | Initial PID tuning gains `{kp, kd, ki, ko}` (they can be changed with `setpid`) |
 
 The serial baud rate (`57600`) is set in [`src/main.cpp`](./src/main.cpp), where the serial stream is created, and it must match the one used by the host. The maximum motor speed (PWM duty cycle `255`) is `Motor::kMaxSpeed`, in [`include/andino/drivers/motor.h`](./include/andino/drivers/motor.h).
 
