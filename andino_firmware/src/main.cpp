@@ -59,25 +59,12 @@ static andino::App app(andino::kAppConfig, sys_clock, serial_stream, left_motor_
                        right_motor_forward, right_motor_backward, left_encoder_a, left_encoder_b,
                        right_encoder_a, right_encoder_b, imu);
 
-/// @brief Application entry point.
-///
-/// @return Execution final status (never reached).
-int main(void) {
-  // Required by Arduino libraries to work.
-  init();
-
-  // Application configuration.
+/// @brief Configures the application. It is called once by the Arduino core at startup.
+void setup() {
   app.setup();
+}
 
-  // Application main run loop.
-  while (1) {
-    app.loop();
-
-    // Required by Arduino libraries to work.
-    if (serialEventRun) {
-      serialEventRun();
-    }
-  }
-
-  return 0;
+/// @brief Application main run loop. It is called continuously by the Arduino core.
+void loop() {
+  app.loop();
 }
