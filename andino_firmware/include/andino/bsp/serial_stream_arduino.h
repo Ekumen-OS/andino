@@ -39,10 +39,12 @@ namespace andino {
 class SerialStreamArduino : public SerialStream {
  public:
   /// @brief Constructs a SerialStreamArduino.
-  explicit SerialStreamArduino() : SerialStream() {
+  ///
+  /// @param baud Data rate in bits per second (baud).
+  explicit SerialStreamArduino(unsigned long baud) : SerialStream(), baud_(baud) {
   }
 
-  void begin(unsigned long baud) const override;
+  void begin() const override;
 
   int available() const override;
 
@@ -63,6 +65,10 @@ class SerialStreamArduino : public SerialStream {
   size_t println(int32_t num) const override;
 
   size_t println(double num, int digits) const override;
+
+ private:
+  /// Data rate in bits per second (baud).
+  unsigned long baud_;
 };
 
 }  // namespace andino

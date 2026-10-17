@@ -78,9 +78,9 @@ class App {
         left_encoder_(&left_encoder_a, &left_encoder_b),
         right_encoder_(&right_encoder_a, &right_encoder_b),
         left_pid_controller_(Constants::kPidKp, Constants::kPidKd, Constants::kPidKi,
-                             Constants::kPidKo, -Constants::kPwmMax, Constants::kPwmMax),
+                             Constants::kPidKo, -Motor::kMaxSpeed, Motor::kMaxSpeed),
         right_pid_controller_(Constants::kPidKp, Constants::kPidKd, Constants::kPidKi,
-                              Constants::kPidKo, -Constants::kPwmMax, Constants::kPwmMax),
+                              Constants::kPidKo, -Motor::kMaxSpeed, Motor::kMaxSpeed),
         shell_() {
   }
 

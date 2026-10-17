@@ -104,13 +104,13 @@ class FakeSerialStream : public andino::SerialStream {
     output_.clear();
   }
 
-  /// @brief Gets the baud rate the stream was initialized with.
-  unsigned long baud() const {
-    return baud_;
+  /// @brief Gets whether the stream was initialized.
+  bool begun() const {
+    return begun_;
   }
 
-  void begin(unsigned long baud) const override {
-    baud_ = baud;
+  void begin() const override {
+    begun_ = true;
   }
 
   int available() const override {
@@ -168,7 +168,7 @@ class FakeSerialStream : public andino::SerialStream {
   std::string input_;
   mutable size_t input_index_{0};
   mutable std::string output_;
-  mutable unsigned long baud_{0};
+  mutable bool begun_{false};
 };
 
 class AppTest : public testing::Test {
@@ -218,7 +218,7 @@ class AppTest : public testing::Test {
 TEST_F(AppTest, SetupInitializesSerialStream) {
   app_.setup();
 
-  EXPECT_EQ(serial_stream_.baud(), static_cast<unsigned long>(Constants::kBaudrate));
+  EXPECT_TRUE(serial_stream_.begun());
 }
 
 TEST_F(AppTest, SetupInitializesMotors) {

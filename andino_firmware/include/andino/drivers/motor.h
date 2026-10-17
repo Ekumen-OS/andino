@@ -99,12 +99,14 @@ class Motor {
   /// @param speed Motor speed value.
   void set_speed(int speed);
 
+  /// @brief Maximum speed value, in either direction. It is the PWM wave duty cycle of a fully
+  /// driven motor (100%), see
+  /// https://www.arduino.cc/reference/en/language/functions/analog-io/analogwrite/.
+  static constexpr int kMaxSpeed{255};
+
  private:
   /// Minimum speed value (negative speeds are considered as positive backward speeds).
   static constexpr int kMinSpeed{0};
-
-  /// Maximum speed value.
-  static constexpr int kMaxSpeed{255};
 
   /// Digital output connected to motor enable pin.
   const DigitalOut* enable_digital_out_;

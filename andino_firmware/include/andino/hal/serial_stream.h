@@ -43,10 +43,8 @@ class SerialStream {
   /// @brief Destructs the serial stream.
   virtual ~SerialStream() = default;
 
-  /// @brief Initializes the serial stream.
-  ///
-  /// @param baud Data rate in bits per second (baud).
-  virtual void begin(unsigned long baud) const = 0;
+  /// @brief Initializes the serial stream, using its own configuration (e.g. the data rate).
+  virtual void begin() const = 0;
 
   /// @brief Gets the number of bytes available for reading.
   ///

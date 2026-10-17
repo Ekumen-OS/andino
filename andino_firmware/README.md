@@ -81,14 +81,14 @@ Application constants are defined in [`include/andino/app/constants.h`](./includ
 
 | Constant | Default | Description |
 |----------|---------|-------------|
-| `kBaudrate` | `57600` | Serial port baud rate |
 | `kAutoStopWindow` | `3000` | Time without a motor command after which the motors are stopped [ms] |
-| `kPwmMax` | `255` | Maximum PWM duty cycle |
 | `kPidRate` | `30` | PID computation rate [Hz] |
 | `kPidKp` | `30` | Default PID proportional gain |
 | `kPidKd` | `10` | Default PID derivative gain |
 | `kPidKi` | `0` | Default PID integral gain |
 | `kPidKo` | `10` | Default PID output gain |
+
+The serial baud rate (`57600`) is set in [`src/main.cpp`](./src/main.cpp), where the serial stream is created, and it must match the one used by the host. The maximum motor speed (PWM duty cycle `255`) is `Motor::kMaxSpeed`, in [`include/andino/drivers/motor.h`](./include/andino/drivers/motor.h).
 
 ---
 
