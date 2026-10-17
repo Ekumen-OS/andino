@@ -29,16 +29,23 @@
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "andino/bsp/arduino/imu_arduino.h"
 
+#include "andino/bsp/arduino/arduino_core.h"
+
+// The vendor headers (Wire and the Adafruit library) are included with the warnings that the strict
+// flags of this project would turn into errors silenced, like the Arduino core.
 #if defined(__GNUC__)
 #pragma GCC diagnostic push
 #pragma GCC diagnostic ignored "-Wconversion"
+#pragma GCC diagnostic ignored "-Wsign-conversion"
+#pragma GCC diagnostic ignored "-Wuseless-cast"
+#pragma GCC diagnostic ignored "-Wshadow"
+#pragma GCC diagnostic ignored "-Wdeprecated-declarations"
 #endif
 #include <Adafruit_BNO055.h>
+#include <Wire.h>
 #if defined(__GNUC__)
 #pragma GCC diagnostic pop
 #endif
-
-#include <Wire.h>
 
 /// Adafruit BNO055 IMU sensor instance.
 static Adafruit_BNO055 g_bno055_imu(55, BNO055_ADDRESS_A, &Wire);

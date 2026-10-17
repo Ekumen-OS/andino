@@ -27,10 +27,9 @@
 // CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
 // OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-#include <Arduino.h>
-
 #include "andino/app/app.h"
 #include "andino/board.h"
+#include "andino/bsp/arduino/arduino_core.h"
 #include "andino/bsp/arduino/clock_arduino.h"
 #include "andino/bsp/arduino/digital_out_arduino.h"
 #include "andino/bsp/arduino/imu_arduino.h"
