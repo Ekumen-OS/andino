@@ -33,7 +33,10 @@
 
 namespace andino {
 
-/// @brief Hardware configuration.
+/// @brief Hardware (board) configuration: the pins the robot hardware is connected to.
+///
+/// It describes the board, so only the BSP and the composition root (main.cpp) use it. The
+/// application and the drivers get their hardware through the HAL interfaces.
 struct Hw {
   /// @brief Left encoder channel A pin. Connected to PD2 (digital pin 2).
   static constexpr uint8_t kLeftEncoderChannelAGpioPin{2};

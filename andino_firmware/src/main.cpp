@@ -30,9 +30,9 @@
 #include <Arduino.h>
 
 #include "andino/app/app.h"
-#include "andino/app/hw.h"
 #include "andino/bsp/clock_arduino.h"
 #include "andino/bsp/digital_out_arduino.h"
+#include "andino/bsp/hw.h"
 #include "andino/bsp/imu_arduino.h"
 #include "andino/bsp/interrupt_in_arduino.h"
 #include "andino/bsp/pwm_out_arduino.h"

@@ -54,7 +54,7 @@ Only Docker and Docker Compose are required to be installed on your system, no l
 
 ### Wiring
 
-The pin assignment is defined in [`include/andino/app/hw.h`](./include/andino/app/hw.h):
+The pin assignment is defined in [`include/andino/bsp/hw.h`](./include/andino/bsp/hw.h):
 
 | Function | Pin | Arduino pin |
 |----------|-----|-------------|
