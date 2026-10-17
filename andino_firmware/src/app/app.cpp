@@ -88,18 +88,18 @@ void App::setup() {
 
   // Initialize command shell.
   shell_.set_serial_stream(&serial_stream_);
-  shell_.set_default_callback(cmd_unknown_cb, this);
-  shell_.set_overflow_callback(message_too_long_cb, this);
+  shell_.set_default_callback(&trampoline<&App::cmd_unknown>, this);
+  shell_.set_overflow_callback(&overflow_trampoline<&App::message_too_long>, this);
   const bool commands_registered =
-      shell_.register_command(Commands::kReadEncoderChannel, cmd_read_encoder_channel_cb, this) &&
-      shell_.register_command(Commands::kReadEncoders, cmd_read_encoders_cb, this) &&
-      shell_.register_command(Commands::kResetEncoders, cmd_reset_encoders_cb, this) &&
-      shell_.register_command(Commands::kSetMotorsSpeed, cmd_set_motors_speed_cb, this) &&
-      shell_.register_command(Commands::kSetMotorsPwm, cmd_set_motors_pwm_cb, this) &&
-      shell_.register_command(Commands::kSetPidGains, cmd_set_pid_gains_cb, this) &&
-      shell_.register_command(Commands::kIsImuConnected, cmd_is_imu_connected_cb, this) &&
-      shell_.register_command(Commands::kReadEncodersAndImu, cmd_read_encoders_and_imu_cb, this) &&
-      shell_.register_command(Commands::kGetVersion, cmd_get_version_cb, this);
+      register_command<&App::cmd_read_encoder_channel>(Commands::kReadEncoderChannel) &&
+      register_command<&App::cmd_read_encoders>(Commands::kReadEncoders) &&
+      register_command<&App::cmd_reset_encoders>(Commands::kResetEncoders) &&
+      register_command<&App::cmd_set_motors_speed>(Commands::kSetMotorsSpeed) &&
+      register_command<&App::cmd_set_motors_pwm>(Commands::kSetMotorsPwm) &&
+      register_command<&App::cmd_set_pid_gains>(Commands::kSetPidGains) &&
+      register_command<&App::cmd_is_imu_connected>(Commands::kIsImuConnected) &&
+      register_command<&App::cmd_read_encoders_and_imu>(Commands::kReadEncodersAndImu) &&
+      register_command<&App::cmd_get_version>(Commands::kGetVersion);
   if (!commands_registered) {
     reply_error("Failed to register commands");
   }
@@ -137,99 +137,91 @@ bool App::parse_int(const char* str, int16_t& value) {
   return true;
 }
 
-void App::message_too_long_cb(void* context) {
-  App* app = static_cast<App*>(context);
-  app->reply_error("Command too long");
+void App::message_too_long() {
+  reply_error("Command too long");
 }
 
-void App::cmd_unknown_cb(void* context, int, char**) {
-  App* app = static_cast<App*>(context);
-  app->reply_error("Unknown command");
+void App::cmd_unknown() {
+  reply_error("Unknown command");
 }
 
-void App::cmd_read_encoder_channel_cb(void* context, int argc, char** argv) {
-  App* app = static_cast<App*>(context);
+void App::cmd_read_encoder_channel(int argc, char** argv) {
   int16_t encoder = 0;
   int16_t channel = 0;
   if (argc != 3 || !parse_int(argv[1], encoder) || !parse_int(argv[2], channel) ||
       (encoder != 0 && encoder != 1) || (channel != 0 && channel != 1)) {
-    app->reply_error("Invalid arguments");
+    reply_error("Invalid arguments");
     return;
   }
 
-  Encoder& selected_encoder = (encoder == 0) ? app->left_encoder_ : app->right_encoder_;
+  Encoder& selected_encoder = (encoder == 0) ? left_encoder_ : right_encoder_;
   const int value =
       (channel == 0) ? selected_encoder.read_channel_a() : selected_encoder.read_channel_b();
   // The serial stream prints fixed-width integers. On some platforms `int` is none of them, which
   // would make the call ambiguous.
-  app->serial_stream_.println(static_cast<int16_t>(value));
+  serial_stream_.println(static_cast<int16_t>(value));
 }
 
-void App::cmd_read_encoders_cb(void* context, int, char**) {
-  App* app = static_cast<App*>(context);
-  app->serial_stream_.print(app->left_encoder_.read());
-  app->serial_stream_.print(" ");
-  app->serial_stream_.println(app->right_encoder_.read());
+void App::cmd_read_encoders() {
+  serial_stream_.print(left_encoder_.read());
+  serial_stream_.print(" ");
+  serial_stream_.println(right_encoder_.read());
 }
 
-void App::cmd_reset_encoders_cb(void* context, int, char**) {
-  App* app = static_cast<App*>(context);
-  app->left_encoder_.reset();
-  app->right_encoder_.reset();
-  app->reset_pids();
-  app->reply_ok();
+void App::cmd_reset_encoders() {
+  left_encoder_.reset();
+  right_encoder_.reset();
+  reset_pids();
+  reply_ok();
 }
 
-void App::cmd_set_motors_speed_cb(void* context, int argc, char** argv) {
-  App* app = static_cast<App*>(context);
+void App::cmd_set_motors_speed(int argc, char** argv) {
   int16_t left_motor_speed = 0;
   int16_t right_motor_speed = 0;
   if (argc != 3 || !parse_int(argv[1], left_motor_speed) ||
       !parse_int(argv[2], right_motor_speed)) {
-    app->reply_error("Invalid arguments");
+    reply_error("Invalid arguments");
     return;
   }
 
   // Reset the auto stop timer.
-  app->last_set_motors_speed_cmd_ = app->clock_.millis();
+  last_set_motors_speed_cmd_ = clock_.millis();
   if (left_motor_speed == 0 && right_motor_speed == 0) {
-    app->left_motor_.set_speed(0);
-    app->right_motor_.set_speed(0);
-    app->reset_pids();
-    app->disable_pids();
+    left_motor_.set_speed(0);
+    right_motor_.set_speed(0);
+    reset_pids();
+    disable_pids();
   } else {
-    app->left_pid_controller_.enable();
-    app->right_pid_controller_.enable();
+    left_pid_controller_.enable();
+    right_pid_controller_.enable();
   }
 
-  app->left_pid_controller_.set_target_speed(left_motor_speed);
-  app->right_pid_controller_.set_target_speed(right_motor_speed);
-  app->reply_ok();
+  left_pid_controller_.set_target_speed(left_motor_speed);
+  right_pid_controller_.set_target_speed(right_motor_speed);
+  reply_ok();
 }
 
-void App::cmd_set_motors_pwm_cb(void* context, int argc, char** argv) {
-  App* app = static_cast<App*>(context);
+void App::cmd_set_motors_pwm(int argc, char** argv) {
   int16_t left_motor_pwm = 0;
   int16_t right_motor_pwm = 0;
   if (argc != 3 || !parse_int(argv[1], left_motor_pwm) || !parse_int(argv[2], right_motor_pwm)) {
-    app->reply_error("Invalid arguments");
+    reply_error("Invalid arguments");
     return;
   }
 
   // Driving the motors with raw PWM values bypasses the PID.
-  app->reset_pids();
-  app->disable_pids();
+  reset_pids();
+  disable_pids();
 
   // Reset the auto stop timer.
-  app->last_set_motors_speed_cmd_ = app->clock_.millis();
+  last_set_motors_speed_cmd_ = clock_.millis();
 
-  app->left_motor_.set_speed(left_motor_pwm);
-  app->right_motor_.set_speed(right_motor_pwm);
-  app->reply_ok();
+  left_motor_.set_speed(left_motor_pwm);
+  right_motor_.set_speed(right_motor_pwm);
+  reply_ok();
 }
 
-void App::cmd_set_pid_gains_cb(void* context, int argc, char** argv) {
-  App* app = static_cast<App*>(context);
+void App::cmd_set_pid_gains(int argc, char** argv) {
   int16_t kp = 0;
   int16_t kd = 0;
   int16_t ki = 0;
@@ -237,61 +229,59 @@ void App::cmd_set_pid_gains_cb(void* context, int argc, char** argv) {
   if (argc != 5 || !parse_int(argv[1], kp) || !parse_int(argv[2], kd) || !parse_int(argv[3], ki) ||
       !parse_int(argv[4], ko) || ko <= 0) {
     // The output gain is used as a divisor by the PID, so it must be strictly positive.
-    app->reply_error("Invalid arguments");
+    reply_error("Invalid arguments");
     return;
   }
 
   const Pid::Gains gains{kp, kd, ki, ko};
-  app->left_pid_controller_.set_tunings(gains);
-  app->right_pid_controller_.set_tunings(gains);
-  app->reply_ok();
+  left_pid_controller_.set_tunings(gains);
+  right_pid_controller_.set_tunings(gains);
+  reply_ok();
 }
 
-void App::cmd_is_imu_connected_cb(void* context, int, char**) {
-  App* app = static_cast<App*>(context);
-  app->serial_stream_.println(static_cast<int16_t>(app->is_imu_connected_));
+void App::cmd_is_imu_connected() {
+  serial_stream_.println(static_cast<int16_t>(is_imu_connected_));
 }
 
-void App::cmd_read_encoders_and_imu_cb(void* context, int, char**) {
-  App* app = static_cast<App*>(context);
-  if (!app->is_imu_connected_) {
-    app->reply_error("IMU unavailable");
+void App::cmd_read_encoders_and_imu() {
+  if (!is_imu_connected_) {
+    reply_error("IMU unavailable");
     return;
   }
 
-  app->serial_stream_.print(app->left_encoder_.read());
-  app->serial_stream_.print(" ");
-  app->serial_stream_.print(app->right_encoder_.read());
-  app->serial_stream_.print(" ");
+  serial_stream_.print(left_encoder_.read());
+  serial_stream_.print(" ");
+  serial_stream_.print(right_encoder_.read());
+  serial_stream_.print(" ");
 
   // Retrieve absolute orientation (quaternion).
-  Imu::Orientation orientation = app->imu_.get_orientation();
-  app->serial_stream_.print(orientation.x, 4);
-  app->serial_stream_.print(" ");
-  app->serial_stream_.print(orientation.y, 4);
-  app->serial_stream_.print(" ");
-  app->serial_stream_.print(orientation.z, 4);
-  app->serial_stream_.print(" ");
-  app->serial_stream_.print(orientation.w, 4);
-  app->serial_stream_.print(" ");
+  Imu::Orientation orientation = imu_.get_orientation();
+  serial_stream_.print(orientation.x, 4);
+  serial_stream_.print(" ");
+  serial_stream_.print(orientation.y, 4);
+  serial_stream_.print(" ");
+  serial_stream_.print(orientation.z, 4);
+  serial_stream_.print(" ");
+  serial_stream_.print(orientation.w, 4);
+  serial_stream_.print(" ");
 
   // Retrieve angular velocity (rad/s).
-  Imu::Vector3 angular_velocity = app->imu_.get_angular_velocity();
-  app->serial_stream_.print(angular_velocity.x, 4);
-  app->serial_stream_.print(" ");
-  app->serial_stream_.print(angular_velocity.y, 4);
-  app->serial_stream_.print(" ");
-  app->serial_stream_.print(angular_velocity.z, 4);
-  app->serial_stream_.print(" ");
+  Imu::Vector3 angular_velocity = imu_.get_angular_velocity();
+  serial_stream_.print(angular_velocity.x, 4);
+  serial_stream_.print(" ");
+  serial_stream_.print(angular_velocity.y, 4);
+  serial_stream_.print(" ");
+  serial_stream_.print(angular_velocity.z, 4);
+  serial_stream_.print(" ");
 
   // Retrieve linear acceleration (m/s^2).
-  Imu::Vector3 linear_acceleration = app->imu_.get_linear_acceleration();
-  app->serial_stream_.print(linear_acceleration.x, 4);
-  app->serial_stream_.print(" ");
-  app->serial_stream_.print(linear_acceleration.y, 4);
-  app->serial_stream_.print(" ");
-  app->serial_stream_.print(linear_acceleration.z, 4);
-  app->serial_stream_.println("");
+  Imu::Vector3 linear_acceleration = imu_.get_linear_acceleration();
+  serial_stream_.print(linear_acceleration.x, 4);
+  serial_stream_.print(" ");
+  serial_stream_.print(linear_acceleration.y, 4);
+  serial_stream_.print(" ");
+  serial_stream_.print(linear_acceleration.z, 4);
+  serial_stream_.println("");
 }
 
 void App::reply_ok() {
@@ -303,9 +293,8 @@ void App::reply_error(const char* reason) {
   serial_stream_.println(reason);
 }
 
-void App::cmd_get_version_cb(void* context, int, char**) {
-  App* app = static_cast<App*>(context);
-  app->serial_stream_.println(Version::kFirmware);
+void App::cmd_get_version() {
+  serial_stream_.println(Version::kFirmware);
 }
 
 void App::adjust_motors_speed() {
