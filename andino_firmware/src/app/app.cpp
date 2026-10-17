@@ -89,6 +89,7 @@ void App::setup() {
   // Initialize command shell.
   shell_.set_serial_stream(&serial_stream_);
   shell_.set_default_callback(cmd_unknown_cb, this);
+  shell_.set_overflow_callback(message_too_long_cb, this);
   const bool commands_registered =
       shell_.register_command(Commands::kReadEncoderChannel, cmd_read_encoder_channel_cb, this) &&
       shell_.register_command(Commands::kReadEncoders, cmd_read_encoders_cb, this) &&
@@ -134,6 +135,11 @@ bool App::parse_int(const char* str, int16_t& value) {
   }
   value = static_cast<int16_t>(parsed);
   return true;
+}
+
+void App::message_too_long_cb(void* context) {
+  App* app = static_cast<App*>(context);
+  app->reply_error("Command too long");
 }
 
 void App::cmd_unknown_cb(void* context, int, char**) {

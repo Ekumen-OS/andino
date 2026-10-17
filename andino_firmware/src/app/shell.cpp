@@ -43,6 +43,11 @@ void Shell::set_default_callback(CommandCallback callback, void* context) {
   default_callback_context_ = context;
 }
 
+void Shell::set_overflow_callback(OverflowCallback callback, void* context) {
+  overflow_callback_ = callback;
+  overflow_callback_context_ = context;
+}
+
 bool Shell::register_command(const char* name, CommandCallback callback, void* context) {
   if (commands_count_ >= kCommandsMax || name == nullptr || callback == nullptr) {
     return false;
@@ -80,7 +85,9 @@ void Shell::process_input() {
       case '\r':
         if (discarding_) {
           // The message overflowed the buffer, so it was dropped.
-          serial_stream_->println("Command too long.");
+          if (overflow_callback_ != nullptr) {
+            overflow_callback_(overflow_callback_context_);
+          }
           discarding_ = false;
         } else {
           // Terminate command prompt message and parse it.

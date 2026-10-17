@@ -142,6 +142,9 @@ class App {
   /// Callback method for the `Commands::kReadEncodersAndImu` command.
   static void cmd_read_encoders_and_imu_cb(void* context, int argc, char** argv);
 
+  /// Callback method for the messages that are too long to be processed by the shell.
+  static void message_too_long_cb(void* context);
+
   /// Callback method for the `Commands::kGetVersion` command.
   static void cmd_get_version_cb(void* context, int argc, char** argv);
 
