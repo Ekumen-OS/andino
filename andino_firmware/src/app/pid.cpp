@@ -113,7 +113,9 @@ void Pid::compute(int32_t encoder_count, int16_t& computed_output) {
   // Products are computed in 32 bits explicitly so that the result doesn't depend on the platform
   // `int` width (16 bits on AVR).
   const int32_t input_delta = static_cast<int32_t>(input) - last_input_;
-  int32_t output = (kp_ * error - static_cast<int32_t>(kd_) * input_delta + integral_term_) / ko_;
+  int32_t output =
+      (gains_.kp * error - static_cast<int32_t>(gains_.kd) * input_delta + integral_term_) /
+      gains_.ko;
   output += last_output_;
 
   // Accumulate integral term as long as output doesn't saturate.
@@ -122,10 +124,10 @@ void Pid::compute(int32_t encoder_count, int16_t& computed_output) {
   } else if (output <= output_min_) {
     output = output_min_;
   } else {
-    // ki_ * error safely fits into an int16_t: it is only accumulated while output (which is
+    // gains_.ki * error safely fits into an int16_t: it is only accumulated while output (which is
     // derived from the same magnitudes) is within the int16_t-sized output_min_/output_max_
     // bounds.
-    integral_term_ = static_cast<int16_t>(integral_term_ + ki_ * error);
+    integral_term_ = static_cast<int16_t>(integral_term_ + gains_.ki * error);
   }
 
   // output is clamped to output_min_/output_max_ above, both of which are int16_t, so this
@@ -138,15 +140,14 @@ void Pid::compute(int32_t encoder_count, int16_t& computed_output) {
   last_output_ = output;
 }
 
-void Pid::set_setpoint(int16_t setpoint) {
-  setpoint_ = setpoint;
+void Pid::set_target_speed(int16_t ticks_per_second) {
+  // The division is signed and done in 32 bits: on AVR `int` has 16 bits, so a 16-bit speed divided
+  // by the (unsigned) rate would be converted to `unsigned int` and negative speeds would break.
+  setpoint_ = static_cast<int16_t>(static_cast<int32_t>(ticks_per_second) / rate_hz_);
 }
 
-void Pid::set_tunings(int16_t kp, int16_t kd, int16_t ki, int16_t ko) {
-  kp_ = kp;
-  kd_ = kd;
-  ki_ = ki;
-  ko_ = ko;
+void Pid::set_tunings(const Gains& gains) {
+  gains_ = gains;
 }
 
 }  // namespace andino

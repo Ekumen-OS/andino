@@ -36,16 +36,37 @@ namespace andino {
 /// @brief This class provides a simple PID controller implementation.
 class Pid {
  public:
+  /// @brief Tuning gains.
+  struct Gains {
+    /// Proportional gain.
+    int16_t kp;
+    /// Derivative gain.
+    int16_t kd;
+    /// Integral gain.
+    int16_t ki;
+    /// Output gain (the output is divided by it, so it must be greater than zero).
+    int16_t ko;
+  };
+
   /// @brief Constructs a new PID object.
   ///
-  /// @param kp Tuning proportional gain.
-  /// @param kd Tuning derivative gain.
-  /// @param ki Tuning integral gain.
-  /// @param ko Tuning output gain.
+  /// @param gains Tuning gains.
   /// @param output_min Output minimum limit.
   /// @param output_max Output maximum limit.
-  Pid(int16_t kp, int16_t kd, int16_t ki, int16_t ko, int16_t output_min, int16_t output_max)
-      : kp_(kp), kd_(kd), ki_(ki), ko_(ko), output_min_(output_min), output_max_(output_max) {
+  /// @param rate_hz Rate at which the controller output is computed [Hz]. A rate of zero is
+  /// treated as 1 Hz.
+  Pid(const Gains& gains, int16_t output_min, int16_t output_max, uint16_t rate_hz)
+      : gains_(gains),
+        output_min_(output_min),
+        output_max_(output_max),
+        rate_hz_(rate_hz == 0 ? static_cast<uint16_t>(1) : rate_hz) {
+  }
+
+  /// @brief Gets the period at which the controller output must be computed.
+  ///
+  /// @return Period [ms].
+  unsigned long period_ms() const {
+    return 1000UL / rate_hz_;
   }
 
   /// @brief Resets the PID controller.
@@ -68,38 +89,36 @@ class Pid {
   /// @param computed_output Computed output value.
   void compute(int32_t encoder_count, int16_t& computed_output);
 
-  /// @brief Sets the setpoint.
+  /// @brief Sets the target speed.
   ///
-  /// @param setpoint Desired setpoint value.
-  void set_setpoint(int16_t setpoint);
+  /// The controller works with the ticks counted in each computation period, so the speed is
+  /// converted to ticks per period using integer division. The speed resolution is therefore the
+  /// controller rate, in ticks per second.
+  ///
+  /// @param ticks_per_second Desired speed [ticks/s].
+  void set_target_speed(int16_t ticks_per_second);
 
   /// @brief Sets the tuning gains.
   ///
-  /// @param kp Tuning proportional gain.
-  /// @param kd Tuning derivative gain.
-  /// @param ki Tuning integral gain.
-  /// @param ko Tuning output gain.
-  void set_tunings(int16_t kp, int16_t kd, int16_t ki, int16_t ko);
+  /// @param gains Tuning gains.
+  void set_tunings(const Gains& gains);
 
  private:
-  /// Tuning proportional gain.
-  int16_t kp_{0};
-  /// Tuning derivative gain.
-  int16_t kd_{0};
-  /// Tuning integral gain.
-  int16_t ki_{0};
-  /// Tuning output gain.
-  int16_t ko_{0};
+  /// Tuning gains.
+  Gains gains_;
 
   /// Output minimum limit.
   int16_t output_min_{0};
   /// Output maximum limit.
   int16_t output_max_{0};
 
+  /// Rate at which the controller output is computed [Hz].
+  uint16_t rate_hz_{1};
+
   /// True if the PID is enabled, false otherwise.
   bool enabled_{false};
 
-  /// Setpoint value.
+  /// Setpoint value [ticks/period].
   int16_t setpoint_{0};
   /// Accumulated integral term.
   int16_t integral_term_{0};

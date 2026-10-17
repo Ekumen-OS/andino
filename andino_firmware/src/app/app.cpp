@@ -85,6 +85,7 @@ void App::setup() {
   right_motor_.enable(true);
 
   reset_pids();
+  pid_period_ms_ = left_pid_controller_.period_ms();
 
   // Initialize command shell.
   shell_.set_serial_stream(&serial_stream_);
@@ -114,7 +115,7 @@ void App::loop() {
   const unsigned long now = clock_.millis();
 
   // Compute PID output at the configured rate.
-  if ((now - last_pid_computation_) > Constants::kPidPeriod) {
+  if ((now - last_pid_computation_) > pid_period_ms_) {
     last_pid_computation_ = now;
     adjust_motors_speed();
   }
@@ -194,12 +195,8 @@ void App::cmd_set_motors_speed_cb(void* context, int argc, char** argv) {
     app->right_pid_controller_.enable();
   }
 
-  // The target speeds are in ticks per second, so we need to convert them to ticks per
-  // Constants::kPidRate.
-  app->left_pid_controller_.set_setpoint(
-      static_cast<int16_t>(left_motor_speed / Constants::kPidRate));
-  app->right_pid_controller_.set_setpoint(
-      static_cast<int16_t>(right_motor_speed / Constants::kPidRate));
+  app->left_pid_controller_.set_target_speed(left_motor_speed);
+  app->right_pid_controller_.set_target_speed(right_motor_speed);
   app->reply_ok();
 }
 
@@ -237,8 +234,9 @@ void App::cmd_set_pid_gains_cb(void* context, int argc, char** argv) {
     return;
   }
 
-  app->left_pid_controller_.set_tunings(kp, kd, ki, ko);
-  app->right_pid_controller_.set_tunings(kp, kd, ki, ko);
+  const Pid::Gains gains{kp, kd, ki, ko};
+  app->left_pid_controller_.set_tunings(gains);
+  app->right_pid_controller_.set_tunings(gains);
   app->reply_ok();
 }
 

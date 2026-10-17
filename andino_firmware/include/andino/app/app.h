@@ -77,10 +77,12 @@ class App {
         right_motor_(&right_motor_enable, &right_motor_forward, &right_motor_backward),
         left_encoder_(&left_encoder_a, &left_encoder_b),
         right_encoder_(&right_encoder_a, &right_encoder_b),
-        left_pid_controller_(Constants::kPidKp, Constants::kPidKd, Constants::kPidKi,
-                             Constants::kPidKo, -Motor::kMaxSpeed, Motor::kMaxSpeed),
-        right_pid_controller_(Constants::kPidKp, Constants::kPidKd, Constants::kPidKi,
-                              Constants::kPidKo, -Motor::kMaxSpeed, Motor::kMaxSpeed),
+        left_pid_controller_(
+            Pid::Gains{Constants::kPidKp, Constants::kPidKd, Constants::kPidKi, Constants::kPidKo},
+            -Motor::kMaxSpeed, Motor::kMaxSpeed, Constants::kPidRate),
+        right_pid_controller_(
+            Pid::Gains{Constants::kPidKp, Constants::kPidKd, Constants::kPidKi, Constants::kPidKo},
+            -Motor::kMaxSpeed, Motor::kMaxSpeed, Constants::kPidRate),
         shell_() {
   }
 
@@ -179,6 +181,10 @@ class App {
 
   /// Application command shell.
   Shell shell_;
+
+  /// PID computation period [ms]. It is read from the controllers on setup, so the (software)
+  /// division that computes it isn't repeated on every loop iteration.
+  unsigned long pid_period_ms_{0};
 
   /// Tracks the last time the PID computation was made.
   unsigned long last_pid_computation_{0};
