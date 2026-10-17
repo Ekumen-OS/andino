@@ -27,18 +27,18 @@
 // CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
 // OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-#include "andino/bsp/digital_out_arduino.h"
+#include "andino/bsp/arduino/pwm_out_arduino.h"
 
 #include <Arduino.h>
 
 namespace andino {
 
-void DigitalOutArduino::begin() const {
+void PwmOutArduino::begin() const {
   pinMode(gpio_pin_, OUTPUT);
 }
 
-void DigitalOutArduino::write(uint8_t value) const {
-  digitalWrite(gpio_pin_, value);
+void PwmOutArduino::write(int value) const {
+  analogWrite(gpio_pin_, value);
 }
 
 }  // namespace andino

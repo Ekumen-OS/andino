@@ -27,51 +27,9 @@
 // CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
 // OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-#include "andino/bsp/imu_arduino.h"
+#pragma once
 
-#if defined(__GNUC__)
-#pragma GCC diagnostic push
-#pragma GCC diagnostic ignored "-Wconversion"
-#endif
-#include <Adafruit_BNO055.h>
-#if defined(__GNUC__)
-#pragma GCC diagnostic pop
-#endif
-
-#include <Wire.h>
-
-/// Adafruit BNO055 IMU sensor instance.
-static Adafruit_BNO055 g_bno055_imu(55, BNO055_ADDRESS_A, &Wire);
-
-namespace andino {
-
-bool ImuArduino::begin() const {
-  if (!g_bno055_imu.begin()) {
-    return false;
-  }
-  g_bno055_imu.setExtCrystalUse(true);
-  return true;
-}
-
-Imu::Orientation ImuArduino::get_orientation() const {
-  // See https://learn.adafruit.com/adafruit-bno055-absolute-orientation-sensor/overview for
-  // further information.
-  imu::Quaternion orientation = g_bno055_imu.getQuat();
-  return Orientation{orientation.x(), orientation.y(), orientation.z(), orientation.w()};
-}
-
-Imu::Vector3 ImuArduino::get_angular_velocity() const {
-  // See https://learn.adafruit.com/adafruit-bno055-absolute-orientation-sensor/overview for
-  // further information.
-  imu::Vector<3> angular_velocity = g_bno055_imu.getVector(Adafruit_BNO055::VECTOR_GYROSCOPE);
-  return Vector3{angular_velocity.x(), angular_velocity.y(), angular_velocity.z()};
-}
-
-Imu::Vector3 ImuArduino::get_linear_acceleration() const {
-  // See https://learn.adafruit.com/adafruit-bno055-absolute-orientation-sensor/overview for
-  // further information.
-  imu::Vector<3> linear_acceleration = g_bno055_imu.getVector(Adafruit_BNO055::VECTOR_LINEARACCEL);
-  return Vector3{linear_acceleration.x(), linear_acceleration.y(), linear_acceleration.z()};
-}
-
-}  // namespace andino
+// The Arduino Nano has the same microcontroller (ATmega328P) and the same Arduino pin numbering as
+// the Arduino Uno, so it uses the same board package. If the boards ever diverge, replace this
+// include with the description of the Nano.
+#include "../../arduino_uno/andino/board.h"

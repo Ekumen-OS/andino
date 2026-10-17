@@ -14,9 +14,12 @@ andino_firmware/
 │   ├── app/            # Application logic
 │   ├── drivers/        # Hardware-independent drivers
 │   ├── hal/            # Hardware Abstraction Layer (interfaces)
-│   └── bsp/            # Board Support Package (Arduino specialization)
+│   └── bsp/            # Board Support Package: HAL implementations (arduino/, avr/, ...)
 ├── src/                # Implementation files, mirroring the layers above
-│   └── main.cpp        # Wires the Arduino specializations into the App and runs it
+│   └── main.cpp        # Wires the BSP implementations of the selected board into the App
+├── boards/             # Board packages: pins, serial settings and configuration of each board
+│   ├── arduino_uno/
+│   └── arduino_nano/
 ├── test/               # Unit tests organized by layer (run on the host)
 │   ├── app/
 │   └── drivers/
@@ -25,7 +28,7 @@ andino_firmware/
 └── README.md
 ```
 
-The `app` and `drivers` layers only depend on the abstract `hal` interfaces, so they can be compiled and unit tested on a host machine. The `bsp` layer provides the Arduino specializations of those interfaces, and `src/main.cpp` is the only place where both are connected.
+The `app` and `drivers` layers only depend on the abstract `hal` interfaces, so they can be compiled and unit tested on a host machine. The `bsp` layer provides the specializations of those interfaces, and `src/main.cpp` is the only place where both are connected, using the board package of the board being built.
 
 ---
 
@@ -41,12 +44,20 @@ The `app` and `drivers` layers only depend on the abstract `hal` interfaces, so 
 
 The firmware is built with [PlatformIO](https://platformio.org/). You can build, test, and flash it using the provided Docker image (recommended, no local setup needed). There are two firmware targets:
 
-| Board | PlatformIO environment |
-|-------|------------------------|
-| Arduino Uno | `uno` |
-| Arduino Nano | `nanoatmega328` |
+| Board | PlatformIO environment | Board package |
+|-------|------------------------|---------------|
+| Arduino Uno | `uno` | [`boards/arduino_uno`](./boards/arduino_uno) |
+| Arduino Nano | `nanoatmega328` | [`boards/arduino_nano`](./boards/arduino_nano) |
 
 Only Docker and Docker Compose are required to be installed on your system, no local compilers or PlatformIO installations are needed. See the [Docker README](./docker/README.md) for instructions and further details.
+
+### Supporting a new board
+
+What changes from one board to another is kept in a **board package**, so adding a board doesn't touch the application:
+
+1. Create `boards/<board>/andino/board.h`. It defines `andino::Board` (the pins and the serial baud rate) and `andino::kAppConfig` (the application configuration). Use [`boards/arduino_uno/andino/board.h`](./boards/arduino_uno/andino/board.h) as a model: it documents every pin. A board that is identical to an existing one can just include its package, as the Arduino Nano does.
+2. Add a PlatformIO environment for it in [`platformio.ini`](./platformio.ini), which selects the package with `-I boards/<board>` and builds the BSP implementations that fit its microcontroller (`bsp/arduino` for the Arduino API, plus the platform specific ones, like `bsp/avr`). Add it to `default_envs` so CI builds it.
+3. If the board needs a different implementation of a HAL interface (for example, interrupts on another microcontroller family), add it in a new `bsp/<platform>` directory.
 
 ---
 
@@ -54,7 +65,7 @@ Only Docker and Docker Compose are required to be installed on your system, no l
 
 ### Wiring
 
-The pin assignment is defined in [`include/andino/bsp/hw.h`](./include/andino/bsp/hw.h):
+The pin assignment is defined in the board package of each board, [`boards/arduino_uno/andino/board.h`](./boards/arduino_uno/andino/board.h) for the Arduino Uno (the Arduino Nano uses the same one):
 
 | Function | Pin | Arduino pin |
 |----------|-----|-------------|
@@ -77,7 +88,7 @@ The encoder inputs use pin change interrupts. The IMU is an optional Adafruit BN
 
 ### Configuration
 
-The application is configured with an `App::Config` (see [`include/andino/app/app.h`](./include/andino/app/app.h)), which is created in [`src/main.cpp`](./src/main.cpp) and passed to the `App`:
+The application is configured with an `App::Config` (see [`include/andino/app/app.h`](./include/andino/app/app.h)), which is defined in the board package (`andino::kAppConfig`) and passed to the `App` by [`src/main.cpp`](./src/main.cpp):
 
 | Setting | Default | Description |
 |---------|---------|-------------|
@@ -85,7 +96,7 @@ The application is configured with an `App::Config` (see [`include/andino/app/ap
 | `pid_rate_hz` | `30` | PID computation rate [Hz] |
 | `pid_gains` | `{30, 10, 0, 10}` | Initial PID tuning gains `{kp, kd, ki, ko}` (they can be changed with `setpid`) |
 
-The serial baud rate (`57600`) is set in [`src/main.cpp`](./src/main.cpp), where the serial stream is created, and it must match the one used by the host. The maximum motor speed (PWM duty cycle `255`) is `Motor::kMaxSpeed`, in [`include/andino/drivers/motor.h`](./include/andino/drivers/motor.h).
+The serial baud rate (`57600`) is `Board::kSerialBaudRate`, in the board package, and it must match the one used by the host. The maximum motor speed (PWM duty cycle `255`) is `Motor::kMaxSpeed`, in [`include/andino/drivers/motor.h`](./include/andino/drivers/motor.h).
 
 ---
 

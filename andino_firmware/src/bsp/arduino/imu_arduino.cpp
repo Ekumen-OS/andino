@@ -1,6 +1,6 @@
 // BSD 3-Clause License
 //
-// Copyright (c) 2024, Ekumen Inc.
+// Copyright (c) 2026, Ekumen Inc.
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -27,18 +27,51 @@
 // CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
 // OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-#include "andino/bsp/pwm_out_arduino.h"
+#include "andino/bsp/arduino/imu_arduino.h"
 
-#include <Arduino.h>
+#if defined(__GNUC__)
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wconversion"
+#endif
+#include <Adafruit_BNO055.h>
+#if defined(__GNUC__)
+#pragma GCC diagnostic pop
+#endif
+
+#include <Wire.h>
+
+/// Adafruit BNO055 IMU sensor instance.
+static Adafruit_BNO055 g_bno055_imu(55, BNO055_ADDRESS_A, &Wire);
 
 namespace andino {
 
-void PwmOutArduino::begin() const {
-  pinMode(gpio_pin_, OUTPUT);
+bool ImuArduino::begin() const {
+  if (!g_bno055_imu.begin()) {
+    return false;
+  }
+  g_bno055_imu.setExtCrystalUse(true);
+  return true;
 }
 
-void PwmOutArduino::write(int value) const {
-  analogWrite(gpio_pin_, value);
+Imu::Orientation ImuArduino::get_orientation() const {
+  // See https://learn.adafruit.com/adafruit-bno055-absolute-orientation-sensor/overview for
+  // further information.
+  imu::Quaternion orientation = g_bno055_imu.getQuat();
+  return Orientation{orientation.x(), orientation.y(), orientation.z(), orientation.w()};
+}
+
+Imu::Vector3 ImuArduino::get_angular_velocity() const {
+  // See https://learn.adafruit.com/adafruit-bno055-absolute-orientation-sensor/overview for
+  // further information.
+  imu::Vector<3> angular_velocity = g_bno055_imu.getVector(Adafruit_BNO055::VECTOR_GYROSCOPE);
+  return Vector3{angular_velocity.x(), angular_velocity.y(), angular_velocity.z()};
+}
+
+Imu::Vector3 ImuArduino::get_linear_acceleration() const {
+  // See https://learn.adafruit.com/adafruit-bno055-absolute-orientation-sensor/overview for
+  // further information.
+  imu::Vector<3> linear_acceleration = g_bno055_imu.getVector(Adafruit_BNO055::VECTOR_LINEARACCEL);
+  return Vector3{linear_acceleration.x(), linear_acceleration.y(), linear_acceleration.z()};
 }
 
 }  // namespace andino
