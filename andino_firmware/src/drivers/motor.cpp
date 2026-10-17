@@ -83,7 +83,9 @@ void Motor::set_speed(int speed) {
   bool forward = true;
 
   if (speed < kMinSpeed) {
-    speed = -speed;
+    // Negating the lowest value of an int overflows, so the speeds beyond the limit are saturated
+    // instead of negated.
+    speed = (speed < -kMaxSpeed) ? kMaxSpeed : -speed;
     forward = false;
   }
   if (speed > kMaxSpeed) {
