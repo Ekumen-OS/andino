@@ -114,6 +114,19 @@ Press `Ctrl+C` to exit the monitor.
 
 ---
 
+## Code Coverage Report
+
+The unit tests are instrumented to measure the code coverage of the firmware (the `app` and `drivers` code, which is the one that runs on the desktop). Run the tests from a clean build, because the coverage data accumulates between runs, and then generate the report:
+```bash
+docker compose -f docker/compose.yaml run --rm dev pio run -e desktop -t clean
+docker compose -f docker/compose.yaml run --rm dev pio test -e desktop
+docker compose -f docker/compose.yaml run --rm dev scripts/coverage.sh
+```
+
+It prints the summary, and writes the HTML report (`coverage/index.html`, which you can open in any browser), the Cobertura XML report and a markdown summary in the `coverage` directory. The CI generates the same report, which you can download as the `coverage-report` artifact of the run, and shows the summary in the summary of the run.
+
+---
+
 ## PlatformIO Cache
 
 The PlatformIO packages (platforms, toolchains and libraries) are stored in a named Docker volume, `andino_firmware_pio_cache`, so they are downloaded only once and survive the removal of the container. The project directory is mounted as the container's working directory, so the build output (`.pio/`) is created in your host's `andino_firmware` directory, owned by your user.

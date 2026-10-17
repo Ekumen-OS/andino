@@ -3,6 +3,7 @@
 
 # PlatformIO files
 .pio
+coverage/
 
 # Visual Studio Code files
 .vscode
