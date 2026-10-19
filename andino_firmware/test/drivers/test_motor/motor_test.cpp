@@ -29,6 +29,8 @@
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "andino/drivers/motor.h"
 
+#include <limits>
+
 #include <gmock/gmock.h>
 #include <gtest/gtest.h>
 
@@ -121,6 +123,36 @@ TEST_F(MotorTest, SetLowerThanMinimumNegativeSpeed) {
 
   andino::Motor motor(&enable_digital_out_, &forward_pwm_out_, &backward_pwm_out_);
   motor.set_speed(-500);
+}
+
+// Negating the lowest value of an int overflows, which is undefined behavior. The lowest value of
+// an int has 16 bits on AVR (INT16_MIN), and 32 bits on other platforms (INT_MIN).
+TEST_F(MotorTest, SetLowestIntSpeed) {
+  EXPECT_CALL(forward_pwm_out_, write(0)).Times(1);
+  EXPECT_CALL(backward_pwm_out_, write(255)).Times(1);
+
+  andino::Motor motor(&enable_digital_out_, &forward_pwm_out_, &backward_pwm_out_);
+  motor.set_speed(std::numeric_limits<int>::min());
+}
+
+TEST_F(MotorTest, SetLowestInt16Speed) {
+  EXPECT_CALL(forward_pwm_out_, write(0)).Times(1);
+  EXPECT_CALL(backward_pwm_out_, write(255)).Times(1);
+
+  andino::Motor motor(&enable_digital_out_, &forward_pwm_out_, &backward_pwm_out_);
+  motor.set_speed(INT16_MIN);
+}
+
+TEST_F(MotorTest, SetSpeedAroundTheNegativeLimit) {
+  // The saturation of the negative speeds must not change the speeds that are within the limit.
+  EXPECT_CALL(forward_pwm_out_, write(0)).Times(3);
+  EXPECT_CALL(backward_pwm_out_, write(254)).Times(1);
+  EXPECT_CALL(backward_pwm_out_, write(255)).Times(2);
+
+  andino::Motor motor(&enable_digital_out_, &forward_pwm_out_, &backward_pwm_out_);
+  motor.set_speed(-254);
+  motor.set_speed(-255);
+  motor.set_speed(-256);
 }
 
 }  // namespace
