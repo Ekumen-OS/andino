@@ -427,7 +427,7 @@ TEST_F(AppTest, LoopDrivesMotorsWhilePidIsEnabled) {
   EXPECT_CALL(right_motor_backward_, write(0)).Times(1);
 
   ON_CALL(clock_, millis())
-      .WillByDefault(Return(static_cast<unsigned long>(Constants::kPidPeriod) + 1UL));
+      .WillByDefault(Return(1000UL / static_cast<unsigned long>(Constants::kPidRate) + 1UL));
   app_.loop();
 }
 
