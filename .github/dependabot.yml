@@ -1,0 +1,26 @@
+version: 2
+updates:
+  - package-ecosystem: github-actions
+    directory: /
+    schedule:
+      interval: monthly
+    groups:
+      github-actions:
+        patterns:
+          - "*"
+    commit-message:
+      prefix: "[ci]"
+
+  - package-ecosystem: docker
+    directory: /andino_firmware/docker
+    schedule:
+      interval: monthly
+    commit-message:
+      prefix: "[andino_firmware]"
+
+  - package-ecosystem: pip
+    directory: /andino_firmware/docker
+    schedule:
+      interval: monthly
+    commit-message:
+      prefix: "[andino_firmware]"
