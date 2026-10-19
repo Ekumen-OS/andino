@@ -115,38 +115,72 @@ class App {
   /// @return True if the whole string was a valid integer, false otherwise.
   static bool parse_int(const char* str, int16_t& value);
 
-  /// Callback method for an unknown command (default).
-  static void cmd_unknown_cb(void* context, int argc, char** argv);
+  /// Callback for an unknown command (default).
+  void cmd_unknown();
 
-  /// Callback method for the `Commands::kReadEncoderChannel` command.
-  static void cmd_read_encoder_channel_cb(void* context, int argc, char** argv);
+  /// Callback for the `Commands::kReadEncoderChannel` command.
+  void cmd_read_encoder_channel(int argc, char** argv);
 
-  /// Callback method for the `Commands::kReadEncoders` command.
-  static void cmd_read_encoders_cb(void* context, int argc, char** argv);
+  /// Callback for the `Commands::kReadEncoders` command.
+  void cmd_read_encoders();
 
-  /// Callback method for the `Commands::kResetEncoders` command.
-  static void cmd_reset_encoders_cb(void* context, int argc, char** argv);
+  /// Callback for the `Commands::kResetEncoders` command.
+  void cmd_reset_encoders();
 
-  /// Callback method for the `Commands::kSetMotorsSpeed` command.
-  static void cmd_set_motors_speed_cb(void* context, int argc, char** argv);
+  /// Callback for the `Commands::kSetMotorsSpeed` command.
+  void cmd_set_motors_speed(int argc, char** argv);
 
-  /// Callback method for the `Commands::kSetMotorsPwm` command.
-  static void cmd_set_motors_pwm_cb(void* context, int argc, char** argv);
+  /// Callback for the `Commands::kSetMotorsPwm` command.
+  void cmd_set_motors_pwm(int argc, char** argv);
 
-  /// Callback method for the `Commands::kSetPidGains` command.
-  static void cmd_set_pid_gains_cb(void* context, int argc, char** argv);
+  /// Callback for the `Commands::kSetPidGains` command.
+  void cmd_set_pid_gains(int argc, char** argv);
 
-  /// Callback method for the `Commands::kIsImuConnected` command.
-  static void cmd_is_imu_connected_cb(void* context, int argc, char** argv);
+  /// Callback for the `Commands::kIsImuConnected` command.
+  void cmd_is_imu_connected();
 
-  /// Callback method for the `Commands::kReadEncodersAndImu` command.
-  static void cmd_read_encoders_and_imu_cb(void* context, int argc, char** argv);
+  /// Callback for the `Commands::kReadEncodersAndImu` command.
+  void cmd_read_encoders_and_imu();
 
-  /// Callback method for the messages that are too long to be processed by the shell.
-  static void message_too_long_cb(void* context);
+  /// Callback for the `Commands::kGetVersion` command.
+  void cmd_get_version();
 
-  /// Callback method for the `Commands::kGetVersion` command.
-  static void cmd_get_version_cb(void* context, int argc, char** argv);
+  /// Callback for the messages that are too long to be processed by the shell.
+  void message_too_long();
+
+  // The shell calls plain C callbacks with a context pointer. The trampolines adapt them to member
+  // functions of the application, which are selected at compile time, so they have no cost.
+
+  /// Adapts a member function without arguments to a shell command callback.
+  template <void (App::*Method)()>
+  static void trampoline(void* context, int, char**) {
+    (static_cast<App*>(context)->*Method)();
+  }
+
+  /// Adapts a member function that takes the command arguments to a shell command callback.
+  template <void (App::*Method)(int, char**)>
+  static void trampoline(void* context, int argc, char** argv) {
+    (static_cast<App*>(context)->*Method)(argc, argv);
+  }
+
+  /// Adapts a member function without arguments to the callback of the shell overflow.
+  template <void (App::*Method)()>
+  static void overflow_trampoline(void* context) {
+    (static_cast<App*>(context)->*Method)();
+  }
+
+  /// Registers a member function without arguments as the callback of a shell command.
+  template <void (App::*Method)()>
+  bool register_command(const char* name) {
+    return shell_.register_command(name, &trampoline<Method>, this);
+  }
+
+  /// Registers a member function that takes the command arguments as the callback of a shell
+  /// command.
+  template <void (App::*Method)(int, char**)>
+  bool register_command(const char* name) {
+    return shell_.register_command(name, &trampoline<Method>, this);
+  }
 
   /// @brief Writes the success reply ("[OK]") to the serial stream.
   void reply_ok();
