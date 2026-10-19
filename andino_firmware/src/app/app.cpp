@@ -82,8 +82,7 @@ void App::setup() {
   right_motor_.begin();
   right_motor_.enable(true);
 
-  left_pid_controller_.reset(left_encoder_.read());
-  right_pid_controller_.reset(right_encoder_.read());
+  reset_pids();
 
   // Initialize command shell.
   shell_.set_serial_stream(&serial_stream_);
@@ -102,22 +101,24 @@ void App::setup() {
   }
 
   // Initialize IMU sensor.
-  is_imu_connected = imu_.begin();
+  is_imu_connected_ = imu_.begin();
 }
 
 void App::loop() {
   // Process command prompt input.
   shell_.process_input();
 
+  const unsigned long now = clock_.millis();
+
   // Compute PID output at the configured rate.
-  if ((clock_.millis() - last_pid_computation_) > Constants::kPidPeriod) {
-    last_pid_computation_ = clock_.millis();
+  if ((now - last_pid_computation_) > Constants::kPidPeriod) {
+    last_pid_computation_ = now;
     adjust_motors_speed();
   }
 
   // Stop the motors if auto-stop interval has been reached.
-  if ((clock_.millis() - last_set_motors_speed_cmd_) > Constants::kAutoStopWindow) {
-    last_set_motors_speed_cmd_ = clock_.millis();
+  if ((now - last_set_motors_speed_cmd_) > Constants::kAutoStopWindow) {
+    last_set_motors_speed_cmd_ = now;
     stop_motors();
   }
 }
@@ -164,8 +165,7 @@ void App::cmd_reset_encoders_cb(void* context, int, char**) {
   App* app = static_cast<App*>(context);
   app->left_encoder_.reset();
   app->right_encoder_.reset();
-  app->left_pid_controller_.reset(app->left_encoder_.read());
-  app->right_pid_controller_.reset(app->right_encoder_.read());
+  app->reset_pids();
   app->reply_ok();
 }
 
@@ -184,10 +184,8 @@ void App::cmd_set_motors_speed_cb(void* context, int argc, char** argv) {
   if (left_motor_speed == 0 && right_motor_speed == 0) {
     app->left_motor_.set_speed(0);
     app->right_motor_.set_speed(0);
-    app->left_pid_controller_.reset(app->left_encoder_.read());
-    app->right_pid_controller_.reset(app->right_encoder_.read());
-    app->left_pid_controller_.disable();
-    app->right_pid_controller_.disable();
+    app->reset_pids();
+    app->disable_pids();
   } else {
     app->left_pid_controller_.enable();
     app->right_pid_controller_.enable();
@@ -209,11 +207,9 @@ void App::cmd_set_motors_pwm_cb(void* context, int argc, char** argv) {
     return;
   }
 
-  app->left_pid_controller_.reset(app->left_encoder_.read());
-  app->right_pid_controller_.reset(app->right_encoder_.read());
-  // Sneaky way to temporarily disable the PID.
-  app->left_pid_controller_.disable();
-  app->right_pid_controller_.disable();
+  // Driving the motors with raw PWM values bypasses the PID.
+  app->reset_pids();
+  app->disable_pids();
 
   // Reset the auto stop timer.
   app->last_set_motors_speed_cmd_ = app->clock_.millis();
@@ -243,12 +239,12 @@ void App::cmd_set_pid_gains_cb(void* context, int argc, char** argv) {
 
 void App::cmd_is_imu_connected_cb(void* context, int, char**) {
   App* app = static_cast<App*>(context);
-  app->serial_stream_.println(app->is_imu_connected);
+  app->serial_stream_.println(app->is_imu_connected_);
 }
 
 void App::cmd_read_encoders_and_imu_cb(void* context, int, char**) {
   App* app = static_cast<App*>(context);
-  if (!app->is_imu_connected) {
+  if (!app->is_imu_connected_) {
     app->reply_error("IMU unavailable");
     return;
   }
@@ -313,6 +309,15 @@ void App::adjust_motors_speed() {
 void App::stop_motors() {
   left_motor_.set_speed(0);
   right_motor_.set_speed(0);
+  disable_pids();
+}
+
+void App::reset_pids() {
+  left_pid_controller_.reset(left_encoder_.read());
+  right_pid_controller_.reset(right_encoder_.read());
+}
+
+void App::disable_pids() {
   left_pid_controller_.disable();
   right_pid_controller_.disable();
 }

@@ -52,7 +52,7 @@ class Pid {
   void reset(long encoder_count);
 
   /// @brief Returns if the PID controller is enabled or not.
-  bool enabled();
+  bool enabled() const;
 
   /// @brief Enables the PID controller.
   void enable();
