@@ -29,9 +29,9 @@ jobs:
     container:
       image: ${{ matrix.os_version }}
     steps:
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v7
     - uses: ros-tooling/setup-ros@v0.7
-    - uses: ros-tooling/action-ros-ci@v0.3
+    - uses: ros-tooling/action-ros-ci@v0.4
       id: action_ros_ci_step
       with:
         package-name: andino_base andino_bringup andino_control andino_description andino_firmware andino_hardware andino_slam andino_navigation

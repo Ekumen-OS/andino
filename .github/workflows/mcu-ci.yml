@@ -43,8 +43,8 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v3
-      - uses: actions/setup-python@v4
+      - uses: actions/checkout@v7
+      - uses: actions/setup-python@v7
         with:
           python-version: '3.9'
       - name: Run pre-commit checks (formatting and style linting)
@@ -56,8 +56,8 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v3
-      - uses: actions/cache@v3
+      - uses: actions/checkout@v7
+      - uses: actions/cache@v6
         with:
           # The platforms and packages (toolchains, frameworks) are large, specially the STM32 ones
           # (about 1.8 GB), so they are cached. The key depends on the versions in platformio.ini,
@@ -70,7 +70,7 @@ jobs:
           key: ${{ runner.os }}-pio-${{ hashFiles('andino_firmware/platformio.ini') }}
           restore-keys: |
             ${{ runner.os }}-pio-
-      - uses: actions/setup-python@v4
+      - uses: actions/setup-python@v7
         with:
           # The version of the Docker image, which gcovr needs (3.10 or newer).
           python-version: '3.11'
@@ -92,7 +92,7 @@ jobs:
           scripts/coverage.sh coverage
           cat coverage/summary.md >> "${GITHUB_STEP_SUMMARY}"
       - name: Upload the code coverage report
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: coverage-report
           path: andino_firmware/coverage/
