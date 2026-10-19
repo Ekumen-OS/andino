@@ -31,12 +31,12 @@
 
 #include <stdio.h>
 
+#include <memory>
 #include <string>
 
 #include <gmock/gmock.h>
 #include <gtest/gtest.h>
 
-#include "andino/app/constants.h"
 #include "andino/app/version.h"
 #include "andino/hal/clock.h"
 #include "andino/hal/digital_out.h"
@@ -48,6 +48,9 @@
 namespace andino {
 namespace test {
 namespace {
+
+/// Configuration of the application under test.
+const andino::App::Config kConfig{3000, 30, {30, 10, 0, 10}};
 
 using ::testing::NiceMock;
 using ::testing::Return;
@@ -178,6 +181,14 @@ class AppTest : public testing::Test {
     ON_CALL(imu_, begin()).WillByDefault(Return(true));
   }
 
+  /// @brief Creates an application with the given configuration, using the same fakes as `app_`.
+  std::unique_ptr<andino::App> make_app(const andino::App::Config& config) {
+    return std::unique_ptr<andino::App>(new andino::App(
+        config, clock_, serial_stream_, left_motor_enable_, left_motor_forward_,
+        left_motor_backward_, right_motor_enable_, right_motor_forward_, right_motor_backward_,
+        left_encoder_a_, left_encoder_b_, right_encoder_a_, right_encoder_b_, imu_));
+  }
+
   /// @brief Runs a command through the command prompt and returns everything it wrote back.
   std::string run_command(const std::string& command) {
     serial_stream_.set_input(command + "\r");
@@ -200,7 +211,8 @@ class AppTest : public testing::Test {
   NiceMock<MockInterruptIn> right_encoder_b_;
   NiceMock<MockImu> imu_;
 
-  andino::App app_{clock_,
+  andino::App app_{kConfig,
+                   clock_,
                    serial_stream_,
                    left_motor_enable_,
                    left_motor_forward_,
@@ -397,8 +409,7 @@ TEST_F(AppTest, LoopStopsMotorsOnceAutoStopWindowElapses) {
   EXPECT_CALL(right_motor_forward_, write(0)).Times(1);
   EXPECT_CALL(right_motor_backward_, write(0)).Times(1);
 
-  ON_CALL(clock_, millis())
-      .WillByDefault(Return(static_cast<unsigned long>(Constants::kAutoStopWindow) + 1UL));
+  ON_CALL(clock_, millis()).WillByDefault(Return(kConfig.auto_stop_window_ms + 1UL));
   app_.loop();
 }
 
@@ -410,8 +421,7 @@ TEST_F(AppTest, LoopKeepsMotorsRunningWithinAutoStopWindow) {
   EXPECT_CALL(right_motor_forward_, write(::testing::_)).Times(0);
   EXPECT_CALL(right_motor_backward_, write(::testing::_)).Times(0);
 
-  ON_CALL(clock_, millis())
-      .WillByDefault(Return(static_cast<unsigned long>(Constants::kAutoStopWindow) - 1UL));
+  ON_CALL(clock_, millis()).WillByDefault(Return(kConfig.auto_stop_window_ms - 1UL));
   app_.loop();
 }
 
@@ -426,9 +436,58 @@ TEST_F(AppTest, LoopDrivesMotorsWhilePidIsEnabled) {
   EXPECT_CALL(right_motor_forward_, write(::testing::Gt(0))).Times(1);
   EXPECT_CALL(right_motor_backward_, write(0)).Times(1);
 
-  ON_CALL(clock_, millis())
-      .WillByDefault(Return(1000UL / static_cast<unsigned long>(Constants::kPidRate) + 1UL));
+  ON_CALL(clock_, millis()).WillByDefault(Return(1000UL / kConfig.pid_rate_hz + 1UL));
   app_.loop();
+}
+
+TEST_F(AppTest, AutoStopWindowComesFromTheConfig) {
+  const andino::App::Config config{500, kConfig.pid_rate_hz, kConfig.pid_gains};
+  auto app = make_app(config);
+  app->setup();
+
+  // Within the configured window the motors keep running, and once it elapses they are stopped.
+  EXPECT_CALL(left_motor_forward_, write(::testing::_)).Times(0);
+  ON_CALL(clock_, millis()).WillByDefault(Return(499UL));
+  app->loop();
+  ::testing::Mock::VerifyAndClearExpectations(&left_motor_forward_);
+
+  EXPECT_CALL(left_motor_forward_, write(0)).Times(1);
+  ON_CALL(clock_, millis()).WillByDefault(Return(501UL));
+  app->loop();
+}
+
+TEST_F(AppTest, PidRateComesFromTheConfig) {
+  // A rate of 10 Hz makes the PID period 100 ms.
+  const andino::App::Config config{kConfig.auto_stop_window_ms, 10, kConfig.pid_gains};
+  auto app = make_app(config);
+  app->setup();
+  serial_stream_.set_input("setspd 100 100\r");
+  app->loop();
+
+  // The output is not computed before the period elapses, even if the default one did.
+  EXPECT_CALL(left_motor_forward_, write(::testing::_)).Times(0);
+  ON_CALL(clock_, millis()).WillByDefault(Return(99UL));
+  app->loop();
+  ::testing::Mock::VerifyAndClearExpectations(&left_motor_forward_);
+
+  EXPECT_CALL(left_motor_forward_, write(::testing::Gt(0))).Times(1);
+  ON_CALL(clock_, millis()).WillByDefault(Return(101UL));
+  app->loop();
+}
+
+TEST_F(AppTest, PidGainsComeFromTheConfig) {
+  // A null proportional gain makes the PID output zero, so the motors don't move.
+  const andino::App::Config config{kConfig.auto_stop_window_ms, kConfig.pid_rate_hz, {0, 0, 0, 1}};
+  auto app = make_app(config);
+  app->setup();
+  serial_stream_.set_input("setspd 100 100\r");
+  app->loop();
+
+  // The default gains (see `kConfig`) would drive the motors with a positive output.
+  EXPECT_CALL(left_motor_forward_, write(0)).Times(1);
+  EXPECT_CALL(right_motor_forward_, write(0)).Times(1);
+  ON_CALL(clock_, millis()).WillByDefault(Return(1000UL / kConfig.pid_rate_hz + 1UL));
+  app->loop();
 }
 
 }  // namespace

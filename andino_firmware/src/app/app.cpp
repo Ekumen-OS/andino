@@ -68,7 +68,6 @@
 #include <stdlib.h>
 
 #include "andino/app/commands.h"
-#include "andino/app/constants.h"
 #include "andino/app/version.h"
 
 namespace andino {
@@ -121,7 +120,7 @@ void App::loop() {
   }
 
   // Stop the motors if auto-stop interval has been reached.
-  if ((now - last_set_motors_speed_cmd_) > Constants::kAutoStopWindow) {
+  if ((now - last_set_motors_speed_cmd_) > auto_stop_window_ms_) {
     last_set_motors_speed_cmd_ = now;
     stop_motors();
   }

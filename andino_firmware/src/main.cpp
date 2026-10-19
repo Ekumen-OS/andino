@@ -57,8 +57,11 @@ static andino::InterruptInArduino right_encoder_a(andino::Hw::kRightEncoderChann
 static andino::InterruptInArduino right_encoder_b(andino::Hw::kRightEncoderChannelBGpioPin);
 static andino::ImuArduino imu;
 
+// Application configuration: auto-stop window [ms], PID rate [Hz] and PID gains {kp, kd, ki, ko}.
+static constexpr andino::App::Config kAppConfig{3000, 30, {30, 10, 0, 10}};
+
 // Main application.
-static andino::App app(sys_clock, serial_stream, left_motor_enable, left_motor_forward,
+static andino::App app(kAppConfig, sys_clock, serial_stream, left_motor_enable, left_motor_forward,
                        left_motor_backward, right_motor_enable, right_motor_forward,
                        right_motor_backward, left_encoder_a, left_encoder_b, right_encoder_a,
                        right_encoder_b, imu);

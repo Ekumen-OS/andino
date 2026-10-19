@@ -31,7 +31,6 @@
 
 #include <stdint.h>
 
-#include "andino/app/constants.h"
 #include "andino/app/pid.h"
 #include "andino/app/shell.h"
 #include "andino/drivers/encoder.h"
@@ -48,9 +47,20 @@ namespace andino {
 /// @brief Controller class encapsulating all Andino coordination logic.
 class App {
  public:
+  /// @brief Application configuration.
+  struct Config {
+    /// Time window to automatically stop the robot if no motor command has been received [ms].
+    unsigned long auto_stop_window_ms;
+    /// Rate at which the PID controllers output is computed [Hz].
+    uint16_t pid_rate_hz;
+    /// Initial tuning gains of the PID controllers (they can be changed with a command).
+    Pid::Gains pid_gains;
+  };
+
   /**
    * @brief Constructs a new App instance.
    *
+   * @param config The application configuration.
    * @param clock The clock service.
    * @param serial_stream The serial communication stream.
    * @param left_motor_enable The left motor enable digital output.
@@ -65,11 +75,11 @@ class App {
    * @param right_encoder_b The right encoder channel B interrupt input.
    * @param imu The IMU sensor.
    */
-  App(const Clock& clock, SerialStream& serial_stream, DigitalOut& left_motor_enable,
-      PwmOut& left_motor_forward, PwmOut& left_motor_backward, DigitalOut& right_motor_enable,
-      PwmOut& right_motor_forward, PwmOut& right_motor_backward, InterruptIn& left_encoder_a,
-      InterruptIn& left_encoder_b, InterruptIn& right_encoder_a, InterruptIn& right_encoder_b,
-      Imu& imu)
+  App(const Config& config, const Clock& clock, SerialStream& serial_stream,
+      DigitalOut& left_motor_enable, PwmOut& left_motor_forward, PwmOut& left_motor_backward,
+      DigitalOut& right_motor_enable, PwmOut& right_motor_forward, PwmOut& right_motor_backward,
+      InterruptIn& left_encoder_a, InterruptIn& left_encoder_b, InterruptIn& right_encoder_a,
+      InterruptIn& right_encoder_b, Imu& imu)
       : clock_(clock),
         serial_stream_(serial_stream),
         imu_(imu),
@@ -77,13 +87,12 @@ class App {
         right_motor_(&right_motor_enable, &right_motor_forward, &right_motor_backward),
         left_encoder_(&left_encoder_a, &left_encoder_b),
         right_encoder_(&right_encoder_a, &right_encoder_b),
-        left_pid_controller_(
-            Pid::Gains{Constants::kPidKp, Constants::kPidKd, Constants::kPidKi, Constants::kPidKo},
-            -Motor::kMaxSpeed, Motor::kMaxSpeed, Constants::kPidRate),
-        right_pid_controller_(
-            Pid::Gains{Constants::kPidKp, Constants::kPidKd, Constants::kPidKi, Constants::kPidKo},
-            -Motor::kMaxSpeed, Motor::kMaxSpeed, Constants::kPidRate),
-        shell_() {
+        left_pid_controller_(config.pid_gains, -Motor::kMaxSpeed, Motor::kMaxSpeed,
+                             config.pid_rate_hz),
+        right_pid_controller_(config.pid_gains, -Motor::kMaxSpeed, Motor::kMaxSpeed,
+                              config.pid_rate_hz),
+        shell_(),
+        auto_stop_window_ms_(config.auto_stop_window_ms) {
   }
 
   // Delete copy and move operations to enforce unique reference ownership.
@@ -181,6 +190,9 @@ class App {
 
   /// Application command shell.
   Shell shell_;
+
+  /// Time window to automatically stop the robot if no motor command has been received [ms].
+  const unsigned long auto_stop_window_ms_;
 
   /// PID computation period [ms]. It is read from the controllers on setup, so the (software)
   /// division that computes it isn't repeated on every loop iteration.
