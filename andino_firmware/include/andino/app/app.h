@@ -95,11 +95,18 @@ class App {
   void loop();
 
  private:
+  /// @brief Parses a base-10 integer, rejecting empty or partially numeric strings.
+  ///
+  /// @param str The null-terminated string to parse.
+  /// @param value Output parameter set to the parsed value on success.
+  /// @return True if the whole string was a valid integer, false otherwise.
+  static bool parse_int(const char* str, int& value);
+
   /// Callback method for an unknown command (default).
   static void cmd_unknown_cb(void* context, int argc, char** argv);
 
-  /// Callback method for the `Commands::kReadDigitalGpio` command.
-  static void cmd_read_digital_gpio_cb(void* context, int argc, char** argv);
+  /// Callback method for the `Commands::kReadEncoderChannel` command.
+  static void cmd_read_encoder_channel_cb(void* context, int argc, char** argv);
 
   /// Callback method for the `Commands::kReadEncoders` command.
   static void cmd_read_encoders_cb(void* context, int argc, char** argv);
@@ -113,14 +120,22 @@ class App {
   /// Callback method for the `Commands::kSetMotorsPwm` command.
   static void cmd_set_motors_pwm_cb(void* context, int argc, char** argv);
 
-  /// Callback method for the `Commands::kSetPidsTuningGains` command.
-  static void cmd_set_pid_tuning_gains_cb(void* context, int argc, char** argv);
+  /// Callback method for the `Commands::kSetPidGains` command.
+  static void cmd_set_pid_gains_cb(void* context, int argc, char** argv);
 
-  /// Callback method for the `Commands::kGetIsImuConnected` command.
-  static void cmd_get_is_imu_connected_cb(void* context, int argc, char** argv);
+  /// Callback method for the `Commands::kIsImuConnected` command.
+  static void cmd_is_imu_connected_cb(void* context, int argc, char** argv);
 
   /// Callback method for the `Commands::kReadEncodersAndImu` command.
   static void cmd_read_encoders_and_imu_cb(void* context, int argc, char** argv);
+
+  /// @brief Writes the success reply ("[OK]") to the serial stream.
+  void reply_ok();
+
+  /// @brief Writes an error reply ("[ERROR] <reason>") to the serial stream.
+  ///
+  /// @param reason Short description of the failure.
+  void reply_error(const char* reason);
 
   /// Computes the PID output and updates the motors speed accordingly.
   void adjust_motors_speed();

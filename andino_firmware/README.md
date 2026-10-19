@@ -35,13 +35,13 @@ source $HOME/.bashrc
 Via `serial` connection (57600 baud) it is possible to interact with the microcontroller. The interface is described in the [commands.h](src/commands.h) file. Here are the most used commands:
 
 
- - Get encoder values: `'e'`
- - Set open-loop speed for the motors[pwm] `'o <left> <right>'`
-   - Example to move forward full speed: `'o 255 255'`
+ - Get encoder values: `'getenc'`
+ - Set open-loop speed for the motors[pwm] `'setpwm <left> <right>'`
+   - Example to move forward full speed: `'setpwm 255 255'`
    - Range `[-255 -> 255]`
- - Set closed-loop speed for the motors[ticks/sec] `'m <left> <right>'`
+ - Set closed-loop speed for the motors[ticks/sec] `'setspd <left> <right>'`
    - Important!: See the `Test it!` section.
- - Set PID values: `'u <kp> <kd> <ki> <offset>'`
+ - Set PID values: `'setpid <kp> <kd> <ki> <offset>'`
 
 Note: Remember the carriage return character at the end of the message.
 
@@ -51,29 +51,35 @@ Note: Remember the carriage return character at the end of the message.
 A serial port connection must be created at 57600 bauds. You can use the serial monitor from Arduino IDE for example.
 
 * Open loop verification:
-  - Send `o 255 255` to go full speed
-  - Send `o 0 0` to stop it.
+  - Send `setpwm 255 255` to go full speed
+  - Send `setpwm 0 0` to stop it.
 
 * Read the encoders
-  - Send `e` to get the encoders values.
+  - Send `getenc` to get the encoders values.
 
 * Get the ticks per revolution of your motor.
-  - First set the encoders to zero, (reeboting with `r`).
+  - First set the encoders to zero, (resetting with `rstenc`).
   - Then rotate your motors as many revs you want,(say 10 for example) and then divide the encoder ticks per the number of revs. -> Then you get the ticks per revolution. Save this value, it is calibration for the control loop.
 
 * Closed loop verification
-  - Send `m <tps> <tps>` where `tps` stands for `ticks per second`. For example if your motor-encoder system gets 700 ticks per revolution then sending `m 700 700` will rotate both motors at 1 rev per sec. (~3.14rad/sec)
+  - Send `setspd <tps> <tps>` where `tps` stands for `ticks per second`. For example if your motor-encoder system gets 700 ticks per revolution then sending `setspd 700 700` will rotate both motors at 1 rev per sec. (~3.14rad/sec)
 
 ## Commands
+
+Every command replies with exactly one line terminated by `\n`:
+
+* Read commands reply with their data, space-separated (see the table below).
+* Write commands reply with `[OK]`.
+* Any failure replies with `[ERROR] <description>`, e.g. `[ERROR] Unknown command`, `[ERROR] Invalid arguments` (missing, extra, non-numeric or out-of-range arguments) or `[ERROR] IMU unavailable`.
 
 | Command | Description | Args | Example | Result |
 | --- | --- | --- | --- | --- |
 | `a` | Read Analog GPIO pin | pin_number | `a 0` |  |
-| `d` | Read encoder digital input value | encoder (0: left, 1: right) channel (0: A, 1: B) | `d 0 0` | `0` or `1` |
-| `e` | Get encoder tick values |  | `e` | `<left> <right>` |
-| `r` | Reset encoder values |  | `r` |  |
-| `m` | Set closed-loop speed for the motors[ticks/sec] | left_tps right_tps | `m 700 700` |  |
-| `o` | Set open-loop speed for the motors[pwm] | left_pwm right_pwm | `o 255 255` |  |
-| `u` | Set PID values | kp kd ki offset | `u 1.0 0.1 0.01 0` |  |
-| `h` | Get if IMU is connected |  | `h` | `0` if not connected, `1` if connected |
-| `i` | Get IMU data and encoder tick values |  | `i` | `<left> <right>  <orientation_X> <orientation_Y> <orientation_Z> <orientation_W> <angular_velocity_X> <angular_velocity_Y> <angular_velocity_Z> <linear_acceleration_X> <linear_acceleration_Y> <linear_acceleration_Z>` |
+| `getch` | Read encoder digital input value | encoder (0: left, 1: right) channel (0: A, 1: B) | `getch 0 0` | `0` or `1` |
+| `getenc` | Get encoder tick values |  | `getenc` | `<left> <right>` |
+| `rstenc` | Reset encoder values |  | `rstenc` |  |
+| `setspd` | Set closed-loop speed for the motors[ticks/sec] | left_tps right_tps | `setspd 700 700` |  |
+| `setpwm` | Set open-loop speed for the motors[pwm] | left_pwm right_pwm | `setpwm 255 255` |  |
+| `setpid` | Set PID values | kp kd ki offset | `setpid 1.0 0.1 0.01 0` |  |
+| `hasimu` | Get if IMU is connected |  | `hasimu` | `0` if not connected, `1` if connected |
+| `getencimu` | Get IMU data and encoder tick values |  | `getencimu` | `<left> <right>  <orientation_X> <orientation_Y> <orientation_Z> <orientation_W> <angular_velocity_X> <angular_velocity_Y> <angular_velocity_Z> <linear_acceleration_X> <linear_acceleration_Y> <linear_acceleration_Z>` |

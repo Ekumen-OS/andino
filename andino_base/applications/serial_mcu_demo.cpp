@@ -48,7 +48,7 @@ std::string GetUsageMessage() {
   std::stringstream ss;
   ss << "CLI for easy test of the SerialMcu class" << std::endl << std::endl;
   ss << "  serial_mcu_demo --serial_port=/dev/ttyUSB0 --msg='e' " << std::endl << std::endl;
-  ss << "  serial_mcu_demo --msg='o 255 255' " << std::endl << std::endl;
+  ss << "  serial_mcu_demo --msg='setpwm 255 255' " << std::endl << std::endl;
   return ss.str();
 }
 
