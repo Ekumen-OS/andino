@@ -29,6 +29,8 @@
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #pragma once
 
+#include <stdint.h>
+
 namespace andino {
 
 /// @brief Common constants.
@@ -47,7 +49,7 @@ struct Constants {
   static constexpr int kPwmMax{255};
 
   /// @brief PID computation rate [Hz].
-  static constexpr int kPidRate{30};
+  static constexpr int32_t kPidRate{30};
   /// @brief PID computation period [ms].
   static constexpr long kPidPeriod{1000 / kPidRate};
   /// @brief PID default tuning proportional gain.

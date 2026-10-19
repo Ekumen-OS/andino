@@ -29,6 +29,8 @@
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #pragma once
 
+#include <stdint.h>
+
 #include "andino/app/constants.h"
 #include "andino/app/pid.h"
 #include "andino/app/shell.h"
@@ -100,7 +102,7 @@ class App {
   /// @param str The null-terminated string to parse.
   /// @param value Output parameter set to the parsed value on success.
   /// @return True if the whole string was a valid integer, false otherwise.
-  static bool parse_int(const char* str, int& value);
+  static bool parse_int(const char* str, int16_t& value);
 
   /// Callback method for an unknown command (default).
   static void cmd_unknown_cb(void* context, int argc, char** argv);
