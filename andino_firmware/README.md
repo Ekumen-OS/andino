@@ -80,6 +80,6 @@ Every command replies with exactly one line terminated by `\n`:
 | `rstenc` | Reset encoder values |  | `rstenc` |  |
 | `setspd` | Set closed-loop speed for the motors[ticks/sec] | left_tps right_tps | `setspd 700 700` |  |
 | `setpwm` | Set open-loop speed for the motors[pwm] | left_pwm right_pwm | `setpwm 255 255` |  |
-| `setpid` | Set PID values | kp kd ki offset | `setpid 1.0 0.1 0.01 0` |  |
+| `setpid` | Set PID values | kp kd ki offset | `setpid 30 20 10 50` |  |
 | `hasimu` | Get if IMU is connected |  | `hasimu` | `0` if not connected, `1` if connected |
 | `getencimu` | Get IMU data and encoder tick values |  | `getencimu` | `<left> <right>  <orientation_X> <orientation_Y> <orientation_Z> <orientation_W> <angular_velocity_X> <angular_velocity_Y> <angular_velocity_Z> <linear_acceleration_X> <linear_acceleration_Y> <linear_acceleration_Z>` |

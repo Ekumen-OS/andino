@@ -413,6 +413,9 @@ TEST_F(AppTest, CommandsWithInvalidArgumentsReplyWithError) {
   EXPECT_EQ(run_command("setpwm 10 1x"), expected);
   EXPECT_EQ(run_command("setpid 30 20 10"), expected);
   EXPECT_EQ(run_command("setpid 30 20 10 abc"), expected);
+  // The output gain is a divisor, so zero and negative values are rejected.
+  EXPECT_EQ(run_command("setpid 30 20 10 0"), expected);
+  EXPECT_EQ(run_command("setpid 30 20 10 -1"), expected);
 }
 
 TEST_F(AppTest, LoopStopsMotorsOnceAutoStopWindowElapses) {
