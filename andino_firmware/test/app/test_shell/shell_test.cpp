@@ -66,8 +66,10 @@ class ShellTest : public testing::Test {
  protected:
   void SetUp() override {
     called_callback_ = -1;
+    overflow_count_ = 0;
     shell.set_serial_stream(&serial_stream_);
     shell.set_default_callback(cmd_unknown_cb);
+    shell.set_overflow_callback(overflow_cb);
     shell.register_command(kCommand1, cmd_1_cb);
     shell.register_command(kCommand2, cmd_2_cb);
     shell.register_command(kCommand3, cmd_3_cb);
@@ -76,6 +78,10 @@ class ShellTest : public testing::Test {
   static void cmd_unknown_cb(void*, int argc, char** argv) {
     called_callback_ = 0;
     save_arguments(argc, argv);
+  }
+
+  static void overflow_cb(void*) {
+    overflow_count_++;
   }
 
   static void cmd_1_cb(void*, int argc, char** argv) {
@@ -118,6 +124,7 @@ class ShellTest : public testing::Test {
   static constexpr const char* kCommand3{"cde"};
 
   static int called_callback_;
+  static int overflow_count_;
   static int argc_;
   static std::vector<std::string> argv_;
 
@@ -126,6 +133,7 @@ class ShellTest : public testing::Test {
 };
 
 int ShellTest::called_callback_{-1};
+int ShellTest::overflow_count_{0};
 int ShellTest::argc_{0};
 std::vector<std::string> ShellTest::argv_;
 
@@ -352,19 +360,48 @@ TEST_F(ShellTest, ProcessInputMessageEmptyLineIsIgnored) {
 TEST_F(ShellTest, ProcessInputMessageTooLongIsDiscarded) {
   // The whole message, including the overflowing tail "a", must be dropped.
   feed(std::string(100, 'x') + " a\r");
-  EXPECT_CALL(serial_stream_, println(testing::A<const char*>())).Times(1);
 
   shell.process_input();
 
   EXPECT_EQ(called_callback_, -1);
+  EXPECT_EQ(overflow_count_, 1);
+}
+
+TEST_F(ShellTest, ProcessInputMessageTooLongIsDiscardedWithoutOverflowCallback) {
+  shell.set_overflow_callback(nullptr);
+  feed(std::string(100, 'x') + "\ra 1\r");
+
+  shell.process_input();
+
+  // The message is discarded silently, and the next one is processed.
+  EXPECT_EQ(overflow_count_, 0);
+  ASSERT_EQ(called_callback_, 1);
+}
+
+TEST_F(ShellTest, ProcessInputOverflowIsReportedOncePerMessage) {
+  feed(std::string(100, 'x') + "\r" + std::string(100, 'y') + "\r");
+
+  shell.process_input();
+
+  EXPECT_EQ(overflow_count_, 2);
+}
+
+TEST_F(ShellTest, ProcessInputMessageThatFitsIsNotReportedAsTooLong) {
+  // The longest message has 63 characters, which leave room for the null terminator.
+  feed("a " + std::string(61, '1') + "\r");
+
+  shell.process_input();
+
+  EXPECT_EQ(overflow_count_, 0);
+  EXPECT_EQ(called_callback_, 1);
 }
 
 TEST_F(ShellTest, ProcessInputMessageAfterTooLongIsProcessed) {
   feed(std::string(100, 'x') + "\ra 1\r");
-  EXPECT_CALL(serial_stream_, println(testing::A<const char*>())).Times(1);
 
   shell.process_input();
 
+  EXPECT_EQ(overflow_count_, 1);
   ASSERT_EQ(called_callback_, 1);
   EXPECT_THAT(argv_, ::testing::ElementsAre("a", "1"));
 }

@@ -41,6 +41,9 @@ class Shell {
   /// @brief Command callback type.
   typedef void (*CommandCallback)(void* context, int argc, char** argv);
 
+  /// @brief Callback type to report that a message was too long.
+  typedef void (*OverflowCallback)(void* context);
+
   /// @brief Sets the serial stream to use.
   ///
   /// @param serial_stream Serial stream.
@@ -51,6 +54,15 @@ class Shell {
   /// @param callback Callback function.
   /// @param context Context pointer to pass to the callback.
   void set_default_callback(CommandCallback callback, void* context = nullptr);
+
+  /// @brief Sets the callback to report the messages that are too long to be processed.
+  ///
+  /// A message that doesn't fit in the buffer is discarded entirely, and the callback is called
+  /// when the message ends. Without a callback, it is discarded silently.
+  ///
+  /// @param callback Callback function.
+  /// @param context Context pointer to pass to the callback.
+  void set_overflow_callback(OverflowCallback callback, void* context = nullptr);
 
   /// @brief Adds a command registry entry to the shell.
   ///
@@ -103,6 +115,12 @@ class Shell {
 
   /// Context pointer to pass to the default callback.
   void* default_callback_context_{nullptr};
+
+  /// Callback to report the messages that are too long.
+  OverflowCallback overflow_callback_{nullptr};
+
+  /// Context pointer to pass to the overflow callback.
+  void* overflow_callback_context_{nullptr};
 
   /// Command registry.
   Command commands_[kCommandsMax]{};

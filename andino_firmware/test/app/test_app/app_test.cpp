@@ -371,6 +371,14 @@ TEST_F(AppTest, ReadEncodersAndImuCommandWhenImuNotConnected) {
   EXPECT_EQ(run_command("getencimu"), "[ERROR] IMU unavailable\n");
 }
 
+TEST_F(AppTest, TooLongCommandReplyWithError) {
+  app_.setup();
+
+  // The whole line is discarded, so the error is the only reply, and the next command works.
+  EXPECT_EQ(run_command(std::string(100, 'x') + " getenc"), "[ERROR] Command too long\n");
+  EXPECT_EQ(run_command("getenc"), "0 0\n");
+}
+
 TEST_F(AppTest, CommandsWithInvalidArgumentsReplyWithError) {
   app_.setup();
 
