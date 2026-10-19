@@ -14,12 +14,13 @@ andino_firmware/
 │   ├── app/            # Application logic
 │   ├── drivers/        # Hardware-independent drivers
 │   ├── hal/            # Hardware Abstraction Layer (interfaces)
-│   └── bsp/            # Board Support Package: HAL implementations (arduino/, avr/, ...)
+│   └── bsp/            # Board Support Package: HAL implementations (arduino/, avr/, stm32/)
 ├── src/                # Implementation files, mirroring the layers above
 │   └── main.cpp        # Wires the BSP implementations of the selected board into the App
 ├── boards/             # Board packages: pins, serial settings and configuration of each board
 │   ├── arduino_uno/
-│   └── arduino_nano/
+│   ├── arduino_nano/
+│   └── stm32_bluepill/
 ├── test/               # Unit tests organized by layer (run on the host)
 │   ├── app/
 │   └── drivers/
@@ -42,12 +43,13 @@ The `app` and `drivers` layers only depend on the abstract `hal` interfaces, so 
 
 ## Building & Flashing
 
-The firmware is built with [PlatformIO](https://platformio.org/). You can build, test, and flash it using the provided Docker image (recommended, no local setup needed). There are two firmware targets:
+The firmware is built with [PlatformIO](https://platformio.org/). You can build, test, and flash it using the provided Docker image (recommended, no local setup needed). These are the supported boards:
 
 | Board | PlatformIO environment | Board package |
 |-------|------------------------|---------------|
 | Arduino Uno | `uno` | [`boards/arduino_uno`](./boards/arduino_uno) |
 | Arduino Nano | `nanoatmega328` | [`boards/arduino_nano`](./boards/arduino_nano) |
+| STM32 Blue Pill (STM32F103C8T6) | `bluepill_f103c8` | [`boards/stm32_bluepill`](./boards/stm32_bluepill) |
 
 Only Docker and Docker Compose are required to be installed on your system, no local compilers or PlatformIO installations are needed. See the [Docker README](./docker/README.md) for instructions and further details.
 
@@ -57,7 +59,7 @@ What changes from one board to another is kept in a **board package**, so adding
 
 1. Create `boards/<board>/andino/board.h`. It defines `andino::Board` (the pins and the serial baud rate) and `andino::kAppConfig` (the application configuration). Use [`boards/arduino_uno/andino/board.h`](./boards/arduino_uno/andino/board.h) as a model: it documents every pin. A board that is identical to an existing one can just include its package, as the Arduino Nano does.
 2. Add a PlatformIO environment for it in [`platformio.ini`](./platformio.ini), which selects the package with `-I boards/<board>` and builds the BSP implementations that fit its microcontroller (`bsp/arduino` for the Arduino API, plus the platform specific ones, like `bsp/avr`). Add it to `default_envs` so CI builds it.
-3. If the board needs a different implementation of a HAL interface (for example, interrupts on another microcontroller family), add it in a new `bsp/<platform>` directory.
+3. If the board needs a different implementation of a HAL interface (for example, interrupts on another microcontroller family), add it in a new `bsp/<platform>` directory, like `bsp/stm32` for the Blue Pill.
 
 ---
 
@@ -65,7 +67,11 @@ What changes from one board to another is kept in a **board package**, so adding
 
 ### Wiring
 
-The pin assignment is defined in the board package of each board, [`boards/arduino_uno/andino/board.h`](./boards/arduino_uno/andino/board.h) for the Arduino Uno (the Arduino Nano uses the same one):
+The pin assignment is defined in the board package of each board.
+
+#### Arduino Uno and Nano
+
+Defined in [`boards/arduino_uno/andino/board.h`](./boards/arduino_uno/andino/board.h) (the Arduino Nano uses the same one):
 
 | Function | Pin | Arduino pin |
 |----------|-----|-------------|
@@ -84,7 +90,32 @@ The pin assignment is defined in the board package of each board, [`boards/ardui
 
 *Note: the enable input of an L298N motor driver can be jumped directly to 5V if the board has a jumper for it.*
 
-The encoder inputs use pin change interrupts. The IMU is an optional Adafruit BNO055 on the I2C bus, the firmware works without it, and the `hasimu` command tells whether it was detected at boot.
+The encoder inputs use interrupts (pin change interrupts on the AVR boards). The IMU is an optional Adafruit BNO055 on the I2C bus, the firmware works without it, and the `hasimu` command tells whether it was detected at boot.
+
+#### STM32 Blue Pill
+
+> **Note**: the support for this board is built and statically analyzed by the CI, but it hasn't been validated on a robot yet.
+
+Defined in [`boards/stm32_bluepill/andino/board.h`](./boards/stm32_bluepill/andino/board.h):
+
+| Function | Pin |
+|----------|-----|
+| Left encoder, channel A | `PB12` |
+| Left encoder, channel B | `PB13` |
+| Right encoder, channel A | `PB14` |
+| Right encoder, channel B | `PB15` |
+| Left motor, backward (PWM, `TIM2_CH1`) | `PA0` |
+| Left motor, forward (PWM, `TIM2_CH2`) | `PA1` |
+| Left motor, enable | `PA4` |
+| Right motor, backward (PWM, `TIM2_CH3`) | `PA2` |
+| Right motor, forward (PWM, `TIM2_CH4`) | `PA3` |
+| Right motor, enable | `PA5` |
+| IMU, I2C SCL (`I2C1`) | `PB6` |
+| IMU, I2C SDA (`I2C1`) | `PB7` |
+
+The encoder pins must have different numbers (here 12 to 15), because the pins with the same number of every port share an external interrupt line. `PA11` and `PA12` are used by USB, and `PA13` and `PA14` by the debugger.
+
+The serial port of the Blue Pill is its **USB port** (USB CDC), so it needs no USB-to-serial adapter. It shows up on the host as a serial port, usually `/dev/ttyACM0`, and the baud rate doesn't apply. The board is flashed with an **ST-Link** connected to its SWD header (`SWDIO`, `SWCLK`, `GND` and `3.3V`).
 
 ### Configuration
 
@@ -102,7 +133,7 @@ The serial baud rate (`57600`) is `Board::kSerialBaudRate`, in the board package
 
 ## Serial Interface
 
-The firmware is controlled through a text-based protocol over the serial port (57600 baud).
+The firmware is controlled through a text-based protocol over the serial port (57600 baud, except on the Blue Pill, whose serial port is USB and has no baud rate).
 
 ### Commands
 
@@ -124,7 +155,7 @@ The IMU values are the orientation as a quaternion, the angular velocity in rad/
 
 ### Test it!
 
-Create a serial connection at 57600 baud, e.g. with the PlatformIO serial monitor (`pio device monitor`, or through Docker: `docker compose -f docker/compose.yaml run --rm dev pio device monitor`). Remember to terminate every message with a carriage return.
+Create a serial connection (at 57600 baud, unless the board is a Blue Pill), e.g. with the PlatformIO serial monitor (`pio device monitor`, or through Docker: `docker compose -f docker/compose.yaml run --rm dev pio device monitor`). Remember to terminate every message with a carriage return.
 
 * **Open loop verification**
   - Send `setpwm 255 255` to go full speed.
@@ -150,7 +181,7 @@ Create a serial connection at 57600 baud, e.g. with the PlatformIO serial monito
 docker compose -f docker/compose.yaml run --rm dev python tools/hw_check.py --port /dev/ttyUSB0
 ```
 
-The serial port of the board can be found with `docker compose -f docker/compose.yaml run --rm dev pio device list`. If `--port` is omitted, the tool will attempt to use the only device connected, if there is one.
+The serial port of the board can be found with `docker compose -f docker/compose.yaml run --rm dev pio device list` (usually `/dev/ttyUSB0` for the Arduino boards and `/dev/ttyACM0` for the Blue Pill). If `--port` is omitted, the tool will attempt to use the only device connected, if there is one.
 
 The tool runs all the checks, one after the other:
 

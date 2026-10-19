@@ -59,10 +59,17 @@ jobs:
       - uses: actions/checkout@v3
       - uses: actions/cache@v3
         with:
+          # The platforms and packages (toolchains, frameworks) are large, specially the STM32 ones
+          # (about 1.8 GB), so they are cached. The key depends on the versions in platformio.ini,
+          # and a cache of an older version of the file is used to avoid downloading everything.
           path: |
             ~/.cache/pip
             ~/.platformio/.cache
-          key: ${{ runner.os }}-pio
+            ~/.platformio/platforms
+            ~/.platformio/packages
+          key: ${{ runner.os }}-pio-${{ hashFiles('andino_firmware/platformio.ini') }}
+          restore-keys: |
+            ${{ runner.os }}-pio-
       - uses: actions/setup-python@v4
         with:
           python-version: '3.9'

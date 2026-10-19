@@ -385,6 +385,15 @@ class HwCheckTest(unittest.TestCase):
         self.assertIsNone(hw_check.find_port(lambda: [other]))
         self.assertIsNone(hw_check.find_port(lambda: [arduino, Port("/dev/ttyACM0", 0x2341)]))
 
+    def test_find_port_recognizes_the_usb_serial_port_of_stm32_boards(self):
+        class Port:
+            def __init__(self, device, vid):
+                self.device, self.vid = device, vid
+
+        stm32 = Port("/dev/ttyACM0", 0x0483)
+        ports = [Port("/dev/ttyS0", None), stm32]
+        self.assertEqual(hw_check.find_port(lambda: ports), "/dev/ttyACM0")
+
 
 class DiagnoseMotorTest(unittest.TestCase):
     def diagnose(self, own, other, saw_motion, sign=1):

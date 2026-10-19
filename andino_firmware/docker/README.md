@@ -42,6 +42,16 @@ To build the firmware target `Arduino Nano` inside the container:
 docker compose -f docker/compose.yaml run --rm dev pio run -e nanoatmega328
 ```
 
+To build the firmware target `STM32 Blue Pill` inside the container:
+```bash
+docker compose -f docker/compose.yaml run --rm dev pio run -e bluepill_f103c8
+```
+
+To build all the targets (the first build of a target downloads its toolchain, which is about 1.8 GB for the STM32):
+```bash
+docker compose -f docker/compose.yaml run --rm dev pio run
+```
+
 ### 3. Run Native Unit Tests
 To compile and execute the native unit tests (they are built with AddressSanitizer and UndefinedBehaviorSanitizer enabled):
 ```bash
@@ -70,10 +80,10 @@ The Docker Compose configuration is set up with:
 - `/dev:/dev` mount
 - `network_mode: host`
 
-This allows the container full access to USB devices connected to the host machine. To upload/flash your firmware to the Arduino board:
+This allows the container full access to USB devices connected to the host machine. To upload/flash your firmware to the board:
 
-1. Connect the Arduino to your host machine's USB port.
-2. Check that the board is detected (it usually shows up as `/dev/ttyUSB0` or `/dev/ttyACM0`):
+1. Connect the board to your host machine's USB port. The Blue Pill is flashed through an ST-Link programmer connected to its SWD header, so connect the ST-Link instead.
+2. Check that the board is detected (the Arduino boards usually show up as `/dev/ttyUSB0` or `/dev/ttyACM0`, while the ST-Link doesn't have a serial port):
    ```bash
    docker compose -f docker/compose.yaml run --rm dev pio device list
    ```
@@ -84,7 +94,12 @@ This allows the container full access to USB devices connected to the host machi
 
    # Arduino Nano
    docker compose -f docker/compose.yaml run --rm dev pio run -e nanoatmega328 --target upload
+
+   # STM32 Blue Pill (with an ST-Link)
+   docker compose -f docker/compose.yaml run --rm dev pio run -e bluepill_f103c8 --target upload
    ```
+
+The serial port of the Blue Pill is its own USB port (USB CDC). Once the firmware is flashed, connect it to the host with a second USB cable (the ST-Link is only needed to flash it), and it shows up as a serial port, usually `/dev/ttyACM0`.
 
 ---
 
