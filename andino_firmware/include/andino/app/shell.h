@@ -112,6 +112,9 @@ class Shell {
 
   /// Command prompt message index.
   int message_index_{0};
+
+  /// Whether the current message overflowed the buffer and is being discarded.
+  bool discarding_{false};
 };
 
 }  // namespace andino

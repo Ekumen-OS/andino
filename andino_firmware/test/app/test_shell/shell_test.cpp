@@ -71,6 +71,7 @@ class MockSerialStream : public andino::SerialStream {
 class ShellTest : public testing::Test {
  protected:
   void SetUp() override {
+    called_callback_ = -1;
     shell.set_serial_stream(&serial_stream_);
     shell.set_default_callback(cmd_unknown_cb);
     shell.register_command(kCommand1, cmd_1_cb);
@@ -102,6 +103,21 @@ class ShellTest : public testing::Test {
     argc_ = argc;
     argv_.assign(argv, argv + argc);
   }
+
+  /// Makes the mocked serial stream deliver the given input.
+  void feed(const std::string& input) {
+    input_ = input;
+    input_index_ = 0;
+    ON_CALL(serial_stream_, available()).WillByDefault(testing::Invoke([this]() -> int {
+      return static_cast<int>(input_.size() - input_index_);
+    }));
+    ON_CALL(serial_stream_, read()).WillByDefault(testing::Invoke([this]() -> int {
+      return input_.at(input_index_++);
+    }));
+  }
+
+  std::string input_;
+  size_t input_index_{0};
 
   static constexpr const char* kCommand1{"a"};
   static constexpr const char* kCommand2{"ab"};
@@ -284,6 +300,34 @@ TEST_F(ShellTest, ProcessInputMessageFourArgs) {
   ASSERT_EQ(called_callback_, 3);
   ASSERT_EQ(argc_, 4);
   EXPECT_THAT(argv_, ::testing::ElementsAreArray(expected_argv));
+}
+
+TEST_F(ShellTest, ProcessInputMessageEmptyLineIsIgnored) {
+  feed("\r");
+
+  shell.process_input();
+
+  EXPECT_EQ(called_callback_, -1);
+}
+
+TEST_F(ShellTest, ProcessInputMessageTooLongIsDiscarded) {
+  // The whole message, including the overflowing tail "a", must be dropped.
+  feed(std::string(100, 'x') + " a\r");
+  EXPECT_CALL(serial_stream_, println(testing::A<const char*>())).Times(1);
+
+  shell.process_input();
+
+  EXPECT_EQ(called_callback_, -1);
+}
+
+TEST_F(ShellTest, ProcessInputMessageAfterTooLongIsProcessed) {
+  feed(std::string(100, 'x') + "\ra 1\r");
+  EXPECT_CALL(serial_stream_, println(testing::A<const char*>())).Times(1);
+
+  shell.process_input();
+
+  ASSERT_EQ(called_callback_, 1);
+  EXPECT_THAT(argv_, ::testing::ElementsAre("a", "1"));
 }
 
 }  // namespace
