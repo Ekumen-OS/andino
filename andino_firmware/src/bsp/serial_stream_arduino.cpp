@@ -35,8 +35,8 @@
 
 namespace andino {
 
-void SerialStreamArduino::begin(unsigned long baud) const {
-  Serial.begin(baud);
+void SerialStreamArduino::begin() const {
+  Serial.begin(baud_);
 }
 
 int SerialStreamArduino::available() const {

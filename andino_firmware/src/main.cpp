@@ -38,9 +38,13 @@
 #include "andino/bsp/pwm_out_arduino.h"
 #include "andino/bsp/serial_stream_arduino.h"
 
+// Serial port baud rate. It must match the one used by the host (see andino_base) and the
+// `monitor_speed` in platformio.ini.
+static constexpr unsigned long kSerialBaudRate{57600};
+
 // BSP implementations.
 static andino::ClockArduino sys_clock;
-static andino::SerialStreamArduino serial_stream;
+static andino::SerialStreamArduino serial_stream(kSerialBaudRate);
 static andino::DigitalOutArduino left_motor_enable(andino::Hw::kLeftMotorEnableGpioPin);
 static andino::PwmOutArduino left_motor_forward(andino::Hw::kLeftMotorForwardGpioPin);
 static andino::PwmOutArduino left_motor_backward(andino::Hw::kLeftMotorBackwardGpioPin);

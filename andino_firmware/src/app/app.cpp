@@ -74,7 +74,7 @@
 namespace andino {
 
 void App::setup() {
-  serial_stream_.begin(Constants::kBaudrate);
+  serial_stream_.begin();
 
   left_encoder_.begin();
   right_encoder_.begin();
