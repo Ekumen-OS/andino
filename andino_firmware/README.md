@@ -64,6 +64,33 @@ A serial port connection must be created at 57600 bauds. You can use the serial 
 * Closed loop verification
   - Send `setspd <tps> <tps>` where `tps` stands for `ticks per second`. For example if your motor-encoder system gets 700 ticks per revolution then sending `setspd 700 700` will rotate both motors at 1 rev per sec. (~3.14rad/sec)
 
+## Hardware validation
+
+[`tools/hw_check.py`](./tools/hw_check.py) validates that the hardware connections to the MCU and the firmware flashing work as expected. Connect the board through USB, flash the firmware, and run (from the `andino_firmware` directory):
+
+```bash
+docker compose -f docker/compose.yaml run --rm dev python tools/hw_check.py --port /dev/ttyUSB0
+```
+
+The serial port of the board can be found with `docker compose -f docker/compose.yaml run --rm dev pio device list`. If `--port` is omitted, the tool will attempt to use the only device connected, if there is one.
+
+The tool runs all the checks, one after the other:
+
+| Check | What it verifies |
+|-------|------------------|
+| Firmware | The MCU answers, the firmware booted correctly and its version (`ver`) is reported. |
+| IMU | The sensor is detected and reports sane values at rest. |
+| Encoders at rest | The encoder counts are readable and stable. |
+| Encoders by hand | Both channels of each encoder toggle and are counted while you rotate the wheel by hand. |
+| Motors | For each wheel and direction: the commanded wheel moves, in the right direction, and its encoder counts it. |
+| Closed loop | The measured speed matches the one requested with `setspd`. |
+
+The checks have their own unit tests, run against a simulated robot and user:
+
+```bash
+docker compose -f docker/compose.yaml run --rm dev python -m unittest discover -s tools
+```
+
 ## Commands
 
 Every command replies with exactly one line terminated by `\n`:
