@@ -43,9 +43,23 @@ void Shell::set_default_callback(CommandCallback callback, void* context) {
   default_callback_context_ = context;
 }
 
-void Shell::register_command(const char* name, CommandCallback callback, void* context) {
-  if (commands_count_ >= kCommandsMax) {
-    return;
+bool Shell::register_command(const char* name, CommandCallback callback, void* context) {
+  if (commands_count_ >= kCommandsMax || name == nullptr || callback == nullptr) {
+    return false;
+  }
+
+  // The name, including its null terminator, must fit in the registry entry. Otherwise it would be
+  // silently truncated and the command would never match.
+  const size_t name_length = strlen(name);
+  if (name_length == 0 || name_length >= sizeof(Command::name)) {
+    return false;
+  }
+
+  // A duplicated name would be unreachable, since the first registered command always matches.
+  for (size_t i = 0; i < commands_count_; i++) {
+    if (strcmp(name, commands_[i].name) == 0) {
+      return false;
+    }
   }
 
   Command command;
@@ -53,6 +67,7 @@ void Shell::register_command(const char* name, CommandCallback callback, void* c
   command.callback = callback;
   command.context = context;
   commands_[commands_count_++] = command;
+  return true;
 }
 
 void Shell::process_input() {
