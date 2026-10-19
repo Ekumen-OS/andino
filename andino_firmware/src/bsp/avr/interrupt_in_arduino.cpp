@@ -29,7 +29,7 @@
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "andino/bsp/arduino/interrupt_in_arduino.h"
 
-#include <Arduino.h>
+#include "andino/bsp/arduino/arduino_core.h"
 
 /// Holds the attached callbacks.
 static andino::InterruptIn::InterruptCallback g_callbacks[3] = {nullptr};

@@ -31,7 +31,7 @@
 
 #include <stdio.h>
 
-#include <Arduino.h>
+#include "andino/bsp/arduino/arduino_core.h"
 
 namespace andino {
 

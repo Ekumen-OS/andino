@@ -154,7 +154,9 @@ void App::cmd_read_encoder_channel_cb(void* context, int argc, char** argv) {
   Encoder& selected_encoder = (encoder == 0) ? app->left_encoder_ : app->right_encoder_;
   const int value =
       (channel == 0) ? selected_encoder.read_channel_a() : selected_encoder.read_channel_b();
-  app->serial_stream_.println(value);
+  // The serial stream prints fixed-width integers. On some platforms `int` is none of them, which
+  // would make the call ambiguous.
+  app->serial_stream_.println(static_cast<int16_t>(value));
 }
 
 void App::cmd_read_encoders_cb(void* context, int, char**) {
@@ -241,7 +243,7 @@ void App::cmd_set_pid_gains_cb(void* context, int argc, char** argv) {
 
 void App::cmd_is_imu_connected_cb(void* context, int, char**) {
   App* app = static_cast<App*>(context);
-  app->serial_stream_.println(app->is_imu_connected_);
+  app->serial_stream_.println(static_cast<int16_t>(app->is_imu_connected_));
 }
 
 void App::cmd_read_encoders_and_imu_cb(void* context, int, char**) {

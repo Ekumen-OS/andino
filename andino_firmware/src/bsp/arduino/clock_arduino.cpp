@@ -29,7 +29,7 @@
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "andino/bsp/arduino/clock_arduino.h"
 
-#include <Arduino.h>
+#include "andino/bsp/arduino/arduino_core.h"
 
 namespace andino {
 
