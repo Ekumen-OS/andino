@@ -30,41 +30,34 @@
 #include <Arduino.h>
 
 #include "andino/app/app.h"
-#include "andino/bsp/clock_arduino.h"
-#include "andino/bsp/digital_out_arduino.h"
-#include "andino/bsp/hw.h"
-#include "andino/bsp/imu_arduino.h"
-#include "andino/bsp/interrupt_in_arduino.h"
-#include "andino/bsp/pwm_out_arduino.h"
-#include "andino/bsp/serial_stream_arduino.h"
-
-// Serial port baud rate. It must match the one used by the host (see andino_base) and the
-// `monitor_speed` in platformio.ini.
-static constexpr unsigned long kSerialBaudRate{57600};
+#include "andino/board.h"
+#include "andino/bsp/arduino/clock_arduino.h"
+#include "andino/bsp/arduino/digital_out_arduino.h"
+#include "andino/bsp/arduino/imu_arduino.h"
+#include "andino/bsp/arduino/interrupt_in_arduino.h"
+#include "andino/bsp/arduino/pwm_out_arduino.h"
+#include "andino/bsp/arduino/serial_stream_arduino.h"
 
 // BSP implementations.
 static andino::ClockArduino sys_clock;
-static andino::SerialStreamArduino serial_stream(kSerialBaudRate);
-static andino::DigitalOutArduino left_motor_enable(andino::Hw::kLeftMotorEnableGpioPin);
-static andino::PwmOutArduino left_motor_forward(andino::Hw::kLeftMotorForwardGpioPin);
-static andino::PwmOutArduino left_motor_backward(andino::Hw::kLeftMotorBackwardGpioPin);
-static andino::DigitalOutArduino right_motor_enable(andino::Hw::kRightMotorEnableGpioPin);
-static andino::PwmOutArduino right_motor_forward(andino::Hw::kRightMotorForwardGpioPin);
-static andino::PwmOutArduino right_motor_backward(andino::Hw::kRightMotorBackwardGpioPin);
-static andino::InterruptInArduino left_encoder_a(andino::Hw::kLeftEncoderChannelAGpioPin);
-static andino::InterruptInArduino left_encoder_b(andino::Hw::kLeftEncoderChannelBGpioPin);
-static andino::InterruptInArduino right_encoder_a(andino::Hw::kRightEncoderChannelAGpioPin);
-static andino::InterruptInArduino right_encoder_b(andino::Hw::kRightEncoderChannelBGpioPin);
+static andino::SerialStreamArduino serial_stream(andino::Board::kSerialBaudRate);
+static andino::DigitalOutArduino left_motor_enable(andino::Board::kLeftMotorEnableGpioPin);
+static andino::PwmOutArduino left_motor_forward(andino::Board::kLeftMotorForwardGpioPin);
+static andino::PwmOutArduino left_motor_backward(andino::Board::kLeftMotorBackwardGpioPin);
+static andino::DigitalOutArduino right_motor_enable(andino::Board::kRightMotorEnableGpioPin);
+static andino::PwmOutArduino right_motor_forward(andino::Board::kRightMotorForwardGpioPin);
+static andino::PwmOutArduino right_motor_backward(andino::Board::kRightMotorBackwardGpioPin);
+static andino::InterruptInArduino left_encoder_a(andino::Board::kLeftEncoderChannelAGpioPin);
+static andino::InterruptInArduino left_encoder_b(andino::Board::kLeftEncoderChannelBGpioPin);
+static andino::InterruptInArduino right_encoder_a(andino::Board::kRightEncoderChannelAGpioPin);
+static andino::InterruptInArduino right_encoder_b(andino::Board::kRightEncoderChannelBGpioPin);
 static andino::ImuArduino imu;
 
-// Application configuration: auto-stop window [ms], PID rate [Hz] and PID gains {kp, kd, ki, ko}.
-static constexpr andino::App::Config kAppConfig{3000, 30, {30, 10, 0, 10}};
-
 // Main application.
-static andino::App app(kAppConfig, sys_clock, serial_stream, left_motor_enable, left_motor_forward,
-                       left_motor_backward, right_motor_enable, right_motor_forward,
-                       right_motor_backward, left_encoder_a, left_encoder_b, right_encoder_a,
-                       right_encoder_b, imu);
+static andino::App app(andino::kAppConfig, sys_clock, serial_stream, left_motor_enable,
+                       left_motor_forward, left_motor_backward, right_motor_enable,
+                       right_motor_forward, right_motor_backward, left_encoder_a, left_encoder_b,
+                       right_encoder_a, right_encoder_b, imu);
 
 /// @brief Application entry point.
 ///

@@ -27,56 +27,18 @@
 // CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
 // OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-#include "andino/bsp/serial_stream_arduino.h"
-
-#include <stdio.h>
+#include "andino/bsp/arduino/digital_out_arduino.h"
 
 #include <Arduino.h>
 
 namespace andino {
 
-void SerialStreamArduino::begin() const {
-  Serial.begin(baud_);
+void DigitalOutArduino::begin() const {
+  pinMode(gpio_pin_, OUTPUT);
 }
 
-int SerialStreamArduino::available() const {
-  return Serial.available();
-}
-
-int SerialStreamArduino::read() const {
-  return Serial.read();
-}
-
-size_t SerialStreamArduino::print(const char* c) const {
-  return Serial.print(c);
-}
-
-size_t SerialStreamArduino::print(int16_t num) const {
-  return Serial.print(num);
-}
-
-size_t SerialStreamArduino::print(int32_t num) const {
-  return Serial.print(num);
-}
-
-size_t SerialStreamArduino::print(double num, int digits) const {
-  return Serial.print(num, digits);
-}
-
-size_t SerialStreamArduino::println(const char* c) const {
-  return Serial.println(c);
-}
-
-size_t SerialStreamArduino::println(int16_t num) const {
-  return Serial.println(num);
-}
-
-size_t SerialStreamArduino::println(int32_t num) const {
-  return Serial.println(num);
-}
-
-size_t SerialStreamArduino::println(double num, int digits) const {
-  return Serial.println(num, digits);
+void DigitalOutArduino::write(uint8_t value) const {
+  digitalWrite(gpio_pin_, value);
 }
 
 }  // namespace andino

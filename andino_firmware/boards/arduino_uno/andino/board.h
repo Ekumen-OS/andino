@@ -31,13 +31,21 @@
 
 #include <stdint.h>
 
+#include "andino/app/app.h"
+
 namespace andino {
 
-/// @brief Hardware (board) configuration: the pins the robot hardware is connected to.
+/// @brief Board package of the Arduino Uno: everything that changes from one board to another.
 ///
-/// It describes the board, so only the BSP and the composition root (main.cpp) use it. The
+/// Every supported board has a package like this one, in its own `boards/<board>` directory, with
+/// the same file name (`andino/board.h`). The PlatformIO environment of each board selects its
+/// package through the include path. Only the composition root (main.cpp) includes it, so the
 /// application and the drivers get their hardware through the HAL interfaces.
-struct Hw {
+struct Board {
+  /// @brief Serial port baud rate. It must match the one used by the host (see andino_base) and the
+  /// `monitor_speed` in platformio.ini.
+  static constexpr unsigned long kSerialBaudRate{57600};
+
   /// @brief Left encoder channel A pin. Connected to PD2 (digital pin 2).
   static constexpr uint8_t kLeftEncoderChannelAGpioPin{2};
   /// @brief Left encoder channel B pin. Connected to PD3 (digital pin 3).
@@ -71,5 +79,9 @@ struct Hw {
   /// @brief IMU sensor I2C SDA pin. Connected to PC4 (digital pin 18, analog pin A4).
   static constexpr uint8_t kImuI2cSdaPin{18};
 };
+
+/// @brief Application configuration for this board: auto-stop window [ms], PID rate [Hz] and PID
+/// gains {kp, kd, ki, ko}.
+static constexpr App::Config kAppConfig{3000, 30, {30, 10, 0, 10}};
 
 }  // namespace andino
