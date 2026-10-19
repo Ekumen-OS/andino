@@ -72,9 +72,11 @@ jobs:
             ${{ runner.os }}-pio-
       - uses: actions/setup-python@v4
         with:
-          python-version: '3.9'
-      - name: Install PlatformIO Core
-        run: pip install --upgrade platformio
+          # The version of the Docker image, which gcovr needs (3.10 or newer).
+          python-version: '3.11'
+      - name: Install PlatformIO Core and gcovr
+        # The same pinned versions as the Docker image.
+        run: pip install -r andino_firmware/docker/requirements.txt
       - name: Build application
         working-directory: ./andino_firmware
         run: pio run
@@ -84,6 +86,16 @@ jobs:
       - name: Run unit tests
         working-directory: ./andino_firmware
         run: pio test --environment=desktop
+      - name: Generate the code coverage report
+        working-directory: ./andino_firmware
+        run: |
+          scripts/coverage.sh coverage
+          cat coverage/summary.md >> "${GITHUB_STEP_SUMMARY}"
+      - name: Upload the code coverage report
+        uses: actions/upload-artifact@v4
+        with:
+          name: coverage-report
+          path: andino_firmware/coverage/
       - name: Run tools unit tests
         working-directory: ./andino_firmware
         run: python -m unittest discover -s tools
