@@ -8,12 +8,6 @@ Check `encoder_driver.h` and `motor_driver.h` files to check the expected pins f
 
 ## Installation
 
-### Arduino
-In Arduino IDE, go to `tools->Manage Libraries ...` and install:
-- "Adafruit BNO055"
-
-Verify and Upload `andino_firmware.ino` to your arduino board.
-
 ### PlatformIO
 1. Install dependencies `sudo apt-get install python3.10-venv`
 2. Install platformio

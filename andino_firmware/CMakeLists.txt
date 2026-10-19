@@ -5,7 +5,6 @@ find_package(ament_cmake REQUIRED)
 
 install(
   FILES
-    andino_firmware.ino
     platformio.ini
   DESTINATION
     share/${PROJECT_NAME}/
