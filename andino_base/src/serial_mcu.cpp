@@ -32,39 +32,45 @@
 #include <chrono>
 #include <cstdlib>
 #include <iostream>
+#include <memory>
 #include <sstream>
 #include <string>
 #include <thread>
 
 namespace andino_base {
 
-void SerialMcu::setup(const std::string& serial_device, int32_t baud_rate, int32_t timeout_ms) {
-  timeout_ms_ = timeout_ms;
+std::unique_ptr<SerialMcu> SerialMcu::open(const std::string& serial_device, int32_t baud_rate, int32_t timeout_ms) {
+  // The constructor is private, so std::make_unique cannot be used.
+  std::unique_ptr<SerialMcu> serial_mcu(new SerialMcu());
+  serial_mcu->timeout_ms_ = timeout_ms;
+  LibSerial::SerialPort& serial_port = serial_mcu->serial_port_;
   try {
-    serial_port_.Open(serial_device);
-  } catch (std::exception& e) {
-    std::cout << e.what() << std::endl;
-  }
+    serial_port.Open(serial_device);
 
-  std::cout << "Waiting 2 seconds for the Microcontroller to be ready..." << std::endl;
-  // When the Microcontroller is reset, it takes a few seconds to be ready.
-  // And tipically when the serial port is opened, the Microcontroller is reset.
-  std::this_thread::sleep_for(std::chrono::seconds(2));
+    std::cout << "Waiting 2 seconds for the Microcontroller to be ready..." << std::endl;
+    // When the Microcontroller is reset, it takes a few seconds to be ready.
+    // And tipically when the serial port is opened, the Microcontroller is reset.
+    std::this_thread::sleep_for(std::chrono::seconds(2));
 
-  // TODO(francocipollone): Use baud_rate from parameter.
-  if (baud_rate != 57600) {
-    std::cerr << "A baudrate different than 57600 is not supported yet." << std::endl;
+    // TODO(francocipollone): Use baud_rate from parameter.
+    if (baud_rate != 57600) {
+      std::cerr << "A baudrate different than 57600 is not supported yet." << std::endl;
+    }
+    // Configure the serial port.
+    serial_port.SetBaudRate(LibSerial::BaudRate::BAUD_57600);
+    serial_port.SetCharacterSize(LibSerial::CharacterSize::CHAR_SIZE_8);
+    serial_port.SetParity(LibSerial::Parity::PARITY_NONE);
+    serial_port.SetStopBits(LibSerial::StopBits::STOP_BITS_1);
+    serial_port.SetFlowControl(LibSerial::FlowControl::FLOW_CONTROL_NONE);
+    serial_port.SetDTR(false);
+    serial_port.SetRTS(false);
+    // Flush buffers.
+    serial_port.FlushIOBuffers();
+  } catch (const std::exception& e) {
+    std::cerr << "Failed to open serial device " << serial_device << ": " << e.what() << std::endl;
+    return nullptr;
   }
-  // Configure the serial port.
-  serial_port_.SetBaudRate(LibSerial::BaudRate::BAUD_57600);
-  serial_port_.SetCharacterSize(LibSerial::CharacterSize::CHAR_SIZE_8);
-  serial_port_.SetParity(LibSerial::Parity::PARITY_NONE);
-  serial_port_.SetStopBits(LibSerial::StopBits::STOP_BITS_1);
-  serial_port_.SetFlowControl(LibSerial::FlowControl::FLOW_CONTROL_NONE);
-  serial_port_.SetDTR(false);
-  serial_port_.SetRTS(false);
-  // Flush buffers.
-  serial_port_.FlushIOBuffers();
+  return serial_mcu;
 }
 
 bool SerialMcu::is_connected() const { return serial_port_.IsOpen(); }
