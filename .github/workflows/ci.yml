@@ -15,6 +15,19 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
+  lint:
+    name: Lint andino_base
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v7
+    - uses: actions/setup-python@v7
+      with:
+        python-version: '3.9'
+    - name: Run pre-commit checks (formatting and style linting)
+      run: |
+        pip install pre-commit
+        pre-commit run --show-diff-on-failure --files $(git ls-files andino_base)
+
   compile_and_test:
     name: Compile and test (${{ matrix.ros_distro }})
     runs-on: ubuntu-latest
