@@ -30,6 +30,7 @@
 #pragma once
 
 #include <array>
+#include <optional>
 
 namespace andino_base {
 
@@ -65,36 +66,41 @@ class Mcu {
   virtual bool is_connected() const = 0;
 
   /// @brief Resets the encoder sensors.
-  virtual void reset_encoders() = 0;
+  /// @returns True if the microcontroller acknowledged the command, false otherwise.
+  virtual bool reset_encoders() = 0;
 
   /// @brief Returns the encoder sensors data.
-  /// @returns The encoder sensors data.
-  virtual EncodersData read_encoders() = 0;
+  /// @returns The encoder sensors data, or std::nullopt if it could not be read.
+  virtual std::optional<EncodersData> read_encoders() = 0;
 
   /// @brief Checks if there is an IMU sensor available.
-  /// @returns True if there is an IMU sensor available, false otherwise.
-  virtual bool is_imu_available() = 0;
+  /// @returns True if there is an IMU sensor available, false if there is not, or std::nullopt if
+  /// the microcontroller could not be queried.
+  virtual std::optional<bool> is_imu_available() = 0;
 
   /// @brief Returns the encoder sensors and IMU sensor data.
-  /// @returns The encoder sensors and IMU sensor data.
-  virtual EncodersAndImuData read_encoders_and_imu() = 0;
+  /// @returns The encoder sensors and IMU sensor data, or std::nullopt if it could not be read.
+  virtual std::optional<EncodersAndImuData> read_encoders_and_imu() = 0;
 
   /// @brief Sets the motors speed [ticks/s].
   /// @param left_motor_speed Speed value for the left motor.
   /// @param right_motor_speed Speed value for the right motor.
-  virtual void set_motors_speed(int left_motor_speed, int right_motor_speed) = 0;
+  /// @returns True if the microcontroller acknowledged the command, false otherwise.
+  virtual bool set_motors_speed(int left_motor_speed, int right_motor_speed) = 0;
 
   /// @brief Sets the motors PWM [duty range: 0-255].
   /// @param left_motor_pwm PWM value for the left motor.
   /// @param right_motor_pwm PWM value for the right motor.
-  virtual void set_motors_pwm(int left_motor_pwm, int right_motor_pwm) = 0;
+  /// @returns True if the microcontroller acknowledged the command, false otherwise.
+  virtual bool set_motors_pwm(int left_motor_pwm, int right_motor_pwm) = 0;
 
   /// @brief Sets the PID tuning gains.
   /// @param kp Proportional gain.
   /// @param kd Derivative gain.
   /// @param ki Integral gain.
   /// @param ko Offset gain.
-  virtual void set_pid_tuning_gains(float kp, float kd, float ki, float ko) = 0;
+  /// @returns True if the microcontroller acknowledged the command, false otherwise.
+  virtual bool set_pid_tuning_gains(float kp, float kd, float ki, float ko) = 0;
 };
 
 }  // namespace andino_base

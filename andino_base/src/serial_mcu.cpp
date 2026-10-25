@@ -30,16 +30,46 @@
 #include "andino_base/serial_mcu.h"
 
 #include <chrono>
-#include <cstdlib>
 #include <iostream>
 #include <memory>
+#include <optional>
 #include <sstream>
 #include <string>
 #include <thread>
 
+#include "andino_base/mcu_reply_parser.h"
+
 namespace andino_base {
 
+namespace {
+
+// Maps a baud rate value to the matching LibSerial enumerator.
+std::optional<LibSerial::BaudRate> to_libserial_baud_rate(int32_t baud_rate) {
+  switch (baud_rate) {
+    case 9600:
+      return LibSerial::BaudRate::BAUD_9600;
+    case 19200:
+      return LibSerial::BaudRate::BAUD_19200;
+    case 38400:
+      return LibSerial::BaudRate::BAUD_38400;
+    case 57600:
+      return LibSerial::BaudRate::BAUD_57600;
+    case 115200:
+      return LibSerial::BaudRate::BAUD_115200;
+    default:
+      return std::nullopt;
+  }
+}
+
+}  // namespace
+
 std::unique_ptr<SerialMcu> SerialMcu::open(const std::string& serial_device, int32_t baud_rate, int32_t timeout_ms) {
+  const std::optional<LibSerial::BaudRate> libserial_baud_rate = to_libserial_baud_rate(baud_rate);
+  if (!libserial_baud_rate.has_value()) {
+    std::cerr << "Unsupported baud rate: " << baud_rate << std::endl;
+    return nullptr;
+  }
+
   // The constructor is private, so std::make_unique cannot be used.
   std::unique_ptr<SerialMcu> serial_mcu(new SerialMcu());
   serial_mcu->timeout_ms_ = timeout_ms;
@@ -52,12 +82,8 @@ std::unique_ptr<SerialMcu> SerialMcu::open(const std::string& serial_device, int
     // And tipically when the serial port is opened, the Microcontroller is reset.
     std::this_thread::sleep_for(std::chrono::seconds(2));
 
-    // TODO(francocipollone): Use baud_rate from parameter.
-    if (baud_rate != 57600) {
-      std::cerr << "A baudrate different than 57600 is not supported yet." << std::endl;
-    }
     // Configure the serial port.
-    serial_port.SetBaudRate(LibSerial::BaudRate::BAUD_57600);
+    serial_port.SetBaudRate(*libserial_baud_rate);
     serial_port.SetCharacterSize(LibSerial::CharacterSize::CHAR_SIZE_8);
     serial_port.SetParity(LibSerial::Parity::PARITY_NONE);
     serial_port.SetStopBits(LibSerial::StopBits::STOP_BITS_1);
@@ -75,74 +101,86 @@ std::unique_ptr<SerialMcu> SerialMcu::open(const std::string& serial_device, int
 
 bool SerialMcu::is_connected() const { return serial_port_.IsOpen(); }
 
-void SerialMcu::reset_encoders() { send_message("rstenc"); }
+bool SerialMcu::reset_encoders() { return send_command("rstenc"); }
 
-SerialMcu::EncodersData SerialMcu::read_encoders() {
-  static const std::string delimiter = " ";
-
-  const std::string response = send_message("getenc");
-  const size_t del_pos = response.find(delimiter);
-  const std::string token_1 = response.substr(0, del_pos).c_str();
-  const std::string token_2 = response.substr(del_pos + delimiter.length()).c_str();
-  return {std::atoi(token_1.c_str()), std::atoi(token_2.c_str())};
+std::optional<SerialMcu::EncodersData> SerialMcu::read_encoders() {
+  const std::optional<std::string> response = send_message("getenc");
+  if (!response.has_value()) {
+    return std::nullopt;
+  }
+  return mcu_reply_parser::parse_encoders(*response);
 }
 
-bool SerialMcu::is_imu_available() { return std::atoi(send_message("hasimu").c_str()) != 0; }
-
-SerialMcu::EncodersAndImuData SerialMcu::read_encoders_and_imu() {
-  static const std::string delimiter = " ";
-
-  const std::string response = send_message("getencimu");
-
-  std::istringstream iss(response);
-  EncodersAndImuData encoders_and_imu_data;
-  iss >> encoders_and_imu_data.encoders_data[0] >> encoders_and_imu_data.encoders_data[1];
-  iss >> encoders_and_imu_data.imu_data.orientation[0] >> encoders_and_imu_data.imu_data.orientation[1] >>
-      encoders_and_imu_data.imu_data.orientation[2] >> encoders_and_imu_data.imu_data.orientation[3];
-  iss >> encoders_and_imu_data.imu_data.angular_velocity[0] >> encoders_and_imu_data.imu_data.angular_velocity[1] >>
-      encoders_and_imu_data.imu_data.angular_velocity[2];
-  iss >> encoders_and_imu_data.imu_data.linear_acceleration[0] >>
-      encoders_and_imu_data.imu_data.linear_acceleration[1] >> encoders_and_imu_data.imu_data.linear_acceleration[2];
-  return encoders_and_imu_data;
+std::optional<bool> SerialMcu::is_imu_available() {
+  const std::optional<std::string> response = send_message("hasimu");
+  if (!response.has_value()) {
+    return std::nullopt;
+  }
+  return mcu_reply_parser::parse_imu_available(*response);
 }
 
-void SerialMcu::set_motors_speed(int left_motor_speed, int right_motor_speed) {
+std::optional<SerialMcu::EncodersAndImuData> SerialMcu::read_encoders_and_imu() {
+  const std::optional<std::string> response = send_message("getencimu");
+  if (!response.has_value()) {
+    return std::nullopt;
+  }
+  return mcu_reply_parser::parse_encoders_and_imu(*response);
+}
+
+bool SerialMcu::set_motors_speed(int left_motor_speed, int right_motor_speed) {
   std::stringstream ss;
   ss << "setspd " << left_motor_speed << " " << right_motor_speed;
-  send_message(ss.str());
+  return send_command(ss.str());
 }
 
-void SerialMcu::set_motors_pwm(int left_motor_pwm, int right_motor_pwm) {
+bool SerialMcu::set_motors_pwm(int left_motor_pwm, int right_motor_pwm) {
   std::stringstream ss;
   ss << "setpwm " << left_motor_pwm << " " << right_motor_pwm;
-  send_message(ss.str());
+  return send_command(ss.str());
 }
 
-void SerialMcu::set_pid_tuning_gains(float kp, float kd, float ki, float ko) {
+bool SerialMcu::set_pid_tuning_gains(float kp, float kd, float ki, float ko) {
   std::stringstream ss;
   ss << "setpid " << kp << " " << kd << " " << ki << " " << ko;
-  send_message(ss.str());
+  return send_command(ss.str());
 }
 
-std::string SerialMcu::send_message(const std::string& msg) {
-  // Add carriage return to the message.
-  const std::string msg_to_send = msg + '\r';
-  // Send the message.
-  serial_port_.Write(msg_to_send);
+std::optional<std::string> SerialMcu::send_message(const std::string& msg) {
+  if (!serial_port_.IsOpen()) {
+    std::cerr << "Cannot send " << msg << ": the serial port is not open." << std::endl;
+    return std::nullopt;
+  }
 
-  // Get response from the microcontroller.
   std::string response;
   try {
+    // Add carriage return to the message and send it.
+    serial_port_.Write(msg + '\r');
+    // Get response from the microcontroller.
     serial_port_.ReadLine(response, '\n', timeout_ms_);
-  } catch (LibSerial::ReadTimeout&) {
+  } catch (const LibSerial::ReadTimeout&) {
     std::cerr << "Response to " << msg << " timed out." << std::endl;
+    return std::nullopt;
+  } catch (const std::exception& e) {
+    std::cerr << "Failed to send " << msg << ": " << e.what() << std::endl;
+    return std::nullopt;
   }
-  // Error responses have the form "[ERROR] <description>". Report them and return no data.
-  if (response.rfind("[ERROR]", 0) == 0) {
+  if (mcu_reply_parser::is_error(response)) {
     std::cerr << "Command " << msg << " failed: " << response;
-    return "";
+    return std::nullopt;
   }
   return response;
+}
+
+bool SerialMcu::send_command(const std::string& msg) {
+  const std::optional<std::string> response = send_message(msg);
+  if (!response.has_value()) {
+    return false;
+  }
+  if (!mcu_reply_parser::is_ok(*response)) {
+    std::cerr << "Unexpected response to " << msg << ": " << *response;
+    return false;
+  }
+  return true;
 }
 
 }  // namespace andino_base

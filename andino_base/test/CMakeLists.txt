@@ -1,4 +1,7 @@
 find_package(ament_cmake_gmock REQUIRED)
 
+ament_add_gmock(mcu_reply_parser_test mcu_reply_parser_test.cpp)
+target_link_libraries(mcu_reply_parser_test serial_mcu)
+
 ament_add_gmock(diffdrive_andino_test diffdrive_andino_test.cpp)
 target_link_libraries(diffdrive_andino_test diffdrive_andino)

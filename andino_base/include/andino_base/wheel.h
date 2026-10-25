@@ -53,7 +53,7 @@ class Wheel {
   double Angle();
 
   std::string name_ = "";
-  unsigned int enc_ = 0;
+  int enc_ = 0;
   double cmd_ = 0;
   double pos_ = 0;
   double vel_ = 0;

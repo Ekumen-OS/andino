@@ -54,13 +54,13 @@ using ReturnType = hardware_interface::return_type;
 class MockMcu : public Mcu {
  public:
   MOCK_METHOD(bool, is_connected, (), (const, override));
-  MOCK_METHOD(void, reset_encoders, (), (override));
-  MOCK_METHOD(EncodersData, read_encoders, (), (override));
-  MOCK_METHOD(bool, is_imu_available, (), (override));
-  MOCK_METHOD(EncodersAndImuData, read_encoders_and_imu, (), (override));
-  MOCK_METHOD(void, set_motors_speed, (int left_motor_speed, int right_motor_speed), (override));
-  MOCK_METHOD(void, set_motors_pwm, (int left_motor_pwm, int right_motor_pwm), (override));
-  MOCK_METHOD(void, set_pid_tuning_gains, (float kp, float kd, float ki, float ko), (override));
+  MOCK_METHOD(bool, reset_encoders, (), (override));
+  MOCK_METHOD(std::optional<EncodersData>, read_encoders, (), (override));
+  MOCK_METHOD(std::optional<bool>, is_imu_available, (), (override));
+  MOCK_METHOD(std::optional<EncodersAndImuData>, read_encoders_and_imu, (), (override));
+  MOCK_METHOD(bool, set_motors_speed, (int left_motor_speed, int right_motor_speed), (override));
+  MOCK_METHOD(bool, set_motors_pwm, (int left_motor_pwm, int right_motor_pwm), (override));
+  MOCK_METHOD(bool, set_pid_tuning_gains, (float kp, float kd, float ki, float ko), (override));
   // Called on destruction, to check when the MCU is released.
   MOCK_METHOD(void, Die, ());
   ~MockMcu() override { Die(); }
@@ -133,6 +133,8 @@ class DiffDriveAndinoTest : public ::testing::Test {
           return std::move(mcu_owner_);
         }) {
     ON_CALL(*mcu_, is_connected()).WillByDefault(Return(true));
+    ON_CALL(*mcu_, read_encoders()).WillByDefault(Return(Mcu::EncodersData{0, 0}));
+    ON_CALL(*mcu_, set_motors_speed(_, _)).WillByDefault(Return(true));
   }
 
   // Initializes and configures the hardware interface, and exports its interfaces.
@@ -170,6 +172,36 @@ TEST_F(DiffDriveAndinoTest, InitSucceedsWithValidHardwareInfo) {
   EXPECT_EQ(diffdrive_.on_init(MakeHardwareInfo()), CallbackReturn::SUCCESS);
 }
 
+TEST_F(DiffDriveAndinoTest, InitUsesDefaultsForMissingParameters) {
+  hardware_interface::HardwareInfo info = MakeHardwareInfo();
+  info.hardware_parameters.erase("serial_device");
+  info.hardware_parameters.erase("baud_rate");
+  info.hardware_parameters.erase("timeout");
+
+  ASSERT_EQ(diffdrive_.on_init(info), CallbackReturn::SUCCESS);
+  ASSERT_EQ(diffdrive_.on_configure(state_), CallbackReturn::SUCCESS);
+
+  const DiffDriveAndino::Config defaults;
+  ASSERT_TRUE(factory_config_.has_value());
+  EXPECT_EQ(factory_config_->serial_device, defaults.serial_device);
+  EXPECT_EQ(factory_config_->baud_rate, defaults.baud_rate);
+  EXPECT_EQ(factory_config_->timeout, defaults.timeout);
+}
+
+TEST_F(DiffDriveAndinoTest, InitFailsWithNonNumericParameter) {
+  hardware_interface::HardwareInfo info = MakeHardwareInfo();
+  info.hardware_parameters["baud_rate"] = "fast";
+
+  EXPECT_EQ(diffdrive_.on_init(info), CallbackReturn::ERROR);
+}
+
+TEST_F(DiffDriveAndinoTest, InitFailsWithNonPositiveEncoderTicksPerRevolution) {
+  hardware_interface::HardwareInfo info = MakeHardwareInfo();
+  info.hardware_parameters["enc_ticks_per_rev"] = "0";
+
+  EXPECT_EQ(diffdrive_.on_init(info), CallbackReturn::ERROR);
+}
+
 TEST_F(DiffDriveAndinoTest, InitFailsWithWrongNumberOfStateInterfaces) {
   hardware_interface::HardwareInfo info = MakeHardwareInfo();
   info.joints[0] =
@@ -182,6 +214,22 @@ TEST_F(DiffDriveAndinoTest, InitFailsWithWrongNumberOfCommandInterfaces) {
   hardware_interface::HardwareInfo info = MakeHardwareInfo();
   info.joints[0] =
       MakeJoint("left_wheel_joint", {}, {hardware_interface::HW_IF_POSITION, hardware_interface::HW_IF_VELOCITY});
+
+  EXPECT_EQ(diffdrive_.on_init(info), CallbackReturn::ERROR);
+}
+
+TEST_F(DiffDriveAndinoTest, InitFailsWithWrongCommandInterfaceType) {
+  hardware_interface::HardwareInfo info = MakeHardwareInfo();
+  info.joints[0] = MakeJoint("left_wheel_joint", {hardware_interface::HW_IF_POSITION},
+                             {hardware_interface::HW_IF_POSITION, hardware_interface::HW_IF_VELOCITY});
+
+  EXPECT_EQ(diffdrive_.on_init(info), CallbackReturn::ERROR);
+}
+
+TEST_F(DiffDriveAndinoTest, InitFailsWithWrongStateInterfaceTypes) {
+  hardware_interface::HardwareInfo info = MakeHardwareInfo();
+  info.joints[0] = MakeJoint("left_wheel_joint", {hardware_interface::HW_IF_VELOCITY},
+                             {hardware_interface::HW_IF_POSITION, hardware_interface::HW_IF_EFFORT});
 
   EXPECT_EQ(diffdrive_.on_init(info), CallbackReturn::ERROR);
 }
@@ -206,19 +254,6 @@ TEST_F(DiffDriveAndinoTest, ConfigureFailsWhenMcuCannotBeCreated) {
   EXPECT_EQ(diffdrive.on_configure(state_), CallbackReturn::ERROR);
 }
 
-TEST_F(DiffDriveAndinoTest, CleanupReleasesTheMcu) {
-  Configure();
-  ::testing::MockFunction<void()> cleanup_done;
-  {
-    ::testing::InSequence sequence;
-    EXPECT_CALL(*mcu_, Die());
-    EXPECT_CALL(cleanup_done, Call());
-  }
-
-  EXPECT_EQ(diffdrive_.on_cleanup(state_), CallbackReturn::SUCCESS);
-  cleanup_done.Call();
-}
-
 TEST_F(DiffDriveAndinoTest, ExportsInterfacesForEachWheel) {
   Configure();
 
@@ -230,6 +265,29 @@ TEST_F(DiffDriveAndinoTest, ExportsInterfacesForEachWheel) {
   EXPECT_EQ(command_interfaces_.size(), 2u);
   EXPECT_EQ(command_interfaces_.count("left_wheel_joint/velocity"), 1u);
   EXPECT_EQ(command_interfaces_.count("right_wheel_joint/velocity"), 1u);
+}
+
+TEST_F(DiffDriveAndinoTest, ActivateStartsFromCurrentEncoderReading) {
+  Configure();
+  EXPECT_CALL(*mcu_, read_encoders()).WillOnce(Return(Mcu::EncodersData{100, 200}));
+
+  ASSERT_EQ(diffdrive_.on_activate(state_), CallbackReturn::SUCCESS);
+
+  EXPECT_NEAR(State("left_wheel_joint/position"), 100 * kRadsPerTick, kTolerance);
+  EXPECT_NEAR(State("right_wheel_joint/position"), 200 * kRadsPerTick, kTolerance);
+
+  // The first read after activation must not report the jump from zero as a velocity.
+  EXPECT_CALL(*mcu_, read_encoders()).WillOnce(Return(Mcu::EncodersData{100, 200}));
+  ASSERT_EQ(Read(), ReturnType::OK);
+  EXPECT_NEAR(State("left_wheel_joint/velocity"), 0., kTolerance);
+  EXPECT_NEAR(State("right_wheel_joint/velocity"), 0., kTolerance);
+}
+
+TEST_F(DiffDriveAndinoTest, ActivateFailsWhenEncodersCannotBeRead) {
+  Configure();
+  EXPECT_CALL(*mcu_, read_encoders()).WillOnce(Return(std::nullopt));
+
+  EXPECT_EQ(diffdrive_.on_activate(state_), CallbackReturn::ERROR);
 }
 
 TEST_F(DiffDriveAndinoTest, ReadComputesPositionAndVelocity) {
@@ -245,6 +303,46 @@ TEST_F(DiffDriveAndinoTest, ReadComputesPositionAndVelocity) {
   EXPECT_NEAR(State("right_wheel_joint/velocity"), 72 * kRadsPerTick / 0.5, kTolerance);
 }
 
+TEST_F(DiffDriveAndinoTest, ReadHandlesNegativeEncoderCounts) {
+  Configure();
+  ASSERT_EQ(diffdrive_.on_activate(state_), CallbackReturn::SUCCESS);
+  EXPECT_CALL(*mcu_, read_encoders()).WillOnce(Return(Mcu::EncodersData{-10, -20}));
+
+  ASSERT_EQ(Read(0.1), ReturnType::OK);
+
+  EXPECT_NEAR(State("left_wheel_joint/position"), -10 * kRadsPerTick, kTolerance);
+  EXPECT_NEAR(State("right_wheel_joint/position"), -20 * kRadsPerTick, kTolerance);
+  EXPECT_NEAR(State("left_wheel_joint/velocity"), -10 * kRadsPerTick / 0.1, kTolerance);
+  EXPECT_NEAR(State("right_wheel_joint/velocity"), -20 * kRadsPerTick / 0.1, kTolerance);
+}
+
+TEST_F(DiffDriveAndinoTest, ReadFailsAndKeepsStateWhenEncodersCannotBeRead) {
+  Configure();
+  ASSERT_EQ(diffdrive_.on_activate(state_), CallbackReturn::SUCCESS);
+  EXPECT_CALL(*mcu_, read_encoders()).WillOnce(Return(Mcu::EncodersData{36, 72}));
+  ASSERT_EQ(Read(0.5), ReturnType::OK);
+  EXPECT_CALL(*mcu_, read_encoders()).WillOnce(Return(std::nullopt));
+
+  EXPECT_EQ(Read(0.5), ReturnType::ERROR);
+
+  EXPECT_NEAR(State("left_wheel_joint/position"), 36 * kRadsPerTick, kTolerance);
+  EXPECT_NEAR(State("right_wheel_joint/position"), 72 * kRadsPerTick, kTolerance);
+  EXPECT_NEAR(State("left_wheel_joint/velocity"), 36 * kRadsPerTick / 0.5, kTolerance);
+  EXPECT_NEAR(State("right_wheel_joint/velocity"), 72 * kRadsPerTick / 0.5, kTolerance);
+}
+
+TEST_F(DiffDriveAndinoTest, ReadWithZeroPeriodKeepsVelocityFinite) {
+  Configure();
+  ASSERT_EQ(diffdrive_.on_activate(state_), CallbackReturn::SUCCESS);
+  EXPECT_CALL(*mcu_, read_encoders()).WillOnce(Return(Mcu::EncodersData{36, 72}));
+
+  ASSERT_EQ(Read(0.), ReturnType::OK);
+
+  EXPECT_NEAR(State("left_wheel_joint/position"), 36 * kRadsPerTick, kTolerance);
+  EXPECT_TRUE(std::isfinite(State("left_wheel_joint/velocity")));
+  EXPECT_TRUE(std::isfinite(State("right_wheel_joint/velocity")));
+}
+
 TEST_F(DiffDriveAndinoTest, ReadFailsWhenMcuIsDisconnected) {
   Configure();
   ON_CALL(*mcu_, is_connected()).WillByDefault(Return(false));
@@ -252,14 +350,29 @@ TEST_F(DiffDriveAndinoTest, ReadFailsWhenMcuIsDisconnected) {
   EXPECT_EQ(Read(), ReturnType::ERROR);
 }
 
+TEST_F(DiffDriveAndinoTest, ReadAndWriteFailWhenNotConfigured) {
+  ASSERT_EQ(diffdrive_.on_init(MakeHardwareInfo()), CallbackReturn::SUCCESS);
+
+  EXPECT_EQ(Read(), ReturnType::ERROR);
+  EXPECT_EQ(Write(), ReturnType::ERROR);
+}
+
 TEST_F(DiffDriveAndinoTest, WriteConvertsVelocityToTicksPerSecond) {
   Configure();
   ASSERT_EQ(diffdrive_.on_activate(state_), CallbackReturn::SUCCESS);
-  Command("left_wheel_joint/velocity", 10.3 * kRadsPerTick);
-  Command("right_wheel_joint/velocity", -10.3 * kRadsPerTick);
-  EXPECT_CALL(*mcu_, set_motors_speed(10, -10));
+  Command("left_wheel_joint/velocity", 10.7 * kRadsPerTick);
+  Command("right_wheel_joint/velocity", -10.7 * kRadsPerTick);
+  EXPECT_CALL(*mcu_, set_motors_speed(11, -11)).WillOnce(Return(true));
 
   EXPECT_EQ(Write(), ReturnType::OK);
+}
+
+TEST_F(DiffDriveAndinoTest, WriteFailsWhenMotorsSpeedIsNotAcknowledged) {
+  Configure();
+  ASSERT_EQ(diffdrive_.on_activate(state_), CallbackReturn::SUCCESS);
+  EXPECT_CALL(*mcu_, set_motors_speed(_, _)).WillOnce(Return(false));
+
+  EXPECT_EQ(Write(), ReturnType::ERROR);
 }
 
 TEST_F(DiffDriveAndinoTest, WriteFailsWhenMcuIsDisconnected) {
@@ -268,6 +381,45 @@ TEST_F(DiffDriveAndinoTest, WriteFailsWhenMcuIsDisconnected) {
   EXPECT_CALL(*mcu_, set_motors_speed(_, _)).Times(0);
 
   EXPECT_EQ(Write(), ReturnType::ERROR);
+}
+
+TEST_F(DiffDriveAndinoTest, DeactivateStopsTheMotors) {
+  Configure();
+  ASSERT_EQ(diffdrive_.on_activate(state_), CallbackReturn::SUCCESS);
+  EXPECT_CALL(*mcu_, set_motors_speed(0, 0)).WillOnce(Return(true));
+
+  EXPECT_EQ(diffdrive_.on_deactivate(state_), CallbackReturn::SUCCESS);
+}
+
+TEST_F(DiffDriveAndinoTest, DeactivateFailsWhenMotorsCannotBeStopped) {
+  Configure();
+  ASSERT_EQ(diffdrive_.on_activate(state_), CallbackReturn::SUCCESS);
+  EXPECT_CALL(*mcu_, set_motors_speed(0, 0)).WillOnce(Return(false));
+
+  EXPECT_EQ(diffdrive_.on_deactivate(state_), CallbackReturn::ERROR);
+}
+
+TEST_F(DiffDriveAndinoTest, ShutdownStopsTheMotorsAndReleasesTheMcu) {
+  Configure();
+  ASSERT_EQ(diffdrive_.on_activate(state_), CallbackReturn::SUCCESS);
+  EXPECT_CALL(*mcu_, set_motors_speed(0, 0)).WillOnce(Return(true));
+
+  ASSERT_EQ(diffdrive_.on_shutdown(state_), CallbackReturn::SUCCESS);
+
+  EXPECT_EQ(Read(), ReturnType::ERROR);
+}
+
+TEST_F(DiffDriveAndinoTest, CleanupReleasesTheMcu) {
+  Configure();
+  ::testing::MockFunction<void()> cleanup_done;
+  {
+    ::testing::InSequence sequence;
+    EXPECT_CALL(*mcu_, Die());
+    EXPECT_CALL(cleanup_done, Call());
+  }
+
+  EXPECT_EQ(diffdrive_.on_cleanup(state_), CallbackReturn::SUCCESS);
+  cleanup_done.Call();
 }
 
 }  // namespace

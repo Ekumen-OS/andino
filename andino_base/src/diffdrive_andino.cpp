@@ -29,7 +29,11 @@
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "andino_base/diffdrive_andino.h"
 
+#include <algorithm>
+#include <cmath>
 #include <memory>
+#include <optional>
+#include <stdexcept>
 #include <string>
 #include <utility>
 #include <vector>
@@ -43,9 +47,59 @@ namespace andino_base {
 
 namespace {
 
+using HardwareParameters = decltype(hardware_interface::HardwareInfo::hardware_parameters);
+
 // Creates a SerialMcu connected to the configured serial device.
 std::unique_ptr<Mcu> make_serial_mcu(const DiffDriveAndino::Config& config) {
   return SerialMcu::open(config.serial_device, config.baud_rate, config.timeout);
+}
+
+// Reads the string parameter `name` into `value`, which keeps its default if the parameter is not set.
+void read_parameter(const HardwareParameters& parameters, const std::string& name, std::string& value,
+                    const rclcpp::Logger& logger) {
+  const auto it = parameters.find(name);
+  if (it == parameters.end()) {
+    RCLCPP_WARN(logger, "Parameter '%s' is not set, using default value '%s'.", name.c_str(), value.c_str());
+    return;
+  }
+  value = it->second;
+  RCLCPP_DEBUG(logger, "%s: %s", name.c_str(), value.c_str());
+}
+
+// Reads the positive integer parameter `name` into `value`, which keeps its default if the parameter is not set.
+// Returns false if the parameter is set but is not a positive integer.
+bool read_parameter(const HardwareParameters& parameters, const std::string& name, int& value,
+                    const rclcpp::Logger& logger) {
+  const auto it = parameters.find(name);
+  if (it == parameters.end()) {
+    RCLCPP_WARN(logger, "Parameter '%s' is not set, using default value '%d'.", name.c_str(), value);
+    return true;
+  }
+  try {
+    size_t parsed_chars = 0;
+    const int parsed_value = std::stoi(it->second, &parsed_chars);
+    if (parsed_chars != it->second.size() || parsed_value <= 0) {
+      throw std::invalid_argument(it->second);
+    }
+    value = parsed_value;
+  } catch (const std::exception&) {
+    RCLCPP_FATAL(logger, "Parameter '%s' must be a positive integer, got '%s'.", name.c_str(), it->second.c_str());
+    return false;
+  }
+  RCLCPP_DEBUG(logger, "%s: %d", name.c_str(), value);
+  return true;
+}
+
+// Returns true if `interfaces` holds exactly the interfaces named in `expected_names`, in any order.
+bool has_interfaces(const std::vector<hardware_interface::InterfaceInfo>& interfaces,
+                    std::vector<std::string> expected_names) {
+  std::vector<std::string> names;
+  for (const hardware_interface::InterfaceInfo& interface : interfaces) {
+    names.push_back(interface.name);
+  }
+  std::sort(names.begin(), names.end());
+  std::sort(expected_names.begin(), expected_names.end());
+  return names == expected_names;
 }
 
 }  // namespace
@@ -61,33 +115,27 @@ hardware_interface::CallbackReturn DiffDriveAndino::on_init(const hardware_inter
 
   RCLCPP_INFO(logger_, "On init...");
 
-  config_.left_wheel_name = info_.hardware_parameters[kLeftWheelNameParam];
-  RCLCPP_DEBUG(logger_, (kLeftWheelNameParam + static_cast<std::string>(": ") + config_.left_wheel_name).c_str());
-  config_.right_wheel_name = info_.hardware_parameters[kRightWheelNameParam];
-  RCLCPP_DEBUG(logger_, (kRightWheelNameParam + static_cast<std::string>(": ") + config_.right_wheel_name).c_str());
-  config_.serial_device = info_.hardware_parameters[kSerialDeviceParam];
-  RCLCPP_DEBUG(logger_, (kSerialDeviceParam + static_cast<std::string>(": ") + config_.serial_device).c_str());
-  config_.baud_rate = std::stoi(info_.hardware_parameters[kBaudRateParam]);
-  RCLCPP_DEBUG(logger_,
-               (kBaudRateParam + static_cast<std::string>(": ") + info_.hardware_parameters[kBaudRateParam]).c_str());
-  config_.timeout = std::stoi(info_.hardware_parameters[kTimeoutParam]);
-  RCLCPP_DEBUG(logger_,
-               (kTimeoutParam + static_cast<std::string>(": ") + info_.hardware_parameters[kTimeoutParam]).c_str());
-  config_.enc_ticks_per_rev = std::stoi(info_.hardware_parameters[kEncTicksPerRevParam]);
-  RCLCPP_DEBUG(logger_,
-               (kEncTicksPerRevParam + static_cast<std::string>(": ") + info_.hardware_parameters[kEncTicksPerRevParam])
-                   .c_str());
+  const HardwareParameters& parameters = info_.hardware_parameters;
+  read_parameter(parameters, kLeftWheelNameParam, config_.left_wheel_name, logger_);
+  read_parameter(parameters, kRightWheelNameParam, config_.right_wheel_name, logger_);
+  read_parameter(parameters, kSerialDeviceParam, config_.serial_device, logger_);
+  if (!read_parameter(parameters, kBaudRateParam, config_.baud_rate, logger_) ||
+      !read_parameter(parameters, kTimeoutParam, config_.timeout, logger_) ||
+      !read_parameter(parameters, kEncTicksPerRevParam, config_.enc_ticks_per_rev, logger_)) {
+    return hardware_interface::CallbackReturn::ERROR;
+  }
 
   for (const hardware_interface::ComponentInfo& joint : info.joints) {
     // DiffDriveAndino has exactly two states and one command interface on each joint
-    if (joint.command_interfaces.size() != 1) {
-      RCLCPP_FATAL(logger_, "Joint '%s' has %zu command interfaces found. 1 expected.", joint.name.c_str(),
-                   joint.command_interfaces.size());
+    if (!has_interfaces(joint.command_interfaces, {hardware_interface::HW_IF_VELOCITY})) {
+      RCLCPP_FATAL(logger_, "Joint '%s' must have exactly one '%s' command interface.", joint.name.c_str(),
+                   hardware_interface::HW_IF_VELOCITY);
       return hardware_interface::CallbackReturn::ERROR;
     }
-    if (joint.state_interfaces.size() != 2) {
-      RCLCPP_FATAL(logger_, "Joint '%s' has %zu state interfaces found. 1 expected.", joint.name.c_str(),
-                   joint.state_interfaces.size());
+    if (!has_interfaces(joint.state_interfaces,
+                        {hardware_interface::HW_IF_POSITION, hardware_interface::HW_IF_VELOCITY})) {
+      RCLCPP_FATAL(logger_, "Joint '%s' must have exactly one '%s' and one '%s' state interface.", joint.name.c_str(),
+                   hardware_interface::HW_IF_POSITION, hardware_interface::HW_IF_VELOCITY);
       return hardware_interface::CallbackReturn::ERROR;
     }
   }
@@ -127,6 +175,18 @@ hardware_interface::CallbackReturn DiffDriveAndino::on_cleanup(const rclcpp_life
   return hardware_interface::CallbackReturn::SUCCESS;
 }
 
+hardware_interface::CallbackReturn DiffDriveAndino::on_shutdown(const rclcpp_lifecycle::State& /* previous_state */) {
+  RCLCPP_INFO(logger_, "On shutdown...");
+  // Shutdown may come straight from the active state, so make sure the robot stops.
+  if (is_mcu_connected() && !mcu_->set_motors_speed(0, 0)) {
+    RCLCPP_ERROR(logger_, "Failed to stop the motors.");
+  }
+  mcu_.reset();
+  RCLCPP_INFO(logger_, "Finished Shutdown");
+
+  return hardware_interface::CallbackReturn::SUCCESS;
+}
+
 std::vector<hardware_interface::StateInterface> DiffDriveAndino::export_state_interfaces() {
   // We need to set up a position and a velocity interface for each wheel
   std::vector<hardware_interface::StateInterface> state_interfaces;
@@ -160,6 +220,24 @@ std::vector<hardware_interface::CommandInterface> DiffDriveAndino::export_comman
 
 hardware_interface::CallbackReturn DiffDriveAndino::on_activate(const rclcpp_lifecycle::State& /* previous_state */) {
   RCLCPP_INFO(logger_, "On activate...");
+
+  if (!is_mcu_connected()) {
+    RCLCPP_ERROR(logger_, "MCU is not connected.");
+    return hardware_interface::CallbackReturn::ERROR;
+  }
+  // Start from the current encoder reading so the first read does not report a jump in position.
+  const std::optional<Mcu::EncodersData> encoders = mcu_->read_encoders();
+  if (!encoders.has_value()) {
+    RCLCPP_ERROR(logger_, "Failed to read the encoders.");
+    return hardware_interface::CallbackReturn::ERROR;
+  }
+  for (auto [wheel, enc] : {std::pair{&left_wheel_, (*encoders)[0]}, std::pair{&right_wheel_, (*encoders)[1]}}) {
+    wheel->enc_ = enc;
+    wheel->pos_ = wheel->Angle();
+    wheel->vel_ = 0.;
+    wheel->cmd_ = 0.;
+  }
+
   RCLCPP_INFO(logger_, "Finished Activation");
 
   return hardware_interface::CallbackReturn::SUCCESS;
@@ -167,6 +245,12 @@ hardware_interface::CallbackReturn DiffDriveAndino::on_activate(const rclcpp_lif
 
 hardware_interface::CallbackReturn DiffDriveAndino::on_deactivate(const rclcpp_lifecycle::State& /* previous_state */) {
   RCLCPP_INFO(logger_, "On deactivate...");
+
+  if (!is_mcu_connected() || !mcu_->set_motors_speed(0, 0)) {
+    RCLCPP_ERROR(logger_, "Failed to stop the motors.");
+    return hardware_interface::CallbackReturn::ERROR;
+  }
+
   RCLCPP_INFO(logger_, "Finished Deactivation");
 
   return hardware_interface::CallbackReturn::SUCCESS;
@@ -175,30 +259,33 @@ hardware_interface::CallbackReturn DiffDriveAndino::on_deactivate(const rclcpp_l
 hardware_interface::return_type DiffDriveAndino::read(const rclcpp::Time& /* time */, const rclcpp::Duration& period) {
   const double delta_secs = period.seconds();
 
-  if (!mcu_->is_connected()) {
+  if (!is_mcu_connected()) {
     RCLCPP_ERROR(logger_, "MCU is not connected.");
     return hardware_interface::return_type::ERROR;
   }
 
-  const Mcu::EncodersData encoders = mcu_->read_encoders();
+  const std::optional<Mcu::EncodersData> encoders = mcu_->read_encoders();
+  if (!encoders.has_value()) {
+    RCLCPP_ERROR(logger_, "Failed to read the encoders.");
+    return hardware_interface::return_type::ERROR;
+  }
 
-  left_wheel_.enc_ = encoders[0];
-  right_wheel_.enc_ = encoders[1];
-
-  const double left_pos_prev = left_wheel_.pos_;
-  left_wheel_.pos_ = left_wheel_.Angle();
-  left_wheel_.vel_ = (left_wheel_.pos_ - left_pos_prev) / delta_secs;
-
-  const double right_pos_prev = right_wheel_.pos_;
-  right_wheel_.pos_ = right_wheel_.Angle();
-  right_wheel_.vel_ = (right_wheel_.pos_ - right_pos_prev) / delta_secs;
+  for (auto [wheel, enc] : {std::pair{&left_wheel_, (*encoders)[0]}, std::pair{&right_wheel_, (*encoders)[1]}}) {
+    const double pos_prev = wheel->pos_;
+    wheel->enc_ = enc;
+    wheel->pos_ = wheel->Angle();
+    // Without elapsed time the velocity cannot be estimated, so the previous estimate is kept.
+    if (delta_secs > 0.) {
+      wheel->vel_ = (wheel->pos_ - pos_prev) / delta_secs;
+    }
+  }
 
   return hardware_interface::return_type::OK;
 }
 
 hardware_interface::return_type DiffDriveAndino::write(const rclcpp::Time& /* time */,
                                                        const rclcpp::Duration& /* period */) {
-  if (!mcu_->is_connected()) {
+  if (!is_mcu_connected()) {
     RCLCPP_ERROR(logger_, "MCU is not connected.");
     return hardware_interface::return_type::ERROR;
   }
@@ -207,12 +294,17 @@ hardware_interface::return_type DiffDriveAndino::write(const rclcpp::Time& /* ti
   // Using the rads per tick(rpt) of the motor information
   // Formula: ticks/sec = rads/sec / rads/tick
 
-  const int left_value_target = static_cast<int>(left_wheel_.cmd_ / left_wheel_.rads_per_tick_);
-  const int right_value_target = static_cast<int>(right_wheel_.cmd_ / right_wheel_.rads_per_tick_);
-  mcu_->set_motors_speed(left_value_target, right_value_target);
+  const int left_value_target = static_cast<int>(std::lround(left_wheel_.cmd_ / left_wheel_.rads_per_tick_));
+  const int right_value_target = static_cast<int>(std::lround(right_wheel_.cmd_ / right_wheel_.rads_per_tick_));
+  if (!mcu_->set_motors_speed(left_value_target, right_value_target)) {
+    RCLCPP_ERROR(logger_, "Failed to set the motors speed.");
+    return hardware_interface::return_type::ERROR;
+  }
 
   return hardware_interface::return_type::OK;
 }
+
+bool DiffDriveAndino::is_mcu_connected() const { return mcu_ && mcu_->is_connected(); }
 
 }  // namespace andino_base
 

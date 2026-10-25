@@ -31,6 +31,7 @@
 
 #include <cstdint>
 #include <memory>
+#include <optional>
 #include <string>
 
 #include <libserial/SerialPort.h>
@@ -53,25 +54,25 @@ class SerialMcu : public Mcu {
   bool is_connected() const override;
 
   /// @brief Implements Mcu interface class API.
-  void reset_encoders() override;
+  bool reset_encoders() override;
 
   /// @brief Implements Mcu interface class API.
-  EncodersData read_encoders() override;
+  std::optional<EncodersData> read_encoders() override;
 
   /// @brief Implements Mcu interface class API.
-  bool is_imu_available() override;
+  std::optional<bool> is_imu_available() override;
 
   /// @brief Implements Mcu interface class API.
-  EncodersAndImuData read_encoders_and_imu() override;
+  std::optional<EncodersAndImuData> read_encoders_and_imu() override;
 
   /// @brief Implements Mcu interface class API.
-  void set_motors_speed(int left_motor_speed, int right_motor_speed) override;
+  bool set_motors_speed(int left_motor_speed, int right_motor_speed) override;
 
   /// @brief Implements Mcu interface class API.
-  void set_motors_pwm(int left_motor_pwm, int right_motor_pwm) override;
+  bool set_motors_pwm(int left_motor_pwm, int right_motor_pwm) override;
 
   /// @brief Implements Mcu interface class API.
-  void set_pid_tuning_gains(float kp, float kd, float ki, float ko) override;
+  bool set_pid_tuning_gains(float kp, float kd, float ki, float ko) override;
 
  private:
   /// @brief Constructs a SerialMcu with a closed serial port. Use open() instead.
@@ -79,8 +80,14 @@ class SerialMcu : public Mcu {
 
   /// @brief Sends a message to the microcontroller and reads the response.
   /// @param msg Message to send to the microcontroller.
-  /// @returns The response from the microcontroller.
-  std::string send_message(const std::string& msg);
+  /// @returns The response from the microcontroller, or std::nullopt if the message could not be
+  /// sent, the response timed out or the microcontroller replied with an error.
+  std::optional<std::string> send_message(const std::string& msg);
+
+  /// @brief Sends a command whose only expected response is an acknowledgement.
+  /// @param msg Message to send to the microcontroller.
+  /// @returns True if the microcontroller acknowledged the command, false otherwise.
+  bool send_command(const std::string& msg);
 
   // Underlying serial connection.
   LibSerial::SerialPort serial_port_;

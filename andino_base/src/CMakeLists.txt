@@ -1,4 +1,4 @@
-add_library(serial_mcu SHARED serial_mcu.cpp)
+add_library(serial_mcu SHARED mcu_reply_parser.cpp serial_mcu.cpp)
 
 target_include_directories(serial_mcu
   PUBLIC

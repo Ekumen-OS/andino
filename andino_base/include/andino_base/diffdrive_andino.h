@@ -82,6 +82,8 @@ class DiffDriveAndino : public hardware_interface::SystemInterface {
 
   hardware_interface::CallbackReturn on_cleanup(const rclcpp_lifecycle::State& previous_state) override;
 
+  hardware_interface::CallbackReturn on_shutdown(const rclcpp_lifecycle::State& previous_state) override;
+
   std::vector<hardware_interface::StateInterface> export_state_interfaces() override;
 
   std::vector<hardware_interface::CommandInterface> export_command_interfaces() override;
@@ -101,6 +103,9 @@ class DiffDriveAndino : public hardware_interface::SystemInterface {
   const std::string kBaudRateParam{"baud_rate"};
   const std::string kTimeoutParam{"timeout"};
   const std::string kEncTicksPerRevParam{"enc_ticks_per_rev"};
+
+  // Returns true if the microcontroller has been set up and is connected.
+  bool is_mcu_connected() const;
 
   // Configuration parameters.
   Config config_;
