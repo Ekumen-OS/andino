@@ -34,4 +34,3 @@ IncludeCategories:
   # Other libraries' h files (with quotes).
   - Regex:    '^"'
     Priority: 41
-    

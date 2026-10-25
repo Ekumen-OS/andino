@@ -33,6 +33,7 @@
 #include <cstdlib>
 #include <iostream>
 #include <sstream>
+#include <string>
 #include <thread>
 
 namespace andino_base {
@@ -50,7 +51,7 @@ void SerialMcu::setup(const std::string& serial_device, int32_t baud_rate, int32
   // And tipically when the serial port is opened, the Microcontroller is reset.
   std::this_thread::sleep_for(std::chrono::seconds(2));
 
-  // TODO: Use baud_rate from parameter.
+  // TODO(francocipollone): Use baud_rate from parameter.
   if (baud_rate != 57600) {
     std::cerr << "A baudrate different than 57600 is not supported yet." << std::endl;
   }

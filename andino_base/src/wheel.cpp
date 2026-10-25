@@ -30,6 +30,7 @@
 #include "andino_base/wheel.h"
 
 #include <cmath>
+#include <string>
 
 namespace andino_base {
 
