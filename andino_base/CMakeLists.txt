@@ -29,6 +29,8 @@ add_subdirectory(src)
 if(BUILD_TESTING)
   find_package(ament_cmake_clang_format REQUIRED)
   ament_clang_format(CONFIG_FILE ${CMAKE_CURRENT_SOURCE_DIR}/.clang-format)
+
+  add_subdirectory(test)
 endif()
 
 # Export library so pluginlib can find it.
