@@ -28,6 +28,7 @@
 // OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <iostream>
+#include <memory>
 #include <sstream>
 #include <string>
 
@@ -57,10 +58,13 @@ int Main(int argc, char* argv[]) {
   gflags::SetUsageMessage(GetUsageMessage());
   gflags::ParseCommandLineFlags(&argc, &argv, true);
 
-  SerialMcu serial_mcu;
-  serial_mcu.setup(FLAGS_serial_port, FLAGS_baud_rate, FLAGS_timeout_ms);
+  const std::unique_ptr<SerialMcu> serial_mcu = SerialMcu::open(FLAGS_serial_port, FLAGS_baud_rate, FLAGS_timeout_ms);
+  if (!serial_mcu) {
+    std::cerr << "Failed to open the serial connection to the Microcontroller." << std::endl;
+    return 1;
+  }
 
-  std::cout << "MCU is connected: " << (serial_mcu.is_connected() ? "True" : "False") << std::endl;
+  std::cout << "MCU is connected: " << (serial_mcu->is_connected() ? "True" : "False") << std::endl;
 
   // Send message
   // TODO(jballoffet): Change to use public API.

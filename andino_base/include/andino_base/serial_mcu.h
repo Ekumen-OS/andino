@@ -29,6 +29,8 @@
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #pragma once
 
+#include <cstdint>
+#include <memory>
 #include <string>
 
 #include <libserial/SerialPort.h>
@@ -40,14 +42,12 @@ namespace andino_base {
 /// \brief This class provides a serial implementation of the MCU interface.
 class SerialMcu : public Mcu {
  public:
-  /// @brief Default constructor.
-  SerialMcu() = default;
-
-  /// @brief Configures the serial communication.
+  /// @brief Opens and configures the serial communication.
   /// @param[in] serial_device Path to the serial device(eg. /dev/ttyACM0)
   /// @param[in] baud_rate Baud rate of the serial connection(eg. 57600)
   /// @param[in] timeout_ms Timeout in milliseconds.
-  void setup(const std::string& serial_device, int32_t baud_rate, int32_t timeout_ms);
+  /// @returns The connection to the microcontroller, or nullptr if the serial port could not be opened and configured.
+  static std::unique_ptr<SerialMcu> open(const std::string& serial_device, int32_t baud_rate, int32_t timeout_ms);
 
   /// @brief Implements Mcu interface class API.
   bool is_connected() const override;
@@ -74,6 +74,9 @@ class SerialMcu : public Mcu {
   void set_pid_tuning_gains(float kp, float kd, float ki, float ko) override;
 
  private:
+  /// @brief Constructs a SerialMcu with a closed serial port. Use open() instead.
+  SerialMcu() = default;
+
   /// @brief Sends a message to the microcontroller and reads the response.
   /// @param msg Message to send to the microcontroller.
   /// @returns The response from the microcontroller.

@@ -29,6 +29,8 @@
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #pragma once
 
+#include <functional>
+#include <memory>
 #include <string>
 #include <vector>
 
@@ -40,7 +42,7 @@
 #include <rclcpp_lifecycle/node_interfaces/lifecycle_node_interface.hpp>
 #include <rclcpp_lifecycle/state.hpp>
 
-#include "andino_base/serial_mcu.h"
+#include "andino_base/mcu.h"
 #include "andino_base/wheel.h"
 
 namespace andino_base {
@@ -50,12 +52,35 @@ namespace andino_base {
 /// abstracting away the specifics of the hardware and exposing interfaces that are easy to work with.
 class DiffDriveAndino : public hardware_interface::SystemInterface {
  public:
-  /// @brief Default constructor for the DiffDriveAndino class.
-  DiffDriveAndino() = default;
+  /// @brief Configuration parameters for the DiffDriveAndino class.
+  struct Config {
+    // Name of the left and right wheels.
+    std::string left_wheel_name = "left_wheel";
+    std::string right_wheel_name = "right_wheel";
+    // Encoder parameters.
+    int enc_ticks_per_rev = 700;
+    // Communication parameters.
+    std::string serial_device = "/dev/ttyUSB0";
+    int baud_rate = 57600;
+    int timeout = 1000;
+  };
+
+  /// @brief Creates the connection to the microcontroller.
+  /// It returns nullptr if the connection could not be established.
+  using McuFactory = std::function<std::unique_ptr<Mcu>(const Config& config)>;
+
+  /// @brief Constructs a DiffDriveAndino that talks to the microcontroller over a serial port.
+  DiffDriveAndino();
+
+  /// @brief Constructs a DiffDriveAndino that obtains the microcontroller connection from @p mcu_factory.
+  /// @param mcu_factory Called on configuration to create the connection to the microcontroller.
+  explicit DiffDriveAndino(McuFactory mcu_factory);
 
   hardware_interface::CallbackReturn on_init(const hardware_interface::HardwareInfo& info) override;
 
   hardware_interface::CallbackReturn on_configure(const rclcpp_lifecycle::State& previous_state) override;
+
+  hardware_interface::CallbackReturn on_cleanup(const rclcpp_lifecycle::State& previous_state) override;
 
   std::vector<hardware_interface::StateInterface> export_state_interfaces() override;
 
@@ -77,23 +102,12 @@ class DiffDriveAndino : public hardware_interface::SystemInterface {
   const std::string kTimeoutParam{"timeout"};
   const std::string kEncTicksPerRevParam{"enc_ticks_per_rev"};
 
-  // Configuration parameters for the DiffDriveAndino class.
-  struct Config {
-    // Name of the left and right wheels.
-    std::string left_wheel_name = "left_wheel";
-    std::string right_wheel_name = "right_wheel";
-    // Encoder parameters.
-    int enc_ticks_per_rev = 700;
-    // Communication parameters.
-    std::string serial_device = "/dev/ttyUSB0";
-    int baud_rate = 57600;
-    int timeout = 1000;
-  };
-
   // Configuration parameters.
   Config config_;
+  // Creates the communication with the microcontroller.
+  McuFactory mcu_factory_;
   // Communication with the microcontroller running andino_firmware.
-  SerialMcu serial_mcu_;
+  std::unique_ptr<Mcu> mcu_;
   // Left wheel of the robot.
   Wheel left_wheel_;
   // Right wheel of the robot.

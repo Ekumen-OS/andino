@@ -1,0 +1,4 @@
+find_package(ament_cmake_gmock REQUIRED)
+
+ament_add_gmock(diffdrive_andino_test diffdrive_andino_test.cpp)
+target_link_libraries(diffdrive_andino_test diffdrive_andino)
